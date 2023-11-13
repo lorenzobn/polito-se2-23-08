@@ -14,7 +14,7 @@ function Portal() {
     return (
         <div>
             <MyNavbar></MyNavbar>
-            <Container className='my-5'>
+            <Container className='my-5 under-nav'>
                 <Row>
                     <Col>
                         <Card style={{ width: '20rem'}}>

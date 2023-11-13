@@ -2,8 +2,8 @@
     font-family: 'Inter', sans-serif;
 }
 
-.dropdown-toggle::after {
-    display: none !important; 
+body {
+    font-weight: 400 !important;
 }
 
 .secondary-menu {
@@ -32,6 +32,51 @@
 }
 
 .thesis-form-section {
-    padding-top: 30px;
+    padding-top: 1%;
     padding-bottom: 30px;
+}
+
+.under-nav {
+    padding-top: 160px;
+}
+
+.filter-decoration {
+    color: #002b49 !important;
+    font-weight: 600 !important;
+}
+
+.nav-link:focus,
+.nav-link:hover {
+    color: RGBA(252, 122, 8, 1) !important;
+}
+
+.border-thesis-view {
+    color: inherit;
+    color: RGBA(0,0,0,1);
+    background:  transparent;
+    padding-top: 15px;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-bottom: 15px;
+    text-align: center;
+    line-height: 1;
+    border: 1px solid RGBA(252, 122, 8, 1);
+    display: inline-block;
+    cursor: pointer;
+    margin-top: 30px;
+    font-size: 15.1113px;
+    text-decoration-thickness: 0.4rem;
+    text-decoration-style: initial;
+    text-decoration-color: initial;
+}
+
+.border-thesis-view:focus,
+.border-thesis-view:hover {
+    background-color:  RGBA(252, 122, 8, 1) !important;
+    color: RGBA(255, 255, 255, 1) !important
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
 }
