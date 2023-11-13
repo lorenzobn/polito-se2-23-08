@@ -11,7 +11,7 @@ function MyNavbar() {
     const store = useContext(StoreContext)
 
     return (
-        <Navbar expand="lg" className='secondary-menu'>
+        <Navbar expand="lg" className='secondary-menu fixed-top'>
             <Container fluid>
                 <Navbar.Brand style={{marginLeft:'7%'}} href="/portal"><img
                     src='../../images/logo_poli_bianco_260.png'

@@ -11,7 +11,7 @@ function ThesisList(props) {
         <>
         <MyNavbar></MyNavbar>
       
-            <Container fluid  className="my-5 border-thesis-div"> 
+            <Container fluid  className="border-thesis-div" style={{paddingTop:'10%'}}> 
                 <Row>
                     <Col className="border-thesis-div" md={{span:9, offset:3}}>
                         <Col lg={3}>
@@ -51,7 +51,6 @@ function ThesisList(props) {
                         </div>
                     </Col>
                 </Row>
-                
             </Container>    
         </>
     )
