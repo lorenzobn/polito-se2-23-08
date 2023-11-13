@@ -12,9 +12,26 @@
 }
 
 .border-thesis-div {
-   border-top: 1px solid RGBA(0,0,0,.1)
+   border-top: 1px solid RGBA(0,0,0,.1);
+   display: inline block;
 }
 
-.border-thesis-row {
+.border-thesis-title {
     border-top: 3px solid RGBA(252, 122, 8, 1);
+    display: inline-block;
+    padding-top: 30px;
+}
+
+.border-thesis-filter {
+    border-right: 1px solid RGBA(0,0,0,.1)
+}
+
+.thesis-section {
+    margin-left: 5%;
+    padding-bottom: 30px;
+}
+
+.thesis-form-section {
+    padding-top: 30px;
+    padding-bottom: 30px;
 }
