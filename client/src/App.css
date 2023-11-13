@@ -64,10 +64,7 @@ body {
     display: inline-block;
     cursor: pointer;
     margin-top: 30px;
-    font-size: 15.1113px;
-    text-decoration-thickness: 0.4rem;
-    text-decoration-style: initial;
-    text-decoration-color: initial;
+    font-size: 20;
 }
 
 .border-thesis-view:focus,
@@ -77,6 +74,6 @@ body {
 }
 
 a {
-    text-decoration: none;
+    text-decoration: none !important;
     color: inherit;
 }
