@@ -5,15 +5,15 @@ import { StoreContext } from '../core/store/Provider';
 import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row'
 import Col from 'react-bootstrap/Col'
-import Card from 'react-bootstrap/Card'
 import Stack from 'react-bootstrap/Stack'
+import Card from 'react-bootstrap/Card'
 
 function Portal() {
     const store = useContext(StoreContext)
 
     return (
         <div>
-            <MyNavbar user={store.user}></MyNavbar>
+            <MyNavbar></MyNavbar>
             <Container className='my-5'>
                 <Row>
                     <Col>

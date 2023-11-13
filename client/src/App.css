@@ -7,8 +7,14 @@
 }
 
 .secondary-menu {
-    background-color: #003576;
+    /*background-color: #003576;*/
+    background-color: #002b49;
 }
 
-   
- 
+.border-thesis-div {
+   border-top: 1px solid RGBA(0,0,0,.1)
+}
+
+.border-thesis-row {
+    border-top: 3px solid RGBA(252, 122, 8, 1);
+}

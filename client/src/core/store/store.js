@@ -3,7 +3,7 @@ import { makeObservable, observable, action } from "mobx";
 export class Store {
     constructor() {
         this.user = {
-            type: "student"
+            type: "professor"
         }
         this.loading = false;
         makeObservable(this, {
