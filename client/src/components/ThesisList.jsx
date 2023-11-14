@@ -1,13 +1,13 @@
 import React from "react";
 import MyNavbar from "./Navbar";
-import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row'
-import Col from 'react-bootstrap/Col'
-import Dropdown from 'react-bootstrap/Dropdown';
-import DropdownButton from 'react-bootstrap/DropdownButton';
-import Form from 'react-bootstrap/Form'
-import Button from 'react-bootstrap/Button'
-import Nav from 'react-bootstrap/Nav'
+import {Row, Col, Nav, Container, Dropdown, DropdownButton, Form} from 'react-bootstrap'
+import Button from "./Button";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {
+    faMagnifyingGlass,
+    faU,
+    faUser
+    } from "@fortawesome/free-solid-svg-icons";
 
 function ThesisList(props) {
 
@@ -26,7 +26,11 @@ function ThesisList(props) {
     return (
         <>
             <MyNavbar></MyNavbar>
-            <Container fluid className="under-nav">
+            <Container fluid >
+                <div className="text-danger">
+                <FontAwesomeIcon className="text-danger" icon={faUser} />
+
+                </div>
                 <Row className="justify-content-between thesis-form-section">
                     <Col className="d-flex justify-content-around" lg={{ span: 8, offset: 2 }}>
                         <DropdownButton variant="light" id="dropdown-item-button" title="Grade Type">
@@ -45,7 +49,7 @@ function ThesisList(props) {
                                     />
                                 </Col>
                                 <Col xs="auto">
-                                    <Button variant='light' type="submit">Submit</Button>
+                                    <Button  text={"asdasd"} icon={faMagnifyingGlass}></Button>
                                 </Col>
                             </Row>
                         </Form>
@@ -58,7 +62,7 @@ function ThesisList(props) {
                                 <Nav.Link className="filter-decoration" eventKey='research'>By Research Group</Nav.Link>
                             </Nav.Item>
                             <Nav.Item className="d-inline-flex">
-                                <Nav.Link className="filter-decoration" eventKey="authors">By Authors</Nav.Link>
+                                <Nav.Link className="filter-decoration" eventKey="authors">By Supervisor</Nav.Link>
                             </Nav.Item>
                             <Nav.Item className="d-inline-flex">
                                 <Nav.Link className="filter-decoration" eventKey="title">By Title</Nav.Link>

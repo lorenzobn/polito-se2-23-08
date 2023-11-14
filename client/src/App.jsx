@@ -1,8 +1,10 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Portal from './components/Portal';
+import './assets/bootstrap.css';
 import './App.css'
-import 'bootstrap/dist/css/bootstrap.min.css';
+
+
 import InsertProposal from './components/InsertProposal';
 import ThesisList from './components/ThesisList';
 import ProposalPage from './components/ProposalPage';

@@ -1,14 +1,18 @@
 * {
-    font-family: 'Inter', sans-serif;
+    font-family: 'Poppins', sans-serif !important;
+    
 }
 
 body {
     font-weight: 400 !important;
+    color: #00284B;
 }
-
+p h1 h2 h3 h4 h5 h6 {
+    color: #00284B;
+}
 .secondary-menu {
     /*background-color: #003576;*/
-    background-color: #002b49;
+    background-color: #00284B;
 }
 
 .border-thesis-div {
@@ -36,12 +40,8 @@ body {
     padding-bottom: 30px;
 }
 
-.under-nav {
-    padding-top: 160px;
-}
-
 .filter-decoration {
-    color: #002b49 !important;
+    color: #00284B !important;
     font-weight: 600 !important;
 }
 
@@ -76,4 +76,27 @@ body {
 a {
     text-decoration: none !important;
     color: inherit;
+}
+
+.card {
+    /*border-color: #005fcc !important;*/
+    box-shadow: 0 0 0 .20rem rgba(0,95,204,.1) !important;
+    border-width: thin !important;
+}
+
+.custom-btn{
+    all: unset;
+    background-color: #007ea8;
+    border-radius: 4px;
+    box-sizing: border-box;
+    position: relative;
+    width: 100px;
+    color: #fff;
+    padding: 0.375rem 0.75rem;
+    text-align: center;
+    margin-top: 1rem;
+    
+}
+.custom-btn:hover {
+opacity: 0.9;
 }
