@@ -2,12 +2,7 @@ import React from "react";
 import MyNavbar from "./Navbar";
 import {Row, Col, Nav, Container, Dropdown, DropdownButton, Form} from 'react-bootstrap'
 import Button from "./Button";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-    faMagnifyingGlass,
-    faU,
-    faUser
-    } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 function ThesisList(props) {
 
@@ -26,11 +21,7 @@ function ThesisList(props) {
     return (
         <>
             <MyNavbar></MyNavbar>
-            <Container fluid >
-                <div className="text-danger">
-                <FontAwesomeIcon className="text-danger" icon={faUser} />
-
-                </div>
+            <Container fluid>
                 <Row className="justify-content-between thesis-form-section">
                     <Col className="d-flex justify-content-around" lg={{ span: 8, offset: 2 }}>
                         <DropdownButton variant="light" id="dropdown-item-button" title="Grade Type">
@@ -48,8 +39,8 @@ function ThesisList(props) {
                                         className=" mr-sm-2"
                                     />
                                 </Col>
-                                <Col xs="auto">
-                                    <Button  text={"asdasd"} icon={faMagnifyingGlass}></Button>
+                                <Col className="d-flex justify-content-center">
+                                    <Button text={"search"} icon={faMagnifyingGlass}></Button>
                                 </Col>
                             </Row>
                         </Form>
