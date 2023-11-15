@@ -19,7 +19,7 @@ export default function AcceptApplications() {
           <div className="container mt-5">
             <form
               className="mx-auto p-4 bg-light rounded shadow"
-              style={{ marginTop: "150px" }}
+              style={{ marginTop: "1px" }}
             >
               <div className="mb-3 mt-1 text-center">
                 <strong>
