@@ -1,7 +1,10 @@
 import Navbar from "./Navbar";
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 
 function ProposalPage() {
+  const navigate = useNavigate()
+
   const proposalDetails = {
     title: "Title",
     description:
@@ -60,7 +63,7 @@ function ProposalPage() {
           </div>
           <div className="row">
             <div className="col text-start">
-              <button type="button" className="btn btn-secondary">
+              <button type="button" className="btn btn-secondary" onClick={() => {navigate('/thesis')}}>
                 Back
               </button>
             </div>
