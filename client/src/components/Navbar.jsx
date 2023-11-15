@@ -17,7 +17,7 @@ function MyNavbar() {
                         <Button text={'Login'} icon={faUser}></Button>
                     </Col>
                 </Row>
-                <Row className='mid-nav align-items-center'>
+                <Row className='mid-nav align-items-around'>
                     <Col>
                         <a style={{ marginLeft: '5%' }} href="/thesis"><img
                             className='my-2' width={'35%'} src='../../images/polito_logo_2021_blu.jpg'
@@ -25,20 +25,21 @@ function MyNavbar() {
                     </Col>
                     <Col>
                         <div style={{textAlign:'center'}}>
+                            
                             <h1 style={{fontSize:'350%'}}>THESIS@POLITO</h1>
                         </div>
                     </Col>
                 </Row>
                 <Row className='lower-nav align-items-center'>
-                    <Col className='d-flex justify-content-center'>
+                    <Col className='d-flex justify-content-around'>
                         <div style={{lineHeight:'200%'}}>
                             <Nav variant='underline'>
-                                {store.user.type === 'student' ? <Nav.Link className='d-inline-flex text-white' href="/">Thesis</Nav.Link> : <Nav.Link className='text-white' href="/applications">Applications</Nav.Link>}
-                                {store.user.type === 'student' ? <Nav.Link style={{ marginLeft: '30px' }} className='text-white' href="/">My Applications</Nav.Link> : <Nav.Link style={{ marginLeft: '30px' }} className='text-white' href="/Myproposals">My Proposals</Nav.Link>}
+                                {store.user.type === 'student' ? <Nav.Link className='d-inline-flex text-white' href="/">THESIS</Nav.Link> : <Nav.Link className='text-white' href="/applications">APPLICATIONS</Nav.Link>}
+                                {store.user.type === 'student' ? <Nav.Link style={{ marginLeft: '30px' }} className='text-white' href="/">MY APPLICATIONS</Nav.Link> : <Nav.Link style={{ marginLeft: '30px' }} className='text-white' href="/Myproposals">MY PROPOSAL</Nav.Link>}
                             </Nav>
                         </div>
                     </Col>
-                    <Col className='d-flex justify-content-center'>
+                    <Col className='d-flex justify-content-end'>
                             <NavDropdown title={
                                     <FontAwesomeIcon style={{ color: 'white', fontSize: '30px' }} icon={faUser} />
                                 }>

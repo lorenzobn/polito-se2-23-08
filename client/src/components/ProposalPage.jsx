@@ -1,6 +1,7 @@
 import Navbar from "./Navbar";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Button from "./Button";
 
 function ProposalPage() {
   const navigate = useNavigate()
@@ -24,7 +25,7 @@ function ProposalPage() {
       <div className="container mt-5">
         <form
           className="mx-auto p-4 bg-light rounded shadow"
-          style={{ marginTop: "150px" }}
+          style={{ marginTop: "5px" }}
         >
           <div className="mb-3 mt-1 text-center">
             <strong>
@@ -68,9 +69,7 @@ function ProposalPage() {
               </button>
             </div>
             <div className="col text-end">
-              <button type="button" className="btn btn-primary">
-                Apply
-              </button>
+            <Button text={"APPLY"}></Button>
             </div>
           </div>
         </form>

@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Select from "react-select";
 import { TagsInput } from "react-tag-input-component";
 import "../App.css";
+import Button from "./Button";
 
 const KeyCodes = {
   comma: 188,
@@ -105,9 +106,7 @@ function InsertProposal() {
     <>
     <Navbar />
       <div className="py-2 px-4 mx-auto max-md">
-        <h2 className="mb-4 text-4xl font-extrabold text-center text-gray-900">
-          Proposal Page
-        </h2>
+        
         <p className="mb-4 font-light text-center text-gray-500 fs-5"></p>
         <form
           className="container mt-5 p-4 bg-light rounded shadow mt-10"
@@ -231,12 +230,7 @@ function InsertProposal() {
           </div>
 
           <div className="d-flex justify-content-end mt-4">
-            <button
-              type="submit"
-              className="btn btn-success py-2 px-4 mt-1 mb-2 rounded"
-            >
-              Confirm
-            </button>
+          <Button text={"Confirm"}></Button>
           </div>
         </form>
       </div>

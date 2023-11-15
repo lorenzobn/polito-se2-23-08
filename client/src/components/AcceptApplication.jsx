@@ -33,13 +33,11 @@ export default function AcceptApplications() {
               <div className="row">
                 <div className="col text-center">
                   <button type="button" className="btn btn-secondary">
-                    Reject
+                    REJECT
                   </button>
                 </div>
                 <div className="col text-center">
-                  <button type="button" className="btn btn-primary">
-                    Accept
-                  </button>
+                <Button text={"ACCEPT"}></Button>
                 </div>
               </div>
             </form>
