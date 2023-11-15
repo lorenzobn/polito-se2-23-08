@@ -67,7 +67,7 @@ describe('Proposal API', () => {
           SUPERVISOR_id: validProfessorId,
           coSupervisors: [{ id: validCoSupervisorId, isExternal: true }],
           // Add other valid inputs
-          deadline: '2020-01-01', // Replace with a past date
+          deadline: '2020-01-01', // Replace with a past date/or current date
         });
 
       expect(response.statusCode).toBe(201);
@@ -75,7 +75,6 @@ describe('Proposal API', () => {
       expect(response.body.data.status).toBe('Archived');
     });
 
-    // Need to add more tests for T.2.5, T.2.6, T.2.7, etc.
   });
 
   // T.3 Search Proposal
@@ -88,7 +87,7 @@ describe('Proposal API', () => {
 
       expect(response.statusCode).toBe(200);
       expect(response.body.msg).toBe('OK');
-      expect(response.body.data).toHaveLength(1); // Adjust based on expected data
+      expect(response.body.data).toHaveLength(1); 
     });
 
     // T.3.2 Empty Search Term
@@ -100,7 +99,6 @@ describe('Proposal API', () => {
       expect(response.statusCode).toBe(404); 
     });
 
-    //Need to add more tests for T.3.4, T.3.5, T.3.6, etc.
   });
 
  
