@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Button({ text, icon, onClick}) {
   return (
-    <div className='custom-btn ' value={text} onClick={onclick}>
+    <div className='custom-btn ' role='button' value={text} onClick={onClick}>
       <FontAwesomeIcon  icon={icon} />&nbsp;<span>{text}</span>
     </div>
   )

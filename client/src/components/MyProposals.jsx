@@ -36,16 +36,16 @@ export default function MyProposals() {
                                 <Col xs="auto">
                                     <Form.Control
                                         type="text"
-                                        placeholder="Search"
+                                        placeholder="Search Proposal"
                                         className=" mr-sm-2"
                                     />
                                 </Col>
                                 <Col className="d-flex justify-content-center">
-                                    <Button text={"search"} icon={faMagnifyingGlass}></Button>
+                                    <Button text={"Search"} icon={faMagnifyingGlass}></Button>
                                 </Col>
                             </Row>
                         </Form>
-                        <Button text={'new'} icon={faPlus} onClick={() => {navigate('/insertProposal')}}></Button>
+                        <Button text={'New Proposal'} icon={faPlus} onClick={() => {navigate('/insertProposal')}}></Button>
                     </Col>
                 </Row>
                 <Row className="border-thesis-div">
