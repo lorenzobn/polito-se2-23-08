@@ -3,6 +3,8 @@ import MyNavbar from "./Navbar";
 import { Row, Col, Nav, Container, Dropdown, DropdownButton, Form } from 'react-bootstrap'
 import Button from "./Button";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import BadButton from "./BadButton";
+
 
 export default function AcceptApplications() {
 
@@ -32,9 +34,7 @@ export default function AcceptApplications() {
               </div>
               <div className="row">
                 <div className="col text-center">
-                  <button type="button" className="btn btn-secondary">
-                    REJECT
-                  </button>
+                  <BadButton text={"REJECT"}></BadButton>
                 </div>
                 <div className="col text-center">
                 <Button text={"ACCEPT"}></Button>

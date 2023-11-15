@@ -54,6 +54,7 @@ p h1 h2 h3 h4 h5 h6 {
     color: inherit;
     color: RGBA(0,0,0,1);
     background:  transparent;
+    border-radius: 4px;
     padding-top: 15px;
     padding-right: 20px;
     padding-left: 20px;
@@ -87,6 +88,17 @@ a {
 .custom-btn{
     all: unset;
     background-color: #007ea8;
+    border-radius: 4px;
+    box-sizing: border-box;
+    position: relative;
+    min-width: 100px;
+    color: #fff;
+    padding: 0.375rem 0.75rem;
+    text-align: center;
+}
+.secondary-btn{
+    all: unset;
+    background-color: #6c757d;
     border-radius: 4px;
     box-sizing: border-box;
     position: relative;

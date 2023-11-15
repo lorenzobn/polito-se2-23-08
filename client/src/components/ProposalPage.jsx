@@ -2,6 +2,7 @@ import Navbar from "./Navbar";
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "./Button";
+import BadButton from "./BadButton";
 
 function ProposalPage() {
   const navigate = useNavigate()
@@ -64,9 +65,7 @@ function ProposalPage() {
           </div>
           <div className="row">
             <div className="col text-start">
-              <button type="button" className="btn btn-secondary" onClick={() => {navigate('/thesis')}}>
-                Back
-              </button>
+            <BadButton Button text={"BACK"} onClick={()=> {navigate('/thesis')}}></BadButton>
             </div>
             <div className="col text-end">
             <Button text={"APPLY"}></Button>
