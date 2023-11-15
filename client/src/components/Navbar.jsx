@@ -19,9 +19,9 @@ function MyNavbar() {
                 </Row>
                 <Row className='mid-nav align-items-center'>
                     <Col>
-                        <div className='my-3' style={{ marginLeft: '7%' }} href="/portal"><img
-                            width={'35%'} src='../../images/polito_logo_2021_blu.jpg'
-                        /></div>
+                        <a style={{ marginLeft: '5%' }} href="/thesis"><img
+                            className='my-2' width={'35%'} src='../../images/polito_logo_2021_blu.jpg'
+                        /></a>
                     </Col>
                     <Col>
                         <div style={{textAlign:'center'}}>
@@ -33,8 +33,8 @@ function MyNavbar() {
                     <Col className='d-flex justify-content-center'>
                         <div style={{lineHeight:'200%'}}>
                             <Nav variant='underline'>
-                                {store.user.type === 'student' ? <Nav.Link className='d-inline-flex text-white' href="/">Thesis</Nav.Link> : <Nav.Link className='text-white' href="/">Applications</Nav.Link>}
-                                {store.user.type === 'student' ? <Nav.Link style={{ marginLeft: '30px' }} className='text-white' href="/">My Applications</Nav.Link> : <Nav.Link style={{ marginLeft: '30px' }} className='text-white' href="/insertProposal">My Proposals</Nav.Link>}
+                                {store.user.type === 'student' ? <Nav.Link className='d-inline-flex text-white' href="/">Thesis</Nav.Link> : <Nav.Link className='text-white' href="/applications">Applications</Nav.Link>}
+                                {store.user.type === 'student' ? <Nav.Link style={{ marginLeft: '30px' }} className='text-white' href="/">My Applications</Nav.Link> : <Nav.Link style={{ marginLeft: '30px' }} className='text-white' href="/Myproposals">My Proposals</Nav.Link>}
                             </Nav>
                         </div>
                     </Col>

@@ -2,10 +2,12 @@ import React from "react";
 import MyNavbar from "./Navbar";
 import {Row, Col, Nav, Container, Dropdown, DropdownButton, Form} from 'react-bootstrap'
 import Button from "./Button";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
-function ThesisList(props) {
+export default function MyProposals() {
 
+    const navigate = useNavigate()
     const thesisList = [
         {
             id: 1,
@@ -23,7 +25,7 @@ function ThesisList(props) {
             <MyNavbar></MyNavbar>
             <Container fluid>
                 <Row className="justify-content-between thesis-form-section">
-                    <Col className="d-flex justify-content-around" lg={{ span: 8, offset: 2 }}>
+                    <Col className="d-flex justify-content-around" lg={{ span: 10, offset: 2 }}>
                         <DropdownButton variant="light" id="dropdown-item-button" title="Degree Level">
                             <Dropdown.Item as="button">Bachelor</Dropdown.Item>
                             <Dropdown.Item as="button">Master</Dropdown.Item>
@@ -43,6 +45,7 @@ function ThesisList(props) {
                                 </Col>
                             </Row>
                         </Form>
+                        <Button text={'new'} icon={faPlus} onClick={() => {navigate('/insertProposal')}}></Button>
                     </Col>
                 </Row>
                 <Row className="border-thesis-div">
@@ -84,5 +87,3 @@ function ThesisList(props) {
         </>
     )
 }
-
-export default ThesisList
