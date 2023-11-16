@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+  backend:
+    build: 
+      context: .
+      dockerfile: back.Dockerfile
+    volumes:
+      - .:/backend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - db
+    environment:
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_USER=user
+      - DB_NAME=thesisProposal
+      - DB_PASS=password
+    networks:
+      - integration
+  frontend:
+    build: 
+      context: .
+      dockerfile: front.Dockerfile
+    volumes:
+      - .:/frontend
+    ports:
+      - "80:80"
+    expose:
+      - "80"
+    depends_on:
+      - backend
+    networks:
+      - integration
+  db:
+    image: postgres
+    restart: always
+    volumes:
+      - ./dataset:/docker-entrypoint-initdb.d
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_USER=user
+      - POSTGRES_DB=thesisProposal
+    networks:
+      - integration
+networks:
+  integration:
+    driver: bridge
