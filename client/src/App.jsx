@@ -1,5 +1,5 @@
 import React from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Portal from "./components/Portal";
 import "./assets/bootstrap.css";
 import "./App.css";
@@ -13,7 +13,13 @@ import AcceptApplications from "./components/AcceptApplication";
 import Login from "./components/Login";
 import 'react-toastify/dist/ReactToastify.css';
 
-function App() {
+function isAuthenticated(){
+  const userLogged = localStorage.getItem("auth");
+  console.log(localStorage.getItem('auth'));
+  return (userLogged ? true : false)
+}
+
+function App() {  
   return (
     <div>
       <ToastContainer />
@@ -21,27 +27,26 @@ function App() {
         <Routes>
           <Route path="/" element={<ThesisList></ThesisList>}></Route>
           <Route path="/login" element={<Login />}></Route>
-
-          <Route path="/portal" element={<Portal></Portal>}></Route>
+          <Route path="/portal" element={isAuthenticated() ? <Portal /> : <Navigate to='/login'></Navigate>}></Route>
           <Route
             path="/insertProposal"
-            element={<InsertProposal></InsertProposal>}
+            element={isAuthenticated() ? <InsertProposal /> : <Navigate to='/login'></Navigate>}
           ></Route>
           <Route
             path="/proposalpage"
-            element={<ProposalPage></ProposalPage>}
+            element={isAuthenticated() ? <ProposalPage /> : <Navigate to='/login'></Navigate>}
           ></Route>
           <Route
             path="/applications"
-            element={<Applications></Applications>}
+            element={isAuthenticated() ? <Applications /> : <Navigate to='/login'></Navigate>}
           ></Route>
           <Route
             path="/applications/acceptApplication"
-            element={<AcceptApplications></AcceptApplications>}
+            element={isAuthenticated() ? <AcceptApplications /> : <Navigate to='/login'></Navigate>}
           ></Route>
           <Route
             path="/myProposals"
-            element={<MyProposals></MyProposals>}
+            element={isAuthenticated() ? <MyProposals /> : <Navigate to='/login'></Navigate>}
           ></Route>
         </Routes>
       </BrowserRouter>
