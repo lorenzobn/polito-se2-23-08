@@ -37,8 +37,10 @@ export class Store {
   async getProposals(email, password) {
     try {
       const res = await getProposalsAPI();
-      console.log(res);
-    } catch (err) {}
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
   }
 
   setLoading(state) {}

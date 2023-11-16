@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import MyNavbar from "./Navbar";
 import {
   Row,
@@ -14,22 +14,17 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { StoreContext } from "../core/store/Provider";
 function ThesisList(props) {
   const store = useContext(StoreContext);
+  const [proposals, setProposals] = useState([]);
   useEffect(() => {
-    store.getProposals();
+    // since the handler function of useEffect can't be async directly
+    // we need to define it separately and run it
+    const handleEffect = async () => {
+      const proposals = await store.getProposals();
+      setProposals(proposals);
+    };
+    handleEffect();
   }, []);
-  const thesisList = [
-    {
-      id: 1,
-      title: "THESIS 1",
-      description: `Across MIT, faculty help set the global standard of excellence in their disciplines: They are pioneering scholars who love to teach. Deeply engaged in practice, they&nbsp;topple conventional walls between fields in the push for deeper understanding and fresh ideas. In fact, many&nbsp;faculty&nbsp;actively work in at least one of MIT’s&nbsp;interdisciplinary labs, centers, initiatives, and institutes that target crucial challenges, from <a href="http://energy.mit.edu/" target="_blank">clean energy</a> to <a href="https://ki.mit.edu/" target="_blank">cancer</a>.`,
-    },
-    {
-      id: 2,
-      title: "THESIS 232323",
-      description:
-        "The MIT Schwarzman College of Computing, opened in fall 2019, is a cross-cutting entity with education and research links across all five schools.",
-    },
-  ];
+
   return (
     <>
       <MyNavbar></MyNavbar>
@@ -96,7 +91,7 @@ function ThesisList(props) {
             </Nav>
           </Col>
           <Col lg={8}>
-            {thesisList.map((e) => (
+            {proposals.map((e) => (
               <div key={e.id} className="thesis-section">
                 <header>
                   <h2 className="border-thesis-title">
