@@ -12,6 +12,7 @@ import {
 import Button from "./Button";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { StoreContext } from "../core/store/Provider";
+
 function ThesisList(props) {
   const store = useContext(StoreContext);
   const [proposals, setProposals] = useState([]);

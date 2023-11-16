@@ -1,6 +1,8 @@
 import { makeObservable, observable, action } from "mobx";
 import { login as loginAPI } from "../API/auth";
-import { getProposals as getProposalsAPI } from "../API/proposals";
+import { getProposals as getProposalsAPI,
+         searchProposal as searchProposalAPI,
+         getReceivedApplications as getReceivedApplicationsAPI } from "../API/proposals";
 import { toast } from "react-toastify";
 export class Store {
   constructor() {
@@ -42,6 +44,25 @@ export class Store {
       return [];
     }
   }
+
+  async searchProposal(email, password) {
+    try {
+      const res = await searchProposalAPI();
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  async getReceivedApplications(email, password) {
+    try {
+      const res = await getReceivedApplicationsAPI();
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
 
   setLoading(state) {}
 }

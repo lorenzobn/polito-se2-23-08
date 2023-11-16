@@ -1,13 +1,27 @@
-import React from "react";
+import React , { useState, useContext, useEffect } from "react";
 import MyNavbar from "./Navbar";
 import {Row, Col, Nav, Container, Dropdown, DropdownButton, Form} from 'react-bootstrap'
 import Button from "./Button";
 import { faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
+import { StoreContext } from "../core/store/Provider";
 
 export default function MyProposals() {
 
     const navigate = useNavigate()
+    const store = useContext(StoreContext);
+    const [proposals, setProposals] = useState([]);
+
+    useEffect(() => {
+        // since the handler function of useEffect can't be async directly
+        // we need to define it separately and run it
+        const handleEffect = async () => {
+        const proposals = await store.getProposals();
+        setProposals(proposals);
+        };
+        handleEffect();
+    }, []);
+
     const thesisList = [
         {
             id: 1,
@@ -67,7 +81,7 @@ export default function MyProposals() {
                     </Col>
                     <Col lg={8}>
                         {
-                            thesisList.map((e) =>
+                            proposals.map((e) =>
                                 <div key={e.id} className="thesis-section">
                                     <header>
                                         <h2 className="border-thesis-title"><Nav.Link href="/">{e.title}</Nav.Link></h2>
