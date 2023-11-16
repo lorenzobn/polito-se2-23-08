@@ -1,9 +1,11 @@
 import Navbar from "./Navbar";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import Select from "react-select";
 import { TagsInput } from "react-tag-input-component";
 import "../App.css";
 import Button from "./Button";
+import { StoreContext } from "../core/store/Provider";
+
 
 const KeyCodes = {
   comma: 188,
@@ -230,7 +232,7 @@ function InsertProposal() {
           </div>
 
           <div className="d-flex justify-content-end mt-4">
-          <Button text={"Confirm"}></Button>
+          <Button text={"Confirm"} onClick={handleSubmit}></Button>
           </div>
         </form>
       </div>

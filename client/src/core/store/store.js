@@ -63,6 +63,15 @@ export class Store {
     }
   }
 
+  async postProposals(email, password) {
+    try {
+      const res = await postProposalsAPI();
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
 
   setLoading(state) {}
 }

@@ -26,3 +26,12 @@ export const searchProposal = async () => {
     throw err;
   }
 };
+
+export const postProposals = async () => {
+  try {
+    const res = await client.post("/thesis-proposals");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
