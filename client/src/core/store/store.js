@@ -10,8 +10,6 @@ import { toast } from "react-toastify";
 export class Store {
   constructor() {
     this.user = {
-      type: "professor",
-      authenticated: false,
     };
     this.loading = false;
     makeObservable(this, {
@@ -27,14 +25,16 @@ export class Store {
       console.log(res);
       console.log(res.status);
       if (res.status === 200) {
-        this.user = res.data.data.user;
+        // TODO: fix the following bad practice
+        this.user = {userId : password };
         // save auth jwt to localstorage for subsequent requests
-        localStorage.setItem("auth", res.data.data.token);
+        localStorage.setItem("auth", res.data.token);
         toast.success("Logged in");
       } else {
         toast.error("Error on login");
       }
     } catch (err) {
+      console.log(err);
       toast.error("Error on login");
     }
   }
