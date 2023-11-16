@@ -26,7 +26,8 @@ export class Store {
       console.log(res.status);
       if (res.status === 200) {
         // TODO: fix the following bad practice
-        this.user = {userId : password };
+        let type = password[0] === 's' ? 'student' : 'professor';
+        this.user = {userId : password, type: 'student'};
         // save auth jwt to localstorage for subsequent requests
         localStorage.setItem("auth", res.data.token);
         toast.success("Logged in");

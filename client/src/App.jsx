@@ -15,7 +15,6 @@ import 'react-toastify/dist/ReactToastify.css';
 
 function isAuthenticated(){
   const userLogged = localStorage.getItem("auth");
-  console.log(localStorage.getItem('auth'));
   return (userLogged ? true : false)
 }
 
