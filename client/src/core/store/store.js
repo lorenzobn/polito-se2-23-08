@@ -1,9 +1,11 @@
 import { makeObservable, observable, action } from "mobx";
 import { login as loginAPI } from "../API/auth";
-import { getProposals as getProposalsAPI,
-         searchProposal as searchProposalAPI,
-         getReceivedApplications as getReceivedApplicationsAPI,
-         getProposal as getProposalAPI } from "../API/proposals";
+import {
+  getProposals as getProposalsAPI,
+  searchProposal as searchProposalAPI,
+  getReceivedApplications as getReceivedApplicationsAPI,
+  getProposal as getProposalAPI
+} from "../API/proposals";
 import { toast } from "react-toastify";
 export class Store {
   constructor() {
@@ -23,11 +25,11 @@ export class Store {
     try {
       const res = await loginAPI(email, password);
       console.log(res);
+      console.log(res.status);
       if (res.status === 200) {
         this.user = res.data.data.user;
         // save auth jwt to localstorage for subsequent requests
         localStorage.setItem("auth", res.data.data.token);
-
         toast.success("Logged in");
       } else {
         toast.error("Error on login");
@@ -83,7 +85,7 @@ export class Store {
   }
 
 
-  setLoading(state) {}
+  setLoading(state) { }
 }
 
 export default new Store();

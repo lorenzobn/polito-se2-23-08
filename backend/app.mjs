@@ -13,11 +13,13 @@ app.use(urlencoded({ extended: false }));
 
 
 // CORS options to access APIs
+/*
 const corsOptions = {
   origin: "http://localhost:3000",
   credentials: true,
 };
-app.use(cors(corsOptions));
+*/
+app.use(cors());
 
 
 import thesisRouter from "./routes.js";
