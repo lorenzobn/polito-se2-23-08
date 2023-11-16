@@ -1,0 +1,151 @@
+* {
+    font-family: 'Poppins', sans-serif !important;
+    
+}
+
+body {
+    font-weight: 400 !important;
+    color: #00284B;
+}
+p h1 h2 h3 h4 h5 h6 {
+    color: #00284B;
+}
+.secondary-menu {
+    /*background-color: #003576;*/
+    background-color: #00284B;
+}
+
+.border-thesis-div {
+   border-top: 1px solid RGBA(0,0,0,.1);
+   display: inline block;
+}
+
+.border-thesis-title {
+    border-top: 3px solid RGBA(252, 122, 8, 1);
+    display: inline-block;
+    padding-top: 30px;
+}
+
+.border-thesis-filter {
+    border-right: 1px solid RGBA(0,0,0,.1)
+}
+
+.thesis-section {
+    margin-left: 5%;
+    padding-bottom: 30px;
+}
+
+.thesis-form-section {
+    padding-top: 1.5%;
+    padding-bottom: 1.5%;
+}
+
+.filter-decoration {
+    color: #00284B !important;
+    font-weight: 600 !important;
+}
+
+.nav-link:focus,
+.nav-link:hover {
+    color: RGBA(252, 122, 8, 1) !important;
+}
+
+.border-thesis-view {
+    color: inherit;
+    color: RGBA(0,0,0,1);
+    background:  transparent;
+    border-radius: 4px;
+    padding-top: 15px;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-bottom: 15px;
+    text-align: center;
+    line-height: 1;
+    border: 1px solid RGBA(252, 122, 8, 1);
+    display: inline-block;
+    cursor: pointer;
+    margin-top: 30px;
+    font-size: 20;
+}
+
+.border-thesis-view:focus,
+.border-thesis-view:hover {
+    background-color:  RGBA(252, 122, 8, 1) !important;
+    color: RGBA(255, 255, 255, 1) !important
+}
+
+a {
+    text-decoration: none !important;
+    color: inherit;
+}
+
+.card {
+    /*border-color: #005fcc !important;*/
+    box-shadow: 0 0 0 .20rem rgba(0,95,204,.1) !important;
+    border-width: thin !important;
+}
+
+.custom-btn{
+    all: unset;
+    background-color: #007ea8;
+    border-radius: 4px;
+    box-sizing: border-box;
+    position: relative;
+    min-width: 100px;
+    color: #fff;
+    padding: 0.375rem 0.75rem;
+    text-align: center;
+}
+.secondary-btn{
+    all: unset;
+    background-color: #6c757d;
+    border-radius: 4px;
+    box-sizing: border-box;
+    position: relative;
+    min-width: 100px;
+    color: #fff;
+    padding: 0.375rem 0.75rem;
+    text-align: center;
+}
+.custom-btn:hover {
+    opacity: 0.9;
+    cursor: pointer;
+}
+
+.upper-nav {
+    background-color: #00284B;
+    text-align: center;
+    line-height: 50px;
+}
+
+.mid-nav {
+    line-height: 50px;
+}
+
+.lower-nav {
+    background-color: #00284B;
+    text-align: center;
+    line-height: 50px;
+}
+
+.nav-wrap {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+    border-color: #00284B;
+    background: #fff;
+}
+
+.nav-link {
+    display: flex;
+    padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
+    font-size: var(--bs-nav-link-font-size);
+    font-weight: var(--bs-nav-link-font-weight);
+    color: var(--bs-nav-link-color);
+    text-decoration: none;
+    background: none;
+    border: 0;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
