@@ -101,5 +101,33 @@ describe('Proposal API', () => {
 
   });
 
- 
+  describe('Proposal API', () => {
+    describe('T.5 Get Proposals', () => {
+      // Assuming there are existing proposals in the database
+      test('T.5.1 Get Proposals Successfully', async () => {
+        const response = await request(app)
+          .get('/proposals');
+  
+        expect(response.statusCode).toBe(200);
+        expect(response.body.msg).toBe('OK');
+        expect(response.body.data).toHaveLength(/* Number of proposals in the database */);
+      });
+    });
+
+    describe('T.5 Get Proposal by ID', () => {
+      // Assuming there is an existing proposal with a known ID
+      const existingProposalId = 'knownProposalId';
+  
+      test('T.5.2 Get Proposal by ID Successfully', async () => {
+        const response = await request(app)
+          .get(`/proposals/${existingProposalId}`);
+  
+        expect(response.statusCode).toBe(200);
+        expect(response.body.msg).toBe('OK');
+        expect(response.body.data).toHaveLength(1); // Assuming it returns an array with one proposal
+        expect(response.body.data[0].id).toBe(existingProposalId);
+      });
+    });
+  });
 });
+
