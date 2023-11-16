@@ -50,7 +50,7 @@ export default function MyProposals() {
                 </Row>
                 <Row className="border-thesis-div">
                     <Col lg={2} className="d-flex justify-content-center border-thesis-filter">
-                        <Nav variant="underline" className="justify-content-center flex-column">
+                        <Nav variant="underline" className="justify-content-start flex-column mt-4">
                             <Nav.Item className="d-inline-flex">
                                 <Nav.Link className="filter-decoration" eventKey='research'>By Research Group</Nav.Link>
                             </Nav.Item>

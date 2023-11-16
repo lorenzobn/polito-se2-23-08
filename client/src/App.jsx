@@ -10,6 +10,7 @@ import ProposalPage from './components/ProposalPage';
 import MyProposals from './components/MyProposals';
 import Applications from './components/Applications';
 import AcceptApplications from './components/AcceptApplication';
+import Login from './components/Login';
 
 function App() {
 
@@ -17,6 +18,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path={'/'} element={<></>}></Route>
+        <Route path='/login' element={<Login/>}></Route>
+
         <Route path='/portal' element={<Portal></Portal>}></Route>
         <Route path='/thesis' element={<ThesisList></ThesisList>}></Route>
         <Route path='/insertProposal' element={<InsertProposal></InsertProposal>}></Route>

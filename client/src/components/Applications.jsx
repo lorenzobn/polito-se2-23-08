@@ -30,7 +30,7 @@ export default function Applications() {
                     </Col>
                 </Row>
                 <Row className="border-thesis-div">
-                    <Col lg={{span:9, offset:3 }}>
+                    <Col lg={{span:9, offset:3 }} >
                         {
                             thesisList.map((e) =>
                                 <div key={e.id} className="thesis-section">
@@ -48,6 +48,7 @@ export default function Applications() {
                             )
                         }
                     </Col>
+                  
                 </Row>
             </Container>
         </>
