@@ -1,11 +1,26 @@
 import Navbar from "./Navbar";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "./Button";
 import BadButton from "./BadButton";
+import { StoreContext } from "../core/store/Provider";
+
 
 function ProposalPage() {
   const navigate = useNavigate()
+
+  const store = useContext(StoreContext)
+  const [proposal, setProposal] = useState([])
+
+  useEffect(() => {
+    // since the handler function of useEffect can't be async directly
+    // we need to define it separately and run it
+    const handleEffect = async () => {
+      const proposal = await store.getReceivedApplications();
+      setProposal(proposal)
+    };
+    handleEffect();
+  }, []);
 
   const proposalDetails = {
     title: "Title",

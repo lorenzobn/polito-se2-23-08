@@ -35,3 +35,12 @@ export const postProposals = async () => {
     throw err;
   }
 };
+
+export const getProposal = async () => {
+  try {
+    const res = await client.get("thesis-proposals/:proposalId");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
