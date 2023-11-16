@@ -27,8 +27,8 @@ router.get("/", (req, res) => {
 });
 
 /* ADD STUFF HERE */
-router.post("/thesis-proposals", verifyToken, createProposal);
-router.get("/thesis-proposals",verifyToken, getProposals);
+router.post("/thesis-proposals", verifyTeacherToken, createProposal);
+router.get("/thesis-proposals", verifyToken, getProposals);
 router.get("/thesis-proposals/search", verifyToken, searchProposal);
 router.get("/thesis-proposals/:proposalId", verifyToken, getProposalbyId);
 router.put("/thesis-proposals/:proposalId", verifyTeacherToken, updateProposal);

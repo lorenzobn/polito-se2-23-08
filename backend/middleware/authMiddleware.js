@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
 
 function verifyToken(req, res, next) {
-  const token = req.header('Authorization');
+  const token = req.header('auth');
   if (!token) return res.status(401).json({ error: 'Access denied' });
   try {
     const decoded = jwt.verify(token, 'your-secret-key');
@@ -13,7 +13,7 @@ function verifyToken(req, res, next) {
 };
 
 function verifyStudentToken(req, res, next) {
-  const token = req.header('Authorization');
+  const token = req.header('auth');
   if (!token) return res.status(401).json({ error: 'Access denied' });
   try {
     const decoded = jwt.verify(token, 'your-secret-key');
@@ -26,7 +26,7 @@ function verifyStudentToken(req, res, next) {
 };
 
 function verifyTeacherToken(req, res, next) {
-  const token = req.header('Authorization');
+  const token = req.header('auth');
   if (!token) return res.status(401).json({ error: 'Access denied' });
   try {
     const decoded = jwt.verify(token, 'your-secret-key');

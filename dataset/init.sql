@@ -47,18 +47,19 @@
  
   CREATE TABLE IF NOT EXISTS THESIS_PROPOSAL (
    id serial PRIMARY KEY,
-   title varchar(50) NOT NULL,
+   title varchar(150) NOT NULL,
    SUPERVISOR_id varchar(30) NOT NULL,
    type varchar(30) NOT NULL,
    groups varchar(20) NOT NULL,         /* SHOULD BE CLARIFIED */
-   description varchar(200) NOT NULL,
+   description varchar(500) NOT NULL,
    required_knowledge varchar(50) NOT NULL,
-   notes varchar(200),
+   notes varchar(500),
    level varchar(5) NOT NULL,
-   programme varchar(30) NOT NULL,        /* SHOULD BE CLARIFIED */
+   programme varchar(10) NOT NULL,
    deadline date NOT NULL,
    status varchar(10) not NULL,
-   FOREIGN KEY (SUPERVISOR_ID) references TEACHER(id)
+   FOREIGN KEY (SUPERVISOR_ID) references TEACHER(id),
+   FOREIGN KEY (programme) references degree(COD_DEGREE)
   );
 
   CREATE TABLE IF NOT EXISTS THESIS_CO_SUPERVISION (
@@ -119,6 +120,8 @@
 
   INSERT INTO GROUPS VALUES('AAA1', 'DAUIN', 'Gruppo di ML');
   INSERT INTO GROUPS VALUES('AAA2', 'DAUIN', 'Gruppo di Cybersecurity');
+  INSERT INTO GROUPS VALUES('AAA3', 'DAUIN', 'Gruppo di Cloud Computing');
+  INSERT INTO GROUPS VALUES('AAA4', 'DAUIN', 'Gruppo di Big Data');
 
   INSERT INTO student(id,name,surname,gender,nationality,email,COD_DEGREE,ENROLLMENT_YEAR) values (
     's123','Marco','Rossi','M','italian','marco.rossi@email.com','LM-32',2019
@@ -139,6 +142,10 @@
  INSERT INTO TEACHER(id, surname, name, email, COD_GROUP, COD_DEPARTMENT) values (
     't124', 'Sereno', 'Matteo', 'sereno.matteo@unito.it', 'AAA2', 'DAUIN'
   );
+  
+ INSERT INTO TEACHER(id, surname, name, email, COD_GROUP, COD_DEPARTMENT) values (
+    't125', 'Alessandro', 'Monsutti', 'alessandro.monsutti@unito.it', 'AAA2', 'DAUIN'
+  );
 
  INSERT INTO EXTERNAL_CO_SUPERVISOR(id, surname, name, email) values (
     'c123', 'Rossi', 'Andrea', 'rossi.andrea@email.it'
@@ -148,26 +155,90 @@
     'c124', 'Neri', 'Marco', 'neri.marco@email.it'
   );
   
+ INSERT INTO EXTERNAL_CO_SUPERVISOR(id, surname, name, email) values (
+    'c125', 'Laura', 'Sambuelli', 'laura.sambuelli@amazon.it'
+  );
+  
+ INSERT INTO EXTERNAL_CO_SUPERVISOR(id, surname, name, email) values (
+    'c126', 'Serena', 'Williams', 'serena.williams@email.it'
+  );
+  
+ INSERT INTO EXTERNAL_CO_SUPERVISOR(id, surname, name, email) values (
+    'c127', 'Giuseppe', 'Medici', 'giuseppe.medici@email.it'
+  );
+  
 
  INSERT INTO THESIS_PROPOSAL(title, SUPERVISOR_ID,
                               type, groups, description, 
                               required_knowledge, notes, level, programme, 
-                              deadline, status) VALUES ('Title of Thesis One', 't123', 'Industrial and work', 'Chemistry',
-                                                        'Just a simple chemistry thesis', 'None', '', 'MSc', 'Degree in Chemistry',
+                              deadline, status) VALUES (' Investigating the biomedical applications of coordination cages', 't123', 'Industrial and work', 'Chemistry',
+                                                        'Metallocages represent an exciting field of supramolecular chemistry concerned with the assembly of specific ligands and metals to form discrete structures. Coordination cages have applications in catalysis',
+                                                        'None', '', 'MSc', 'LM-19',
                                                         '2023-12-31', 'active');
 
  INSERT INTO THESIS_PROPOSAL(title, SUPERVISOR_ID,
                               type, groups, description, 
                               required_knowledge, notes, level, programme, 
-                              deadline, status) VALUES ('Title of Thesis Two', 't124', 'In-company work', 'Cloud Computing',
-                                                        'Just a simple computer engineering thesis', 'None', '', 'MSc', 'Degree in Computer Engineering',
-                                                        '2024-01-01', 'active');
+                              deadline, status) VALUES ('Maximising social welfare in selfish multi-modal routing using strategic information design for quantal response travelers', 't124', 'In-company work', 'Cloud Computing',
+                                                        'Traditional selfish routing literature quantifies inefficiency in transportation systems with single-attribute costs using price-of-anarchy (PoA), and provides various technical approaches (e.g. marginal cost pricing) to improve PoA of the overall network', 
+                                                        'None', '', 'MSc', 'LM-32',
+                             							'2024-01-01', 'active');
+                                                        
+ INSERT INTO THESIS_PROPOSAL(title, SUPERVISOR_ID,
+                              type, groups, description, 
+                              required_knowledge, notes, level, programme, 
+                              deadline, status) VALUES ('AI in Autonomous Vehicles', 't125', 'Practical-based', 'AI and Data Science', 'This thesis explores the implementation of AI in autonomous vehicles, focusing on machine learning algorithms.', 
+														'Machine Learning, Computer Vision', 'Please submit a brief overview of your relevant experience.', 'MSc', 'LM-32',
+                                                       '2024-03-01', 'active');
 
-
- INSERT INTO KEYWORDS VALUES(1, 'keyword1');
- INSERT INTO KEYWORDS VALUES(1, 'keyword2');
- INSERT INTO KEYWORDS VALUES(2, 'keyword1');
- INSERT INTO KEYWORDS VALUES(2, 'keyword3');
+ INSERT INTO KEYWORDS VALUES(1, 'Biomedic');
+ INSERT INTO KEYWORDS VALUES(1, 'Discrete structures');
+ INSERT INTO KEYWORDS VALUES(2, 'Routing');
+ INSERT INTO KEYWORDS VALUES(2, 'Networks');
+ INSERT INTO KEYWORDS VALUES(3, 'AI');
+ INSERT INTO KEYWORDS VALUES(3, 'Autonomous Vehicles');
 
  INSERT INTO THESIS_APPLICATION(student_id, thesis_id, status, 
-                              cv_uri) VALUES ('s125', 1, 'idle', '');
+                              cv_uri) VALUES ('s123', 1, 'idle', '');
+  
+ INSERT INTO THESIS_APPLICATION(student_id, thesis_id, status, 
+                              cv_uri) VALUES ('s124', 3, 'idle', '');
+                              
+ INSERT INTO THESIS_APPLICATION(student_id, thesis_id, status, 
+                              cv_uri) VALUES ('s125', 3, 'idle', '');
+  
+ INSERT INTO CAREER (student_id, COD_COURSE, TITLE_COURSE, 
+                     CFU, GRADE, ddate) VALUES ('s124','01TYM', 'Information Security System', '6', '27', '2023-01-16');
+ 
+ INSERT INTO CAREER (student_id, COD_COURSE, TITLE_COURSE, 
+                     CFU, GRADE, ddate) VALUES ('s124', '02TWYSM','Database and Data science', '8', '29', '2023-01-22');
+  
+ INSERT INTO CAREER (student_id, COD_COURSE, TITLE_COURSE, 
+                     CFU, GRADE, ddate) VALUES ('s124','03TRV', 'Computer Networks', '6', '25', '2023-01-18');
+                     
+ INSERT INTO CAREER (student_id, COD_COURSE, TITLE_COURSE, 
+                     CFU, GRADE, ddate) VALUES ('s124', '01GUV','Web Application I', '6', '28', '2023-06-19');
+                     
+ INSERT INTO CAREER (student_id, COD_COURSE, TITLE_COURSE, 
+                     CFU, GRADE, ddate) VALUES ('s124', '02GUP','Web Application II', '6', '30', '2023-07-11');
+  
+ INSERT INTO CAREER (student_id, COD_COURSE, TITLE_COURSE, 
+                     CFU, GRADE, ddate) VALUES ('s124','01SDPR', 'Systems Device and Programming', '10', '22', '2023-07-14');
+                     
+ INSERT INTO CAREER (student_id, COD_COURSE, TITLE_COURSE, 
+                     CFU, GRADE, ddate) VALUES ('s124', '02CDRU','Cloud Computing', '6', '26', '2023-07-15');
+                     
+ INSERT INTO CAREER (student_id, COD_COURSE, TITLE_COURSE, 
+                     CFU, GRADE, ddate) VALUES ('s124', '01BGTR','Big Data', '6', '27', '2023-07-15');
+                     
+ INSERT INTO THESIS_CO_SUPERVISION (THESIS_PROPOSAL_id, INTERNAL_CO_SUPERVISOR_id,
+                                    external_co_supervisor_id, is_external) VALUES (1, 't125', NULL, FALSE);	
+                                            
+ INSERT INTO THESIS_CO_SUPERVISION (THESIS_PROPOSAL_id, INTERNAL_CO_SUPERVISOR_id,
+                                    external_co_supervisor_id, is_external) VALUES (2, 't123', NULL, FALSE);                                        
+                                            
+ INSERT INTO THESIS_CO_SUPERVISION (THESIS_PROPOSAL_id, INTERNAL_CO_SUPERVISOR_id,
+                                    external_co_supervisor_id, is_external) VALUES (2, NULL, 'c125', TRUE);
+                                            
+ INSERT INTO THESIS_CO_SUPERVISION (THESIS_PROPOSAL_id, INTERNAL_CO_SUPERVISOR_id,
+                                    external_co_supervisor_id, is_external) VALUES (3, NULL, 'c126', TRUE); 
