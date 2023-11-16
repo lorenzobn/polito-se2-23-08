@@ -5,21 +5,23 @@ import { StoreContext } from '../core/store/Provider';
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Button from './Button';
+import { useNavigate } from 'react-router-dom';
 
 function MyNavbar() {
 
     const store = useContext(StoreContext)
+    const navigate = useNavigate()
 
     return (
         <Container className='nav-wrap' fluid>
                 <Row className='upper-nav'>
                     <Col lg={{span:4, offset:8}}>
-                        <Button text={'Login'} icon={faUser}></Button>
+                        <Button text={'Login'} icon={faUser} onClick={() => navigate('/login')}></Button>
                     </Col>
                 </Row>
                 <Row className='mid-nav align-items-around'>
                     <Col>
-                        <a style={{ marginLeft: '5%' }} href="/thesis"><img
+                        <a style={{ marginLeft: '5%' }} href="/"><img
                             className='my-2' width={'35%'} src='../../images/polito_logo_2021_blu.jpg'
                         /></a>
                     </Col>

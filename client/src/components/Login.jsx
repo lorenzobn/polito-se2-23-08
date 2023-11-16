@@ -17,7 +17,7 @@ export default function Login() {
         <Col sm={3}>
           <div className="login-form">
             <div>
-              <a href="/thesis">
+              <a href="/">
                 <img
                   width={"100%"}
                   src="../../images/polito_logo_2021_blu.jpg"

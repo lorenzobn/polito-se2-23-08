@@ -70,7 +70,7 @@ export default function MyProposals() {
                             thesisList.map((e) =>
                                 <div key={e.id} className="thesis-section">
                                     <header>
-                                        <h2 className="border-thesis-title"><Nav.Link href="/thesis">{e.title}</Nav.Link></h2>
+                                        <h2 className="border-thesis-title"><Nav.Link href="/">{e.title}</Nav.Link></h2>
                                     </header>
                                     <div >
                                         <div >

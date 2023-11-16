@@ -65,7 +65,7 @@ function ProposalPage() {
           </div>
           <div className="row">
             <div className="col text-start">
-            <BadButton Button text={"BACK"} onClick={()=> {navigate('/thesis')}}></BadButton>
+            <BadButton Button text={"BACK"} onClick={()=> {navigate('/')}}></BadButton>
             </div>
             <div className="col text-end">
             <Button text={"APPLY"}></Button>

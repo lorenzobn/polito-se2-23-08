@@ -19,11 +19,10 @@ function App() {
       <ToastContainer />
       <BrowserRouter>
         <Routes>
-          <Route path={"/"} element={<></>}></Route>
+          <Route path="/" element={<ThesisList></ThesisList>}></Route>
           <Route path="/login" element={<Login />}></Route>
 
           <Route path="/portal" element={<Portal></Portal>}></Route>
-          <Route path="/thesis" element={<ThesisList></ThesisList>}></Route>
           <Route
             path="/insertProposal"
             element={<InsertProposal></InsertProposal>}
