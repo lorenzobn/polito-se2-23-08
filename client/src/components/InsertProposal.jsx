@@ -11,9 +11,9 @@ const KeyCodes = {
 };
 
 const levels = [
-  { value: "Bachelor", label: "Bachelor" },
-  { value: "Master", label: "Master" },
-  { value: "PhD", label: "PhD" },
+  { value: "BSc", label: "Bachelor" },
+  { value: "MSc", label: "Master" },
+  //{ value: "PhD", label: "PhD" },
 ];
 
 const programs = [
