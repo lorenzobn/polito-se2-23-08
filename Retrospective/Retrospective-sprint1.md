@@ -24,7 +24,6 @@ Planned: 114 ( 16 hours per person + 2 hours of planning at the start of the spr
 Spent: 118
 
 
-
 #### Our definition of done:
 
 - Unit Tests passing
@@ -50,8 +49,8 @@ We are reporting data for all stories as if we completed them
 ##### Points/issues that specifically emerge from comparison between hour estimation and actual:
 
 - We estimated too few hours for story 0: since we are at the start of the project we should have planned more hours for this story, as it is a crucial one.
-- Search Proposals (story 2) story took as a lot more time than we estimated : we underestimated the effort to implement the search functionality
-- We were not realistic with estimations
+- Search Proposals (story 2) story took us a lot more time than we estimated : we underestimated the effort to implement the search functionality
+- We were not realistic with the complete estimations including each task involved within one story. 
 
 
 
@@ -91,39 +90,45 @@ We are reporting data for all stories as if we completed them
 
 ## ASSESSMENT
 
-- What caused your errors in estimation (if any)?
+**What caused your errors in estimation (if any)?**
 
-We didn't consider we would get major issues on ***connecting frontend*** rendering ***with backend*** functionalities. We didn't properly plan the hours for this task. Therefore, we left this part last minute and in the end this resulted in taking more hours than we even had, right before the demo. 
+Overall we didn't consider each, and every aspect of the task involved in completing the story, some functionalities were far more complex than the others.
+
+For example: We didn't consider the time effort on the ***frontend*** rendering ***with backend*** functionalities for each story. We didn't properly plan the hours for this task. Therefore, we left this part last minute and in the end this resulted in taking more hours than we even had planned, right before the demo. 
   
-- What lessons did you learn (both positive and negative) in this sprint?
+**What lessons did you learn (both positive and negative) in this sprint?**
 
-**Negative lesson** (the biggest one):  
-We should get all stories done one day (at least) before the demo, so that we can leave the last day and a half for completely connecting frontend with backend, end to end testing and resolving all issues related to merging branches in github and solving code conflicts.
+**Negative lessons** (the biggest one):  
+  - **Time Management:** We should get all stories done two day (at least) before the demo, so that we can leave the last day and a half for completely connecting frontend with backend, end to end testing and resolving all issues related to merging branches in github and solving code conflicts.
 
-We also realized that ***we should merge branches as we go, like every 3 days***, and not in the last day ofthe sprint. 
+- **Merging Conflicts:** We also realized that ***we should merge branches as we work, e.g. every 3 days***, and not in the last day of the sprint. 
 In this way we can have a clear idea of what is working and what is not during the sprint, and not at the end of it - when it is too late.
 
+- **Knowledge Debt:** We should all learn how to use docker so we could resolve all the errors pertaining to docker and run our code dynamically, which caused the biggest issue here as our code was working statically. 
+
+- **Strategic Planning:** We have invested too much time in the GUI design rather than ensuring the frontend rendering with the backend. 
+
 **Positive lesson**:  
-Our division in frontend and backend teams worked fine. In this way, each member could focus on just  field of knowledge and can improve in that.
- 
+Our division in frontend and backend teams worked synchronously. In this way, each member could focus on just one field of knowledge and can improve in that.
 
-- Which improvement goals set in the previous retrospective were you able to achieve? 
+Our overall GUI design was quite professional. 
 
-Keeping the daily ***scrum meetings short***: everyone talked for 2/3 minutes about updates and we didn't cover issues in the scrum meetings, but in seperate session with the members involved.
-We followed the meeting agenda.
+**Which improvement goals set in the previous retrospective were you able to achieve?**
 
-We had a more balanced work distribution this print.
+- Keeping the daily ***scrum meetings short***: everyone talked for 2/3 minutes about updates and we didn't cover issues in the scrum meetings, but in seperate session with the members involved.
+- We should strictly follow the meeting agenda.
+- We had a more balanced work distribution this sprint.
+- We should show a working piece of the code every 2-3 days to the team so we can strategically initiate the next step.
 
+**Which ones you were not able to achieve? Why?**
 
-- Which ones you were not able to achieve? Why?
+- We couldn't complete all the delivered stories, because of the errors that we faced due to docker. Secondly, our frontend rendering with backend was creating many issues for us. 
 
-We couldn't improve the number of delivered stories. 
+**Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)**
 
-- Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
+- We should keep ***planning meetings short and strategic in terms of planning***. 
+- We should have ***internal deadlines*** every 2 or 3 days: by the end of this sessions, the chosen functionalities must work before continuing on the rest of the project so that we leave time for rigorous end-to-end testing.
 
-We should keep ***planning meetings, at the start of the sprint, way shorter***. 
-We should have ***internal deadlines*** every 2 or 3 days: by the end of this sessions, the chosen functionalities must work before continuing on the rest of the project. 
+**One thing you are proud of as a Team!**
 
-- One thing you are proud of as a Team!!
-
-We don't blame others for causig issues and we are always available to show up for a team memeber and help in any issues they are having. 
+This is a blameless retrospective. We don't blame others for causig issues and we are always available to show up for a team memeber and help in any issues they are having. At the end of this sprint we all learned where we learned our lessons. 
