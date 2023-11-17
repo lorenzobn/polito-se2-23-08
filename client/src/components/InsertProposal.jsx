@@ -6,7 +6,6 @@ import "../App.css";
 import Button from "./Button";
 import { StoreContext } from "../core/store/Provider";
 
-
 const KeyCodes = {
   comma: 188,
   enter: 13,
@@ -52,6 +51,9 @@ function InsertProposal() {
     deadline: "",
   });
 
+  const store = useContext(StoreContext);
+  const [insertPrposals, setInsertProposals] = useState([]);
+
   const [combinedData, setCombinedData] = useState({
     ...formData,
     keywords: selectedKeywords,
@@ -62,14 +64,23 @@ function InsertProposal() {
   });
 
   useEffect(() => {
-    setCombinedData({
-      ...formData,
-      keywords: selectedKeywords,
-      level: selectedLevel.value,
-      group: selectedGroups.value,
-      program: selectedProgram.value,
-      type: selectedType.value,
-    });
+    // since the handler function of useEffect can't be async directly
+    // we need to define it separately and run it
+    const handleEffect = async () => {
+      const insertPrposals = await store.postProposals(combinedData);
+      setInsertProposals(insertPrposals);
+
+      //ADD THIS TO GITHUB
+      setCombinedData({
+        ...formData,
+        keywords: selectedKeywords,
+        level: selectedLevel.value,
+        group: selectedGroups.value,
+        program: selectedProgram.value,
+        type: selectedType.value,
+      });
+    };
+    handleEffect();
   }, [formData, selectedKeywords]);
 
   const handleSubmit = (e) => {
@@ -106,9 +117,8 @@ function InsertProposal() {
 
   return (
     <>
-    <Navbar />
+      <Navbar />
       <div className="py-2 px-4 mx-auto max-md">
-        
         <p className="mb-4 font-light text-center text-gray-500 fs-5"></p>
         <form
           className="container mt-5 p-4 bg-light rounded shadow mt-10"
@@ -232,7 +242,7 @@ function InsertProposal() {
           </div>
 
           <div className="d-flex justify-content-end mt-4">
-          <Button text={"Confirm"} onClick={handleSubmit}></Button>
+            <Button text={"Confirm"} onClick={handleSubmit}></Button>
           </div>
         </form>
       </div>

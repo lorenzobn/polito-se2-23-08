@@ -1,15 +1,16 @@
 import { makeObservable, observable, action } from "mobx";
 import { login as loginAPI } from "../API/auth";
-import {
-  getProposals as getProposalsAPI,
-  searchProposal as searchProposalAPI,
-  getReceivedApplications as getReceivedApplicationsAPI,
-  getProposal as getProposalAPI
-} from "../API/proposals";
+import { getProposals as getProposalsAPI,
+         searchProposal as searchProposalAPI,
+         getReceivedApplications as getReceivedApplicationsAPI,
+         postProposals as postProposalsAPI,
+         getProposal as getProposalAPI } from "../API/proposals";
 import { toast } from "react-toastify";
 export class Store {
   constructor() {
     this.user = {
+      type: "professor",
+      authenticated: false,
     };
     this.loading = false;
     makeObservable(this, {
@@ -22,20 +23,21 @@ export class Store {
   async login(email, password) {
     try {
       const res = await loginAPI(email, password);
-      console.log(res);
       console.log(res.status);
+      console.log(res);
+      console.log(res.data);
       if (res.status === 200) {
-        // TODO: fix the following bad practice
-        let type = password[0] === 's' ? 'student' : 'professor';
-        this.user = {userId : password, type: 'student'};
+        console.log("HEYYY");
+        this.user = res.data.user;
         // save auth jwt to localstorage for subsequent requests
         localStorage.setItem("auth", res.data.token);
+
         toast.success("Logged in");
       } else {
+        console.log("Oh NOOOO"); 
         toast.error("Error on login");
       }
     } catch (err) {
-      console.log(err);
       toast.error("Error on login");
     }
   }
@@ -86,7 +88,7 @@ export class Store {
   }
 
 
-  setLoading(state) { }
+  setLoading(state) {}
 }
 
 export default new Store();

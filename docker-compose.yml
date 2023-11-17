@@ -1,12 +1,10 @@
-version: "3.9"
+version: "1.0"
 
 services:
   backend:
     build: 
-      context: .
-      dockerfile: back.Dockerfile
-    volumes:
-      - .:/backend
+      context: ./backend
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     depends_on:
@@ -19,16 +17,12 @@ services:
       - DB_PASS=password
     networks:
       - integration
-  frontend:
+  client:
     build: 
-      context: .
-      dockerfile: front.Dockerfile
-    volumes:
-      - .:/frontend
+      context: ./client
+      dockerfile: Dockerfile
     ports:
-      - "80:80"
-    expose:
-      - "80"
+      - "5173:5173"
     depends_on:
       - backend
     networks:

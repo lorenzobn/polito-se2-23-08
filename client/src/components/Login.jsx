@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import { StoreContext } from "../core/store/Provider";
+
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");

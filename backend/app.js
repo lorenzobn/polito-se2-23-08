@@ -1,8 +1,8 @@
-import express from "express";
-import cors from "cors";
-import cookieParser from "cookie-parser";
-import pkg from 'body-parser';
-import dotenv from 'dotenv';
+const express = require("express");
+const cors = require("cors");
+const cookieParser = require("cookie-parser");
+const pkg = require("body-parser");
+const dotenv = require("dotenv");
 dotenv.config();
 const { json, urlencoded } = pkg;
 
@@ -22,7 +22,7 @@ const corsOptions = {
 app.use(cors());
 
 
-import thesisRouter from "./routes.js";
+const thesisRouter = require("./routes.js");
 
 app.use('/api/v1.0', thesisRouter);
 //registerRoutes(app);
@@ -32,4 +32,4 @@ app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
 
-export default { app, PORT };
+module.exports = { app, PORT };
