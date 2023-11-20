@@ -66,9 +66,9 @@ export class Store {
     }
   }
 
-  async searchProposal(email, password) {
+  async searchProposal(keyword) {
     try {
-      const res = await searchProposalAPI();
+      const res = await searchProposalAPI(keyword);
       return res.data.data;
     } catch (err) {
       return [];

@@ -16,6 +16,7 @@ import { StoreContext } from "../core/store/Provider";
 function ThesisList(props) {
   const store = useContext(StoreContext);
   const [proposals, setProposals] = useState([]);
+  const [keyword, setKeyword] = useState('');
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
@@ -25,6 +26,10 @@ function ThesisList(props) {
     };
     handleEffect();
   }, []);
+
+  const handleSearch = () => {
+    store.searchProposal(keyword).then(res => setProposals(res));
+  }
 
   return (
     <>
@@ -42,19 +47,20 @@ function ThesisList(props) {
             >
               <Dropdown.Item as="button">Bachelor</Dropdown.Item>
               <Dropdown.Item as="button">Master</Dropdown.Item>
-              <Dropdown.Item as="button">PHD</Dropdown.Item>
             </DropdownButton>
             <Form inline="true">
               <Row>
                 <Col xs="auto">
-                  <Form.Control
+                  <Form.Control 
                     type="text"
-                    placeholder="Search"
-                    className=" mr-sm-2"
+                    placeholder = 'Search'
+                    className=" mr-sm-2" 
+                    onChange={ev => {setKeyword(ev.target.value)}}
+                    /* onKeyDown={handleSearch} */
                   />
                 </Col>
                 <Col className="d-flex justify-content-center">
-                  <Button text={"search"} icon={faMagnifyingGlass}></Button>
+                  <Button text={"search"} icon={faMagnifyingGlass} onClick={handleSearch}></Button>
                 </Col>
               </Row>
             </Form>

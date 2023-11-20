@@ -18,9 +18,13 @@ export const getReceivedApplications = async () => {
   }
 };
 
-export const searchProposal = async () => {
+export const searchProposal = async (keyword) => {
   try {
-    const res = await client.get("/thesis-proposals/search");
+    const res = await client.get("/thesis-proposals/search", {
+      params: {
+        title: keyword
+      }
+    });
     return res;
   } catch (err) {
     throw err;
