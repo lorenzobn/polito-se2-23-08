@@ -135,7 +135,9 @@ a {
   width: 100%;
   z-index: 10;
   border-color: #00284b;
-  background: #fff;
+  background: #ffffff8c;
+
+  backdrop-filter: blur(10px);
 }
 
 .nav-link {
