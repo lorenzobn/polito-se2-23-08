@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useContext } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Portal from "./components/Portal";
 import "./assets/bootstrap.css";
@@ -10,10 +10,16 @@ import ProposalPage from "./components/ProposalPage";
 import MyProposals from "./components/MyProposals";
 import Applications from "./components/Applications";
 import AcceptApplications from "./components/AcceptApplication";
+import { StoreContext } from "./core/store/Provider";
 import Login from "./components/Login";
-import 'react-toastify/dist/ReactToastify.css';
+import "react-toastify/dist/ReactToastify.css";
 
 function App() {
+  const store = useContext(StoreContext);
+  // this will run in every page refresh, so we don't lose track of auth state of refreshes
+  useEffect(() => {
+    store.fetchSelf();
+  }, []);
   return (
     <div>
       <ToastContainer />

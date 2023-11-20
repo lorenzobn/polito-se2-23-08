@@ -1,6 +1,5 @@
 const pool = require("../db/connection");
 
-
 const fetchSelf = async (req, res) => {
   try {
     const id = req.userId;
@@ -20,11 +19,11 @@ const fetchSelf = async (req, res) => {
     if (student.rows[0]) {
       userObj = student.rows[0];
       realPwd = student.rows[0].id;
-      type = "student";
+      userObj.type = "student";
     } else {
       userObj = teacher.rows[0];
       realPwd = teacher.rows[0].id;
-      type = "professor";
+      userObj.type = "professor";
     }
 
     res.status(200).json({ data: userObj });
