@@ -1,10 +1,12 @@
 import { makeObservable, observable, action } from "mobx";
-import { login as loginAPI } from "../API/auth";
-import { getProposals as getProposalsAPI,
-         searchProposal as searchProposalAPI,
-         getReceivedApplications as getReceivedApplicationsAPI,
-         postProposals as postProposalsAPI,
-         getProposal as getProposalAPI } from "../API/proposals";
+import { login as loginAPI, fetchSelf as fetchSelfAPI } from "../API/auth";
+import {
+  getProposals as getProposalsAPI,
+  searchProposal as searchProposalAPI,
+  getReceivedApplications as getReceivedApplicationsAPI,
+  postProposals as postProposalsAPI,
+  getProposal as getProposalAPI,
+} from "../API/proposals";
 import { toast } from "react-toastify";
 export class Store {
   constructor() {
@@ -34,14 +36,27 @@ export class Store {
         localStorage.setItem("auth", res.data.token);
         toast.success("Logged in");
       } else {
-        console.log("Oh NOOOO"); 
+        console.log("Oh NOOOO");
         toast.error("Error on login");
       }
     } catch (err) {
       toast.error("Error on login");
     }
   }
-
+  async fetchSelf() {
+    try {
+      const res = await fetchSelfAPI();
+      if (res?.status === 200) {
+        // still authenticated
+        this.user = res.data.data;
+        this.user.authenticated = true;
+      } else {
+        // TODO let user know that they are logged out (maybe because token is expired or whatever)
+      }
+    } catch (err) {
+      return [];
+    }
+  }
   async getProposals(email, password) {
     try {
       const res = await getProposalsAPI();
@@ -86,7 +101,6 @@ export class Store {
       return [];
     }
   }
-
 
   setLoading(state) {}
 }

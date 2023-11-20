@@ -8,3 +8,12 @@ export const login = async (email, password) => {
     throw err;
   }
 };
+
+export const fetchSelf = async () => {
+  try {
+    const res = await client.get("self");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};

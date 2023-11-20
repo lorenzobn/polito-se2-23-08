@@ -3,28 +3,33 @@ const {
   getProposalbyId,
   createProposal,
   updateProposal,
-  searchProposal
+  searchProposal,
 } = require("./controllers/proposals.js");
 const {
   getApplications,
   getApplicationById,
   getReceivedApplications,
   createApplication,
-  updateApplication
+  updateApplication,
 } = require("./controllers/applications.js");
 
-const {
-  userLogin
-} = require("./controllers/auth.js");
+const { userLogin } = require("./controllers/auth.js");
 
 const express = require("express");
-const { verifyToken, verifyStudentToken, verifyTeacherToken } = require('./middleware/authMiddleware');
+const {
+  verifyToken,
+  verifyStudentToken,
+  verifyTeacherToken,
+} = require("./middleware/authMiddleware");
+const { fetchSelf } = require("./controllers/users.js");
 const router = express.Router();
 
 // api health check
 router.get("/", (req, res) => {
   res.status(200).json({ msg: "health check passed! API is alive." });
 });
+
+router.get("/self", verifyToken, fetchSelf);
 
 /* ADD STUFF HERE */
 router.post("/thesis-proposals", verifyTeacherToken, createProposal);
@@ -35,15 +40,27 @@ router.put("/thesis-proposals/:proposalId", verifyTeacherToken, updateProposal);
 
 router.post("/my-applications", verifyStudentToken, createApplication);
 router.get("/my-applications", verifyStudentToken, getApplications);
-router.get("/my-applications/:applicationId", verifyStudentToken, getApplicationById);
+router.get(
+  "/my-applications/:applicationId",
+  verifyStudentToken,
+  getApplicationById
+);
 
 //router.get("/my-applications/decisions", getApplicationsDecisions);
 
-router.get("/received-applications", verifyTeacherToken, getReceivedApplications)
-router.put("/received-applications/:applicationId", verifyTeacherToken, updateApplication);
+router.get(
+  "/received-applications",
+  verifyTeacherToken,
+  getReceivedApplications
+);
+router.put(
+  "/received-applications/:applicationId",
+  verifyTeacherToken,
+  updateApplication
+);
 
 // AUTHENTICATION ROUTES
 //router.post('/register', userSignup);
-router.post('/login', userLogin);
+router.post("/login", userLogin);
 
 module.exports = router;
