@@ -41,6 +41,7 @@ function MyNavbar() {
               <NavDropdown.Item href="/portal">My Profile</NavDropdown.Item>
               <NavDropdown.Divider />
               <NavDropdown.Item href="/portal">Settings</NavDropdown.Item>
+              <NavDropdown.Item >Logout</NavDropdown.Item>
             </NavDropdown>
           )}
         </Col>
