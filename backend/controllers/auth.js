@@ -8,6 +8,7 @@ const userLogin = async (req, res) => {
     const { email, password } = req.body;
     let realPwd = '';
     let userObj = {};
+    let type = '';
     const student = await pool.query(
       "SELECT * FROM student WHERE email = $1",
       [email]
@@ -22,12 +23,14 @@ const userLogin = async (req, res) => {
       return res.status(400).json({ msg: "Invalid email" });
     }
 
-    if (student.rows){
+    if (student.rows[0]){
       userObj = student.rows[0];
       realPwd = student.rows[0].id;
+      type = "student";
     } else {
       userObj = teacher.rows[0];
       realPwd = teacher.rows[0].id;
+      type = "professor";
     }
 
     // INSECURE PWD CHECK, JUST FOR THE PROTOTYPE
@@ -40,9 +43,10 @@ const userLogin = async (req, res) => {
       expiresIn: '1h',
     });
 
-    res.status(200).json({ token });
+    res.status(200).json({ id: userObj.id, type: type, token });
 
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: 'Login failed' });
   }
 }

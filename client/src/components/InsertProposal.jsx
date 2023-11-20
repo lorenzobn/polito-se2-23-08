@@ -95,7 +95,6 @@ function InsertProposal() {
       formData.deadline.trim() === "" ||
       selectedKeywords.length === 0 ||
       selectedLevel.length === 0 ||
-      selectedGroups.length === 0 ||
       selectedProgram.length === 0 ||
       selectedType.length === 0
     ) {
@@ -170,7 +169,7 @@ function InsertProposal() {
           </div>
 
           <div className="row g-3">
-            <div className="col-md-4">
+            <div className="col-md-6">
               <label htmlFor="level" className="form-label block">
                 Level:
               </label>
@@ -181,7 +180,7 @@ function InsertProposal() {
               />
             </div>
 
-            <div className="col-md-4">
+            <div className="col-md-6">
               <label htmlFor="programmes" className="form-label block">
                 CdS /programmes:
               </label>
@@ -189,17 +188,6 @@ function InsertProposal() {
                 defaultValue={selectedProgram}
                 onChange={setSelectedProgram}
                 options={programs}
-              />
-            </div>
-
-            <div className="col-md-4">
-              <label htmlFor="groups" className="form-label block">
-                Groups:
-              </label>
-              <Select
-                defaultValue={selectedGroups}
-                onChange={setSelectedGroups}
-                options={groups}
               />
             </div>
 

@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 export class Store {
   constructor() {
     this.user = {
+      id: "",
       type: "professor",
       authenticated: false,
     };
@@ -27,11 +28,10 @@ export class Store {
       console.log(res);
       console.log(res.data);
       if (res.status === 200) {
-        console.log("HEYYY");
-        this.user = res.data.user;
+        // this object contains all user data that must be saved in the localStorage, including its id (s123, t123, etc...)
+        this.user = res.data;
         // save auth jwt to localstorage for subsequent requests
         localStorage.setItem("auth", res.data.token);
-
         toast.success("Logged in");
       } else {
         console.log("Oh NOOOO"); 

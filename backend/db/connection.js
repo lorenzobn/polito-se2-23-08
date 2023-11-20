@@ -11,4 +11,17 @@ const pool = new Pool ({
 
 })
 
+async function checkConnection() {
+  try {
+    const client = await pool.connect();
+    console.log("Connected to the database");
+    client.release(); // Release the client back to the pool
+    return true;
+  } catch (error) {
+    console.error("Error connecting to the database:", error.message);
+    return false;
+  }
+}
+
+checkConnection();
 module.exports = pool;
