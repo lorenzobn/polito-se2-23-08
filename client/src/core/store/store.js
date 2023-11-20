@@ -49,6 +49,7 @@ export class Store {
       if (res?.status === 200) {
         // still authenticated
         this.user = res.data.data;
+        this.user.authenticated = true;
       } else {
         // TODO let user know that they are logged out (maybe because token is expired or whatever)
       }
