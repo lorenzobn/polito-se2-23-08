@@ -34,7 +34,7 @@ function App() {
             element={<InsertProposal></InsertProposal>}
           ></Route>
           <Route
-            path="/proposalpage"
+            path="/proposalpage/:id"
             element={<ProposalPage></ProposalPage>}
           ></Route>
           <Route

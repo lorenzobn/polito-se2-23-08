@@ -105,9 +105,9 @@ export class Store {
     }
   }
 
-  async getProposal(email, password) {
+  async getProposal(proposalId) {
     try {
-      const res = await getProposalAPI();
+      const res = await getProposalAPI(proposalId);
       return res.data.data;
     } catch (err) {
       return [];

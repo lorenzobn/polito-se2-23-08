@@ -49,9 +49,9 @@ export const postProposals = async () => {
   }
 };
 
-export const getProposal = async () => {
+export const getProposal = async (proposalId) => {
   try {
-    const res = await client.get("thesis-proposals/:proposalId");
+    const res = await client.get(`thesis-proposals/${proposalId}`);
     return res;
   } catch (err) {
     throw err;

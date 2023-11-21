@@ -31,6 +31,13 @@ function ThesisList(props) {
     store.searchProposal(keyword).then(res => setProposals(res));
   }
 
+  const handleKeyDown = (ev) => {
+    if(ev.keyCode == 13) {
+      ev.preventDefault()
+      handleSearch()
+    }
+  }
+
   return (
     <>
       <MyNavbar></MyNavbar>
@@ -56,7 +63,7 @@ function ThesisList(props) {
                     placeholder = 'Search'
                     className=" mr-sm-2" 
                     onChange={ev => {setKeyword(ev.target.value)}}
-                    /* onKeyDown={handleSearch} */
+                    onKeyDown={handleKeyDown}
                   />
                 </Col>
                 <Col className="d-flex justify-content-center">
@@ -102,14 +109,14 @@ function ThesisList(props) {
               <div key={e.id} className="thesis-section">
                 <header>
                   <h2 className="border-thesis-title">
-                    <Nav.Link href="/">{e.title}</Nav.Link>
+                    <Nav.Link href={`/proposalpage/${e.id}`}>{e.title}</Nav.Link>
                   </h2>
                 </header>
                 <div>
                   <div>
                     <p>{e.description}</p>
                     <p>
-                      <a className="border-thesis-view">VIEW</a>
+                      <a className="border-thesis-view" href={`/proposalpage/${e.id}`}>VIEW</a>
                     </p>
                   </div>
                 </div>
