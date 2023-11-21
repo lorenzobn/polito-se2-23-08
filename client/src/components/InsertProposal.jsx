@@ -18,9 +18,8 @@ const levels = [
 ];
 
 const programs = [
-  { value: "CE", label: "CE" },
-  { value: "ME", label: "ME" },
-  { value: "BE", label: "BE" },
+  { value: "LM-32", label: "Computer Engineering" },
+  { value: "LM-19", label: "Chemical Engineering" },
 ];
 
 const groups = [
