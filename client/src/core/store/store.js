@@ -4,6 +4,7 @@ import {
   getProposals as getProposalsAPI,
   searchProposal as searchProposalAPI,
   getReceivedApplications as getReceivedApplicationsAPI,
+  getMyApplications as getMyApplicationsAPI,
   postProposals as postProposalsAPI,
   getProposal as getProposalAPI,
 } from "../API/proposals";
@@ -12,7 +13,7 @@ export class Store {
   constructor() {
     this.user = {
       id: "",
-      type: "professor",
+      type: "",
       authenticated: false,
     };
     this.loading = false;
@@ -34,6 +35,7 @@ export class Store {
         this.user = res.data;
         // save auth jwt to localstorage for subsequent requests
         localStorage.setItem("auth", res.data.token);
+        localStorage.setItem("type", res.data.type);
         toast.success("Logged in");
       } else {
         console.log("Oh NOOOO");
@@ -43,6 +45,7 @@ export class Store {
       toast.error("Error on login");
     }
   }
+
   async fetchSelf() {
     try {
       const res = await fetchSelfAPI();
@@ -78,6 +81,15 @@ export class Store {
   async getReceivedApplications(email, password) {
     try {
       const res = await getReceivedApplicationsAPI();
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  async getMyApplications(email, password) {
+    try {
+      const res = await getMyApplicationsAPI();
       return res.data.data;
     } catch (err) {
       return [];

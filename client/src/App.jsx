@@ -38,7 +38,11 @@ function App() {
             element={<ProposalPage></ProposalPage>}
           ></Route>
           <Route
-            path="/applications"
+            path="/my-applications"
+            element={<Applications></Applications>}
+          ></Route>
+          <Route
+            path="/received-applications"
             element={<Applications></Applications>}
           ></Route>
           <Route
@@ -46,7 +50,7 @@ function App() {
             element={<AcceptApplications></AcceptApplications>}
           ></Route>
           <Route
-            path="/myProposals"
+            path="/thesis-proposals"
             element={<MyProposals></MyProposals>}
           ></Route>
         </Routes>

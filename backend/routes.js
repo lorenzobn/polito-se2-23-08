@@ -1,5 +1,6 @@
 const {
   getProposals,
+  getProposalsByTeacher,
   getProposalbyId,
   createProposal,
   updateProposal,
@@ -34,6 +35,7 @@ router.get("/self", verifyToken, fetchSelf);
 /* ADD STUFF HERE */
 router.post("/thesis-proposals", verifyTeacherToken, createProposal);
 router.get("/thesis-proposals", getProposals);
+router.get("/my-thesis-proposals", getProposalsByTeacher);
 router.get("/thesis-proposals/search", verifyToken, searchProposal);
 router.get("/thesis-proposals/:proposalId", verifyToken, getProposalbyId);
 router.put("/thesis-proposals/:proposalId", verifyTeacherToken, updateProposal);

@@ -25,7 +25,6 @@ const fetchSelf = async (req, res) => {
       realPwd = teacher.rows[0].id;
       userObj.type = "professor";
     }
-
     res.status(200).json({ data: userObj });
   } catch (error) {
     console.log(error);
