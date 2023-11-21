@@ -29,6 +29,15 @@ function MyNavbar() {
             </div>
           )}{" "}
           {store.user.authenticated && (
+            <>
+            <div style={{color:'white', fontSize:'120%'}}>
+              {`${store.user.id}`}
+            </div>
+            &nbsp;&nbsp;&nbsp;&nbsp;
+            <div style={{color:'white', fontSize:'120%'}}>
+              {`${store.user.name} ${store.user.surname}`}
+            </div>
+            &nbsp;&nbsp;&nbsp;&nbsp;
             <NavDropdown
               title={
                 <FontAwesomeIcon
@@ -43,6 +52,7 @@ function MyNavbar() {
               <NavDropdown.Item href="/portal">Settings</NavDropdown.Item>
               <NavDropdown.Item >Logout</NavDropdown.Item>
             </NavDropdown>
+            </>
           )}
         </Col>
       </Row>
