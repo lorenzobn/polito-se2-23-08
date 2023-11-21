@@ -1,25 +1,23 @@
 import Navbar from "./Navbar";
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import Button from "./Button";
 import BadButton from "./BadButton";
 import { StoreContext } from "../core/store/Provider";
-
+import { faArrowLeft, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 function ProposalPage() {
   const navigate = useNavigate()
+  const param = useParams()
+  const proposalId = param.id
 
   const store = useContext(StoreContext)
-  const [proposal, setProposal] = useState([])
+  const [proposal, setProposal] = useState({})
 
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
-    const handleEffect = async () => {
-      const proposal = await store.getReceivedApplications();
-      setProposal(proposal)
-    };
-    handleEffect();
+    store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
   }, []);
 
   const proposalDetails = {
@@ -35,6 +33,7 @@ function ProposalPage() {
     keywords: "ML, NL, Python",
     supervisor: "Professor Torchiano",
   };
+
   return (
     <>
       <Navbar />
@@ -45,45 +44,45 @@ function ProposalPage() {
         >
           <div className="mb-3 mt-1 text-center">
             <strong>
-              <h1>{proposalDetails.title}</h1>
+              <h1>{proposal.title}</h1>
             </strong>
           </div>
           <div className="mb-3">
-            <strong>Supervisor:</strong> {proposalDetails.supervisor}
+            <strong>Supervisor:</strong> {proposal.supervisor_id}
           </div>
           <div className="mb-3">
-            <strong>Deadline:</strong> {proposalDetails.deadline}
+            <strong>Deadline:</strong> {proposal.deadline}
           </div>
           <div className="mb-3">
-            <strong>{proposalDetails.description}</strong>
+            <strong>{proposal.description}</strong>
           </div>
           <div className="mb-3">
-            <strong>Keywords:</strong> {proposalDetails.keywords}
+            <strong>Keywords:</strong> {proposal.keywords}
           </div>
           <div className="row g-3 mb-3">
             <div className="col-md-2">
-              <strong>Level:</strong> {proposalDetails.level}
+              <strong>Level:</strong> {proposal.level}
             </div>
             <div className="col-md-3">
-              <strong>CdS:</strong> {proposalDetails.cds}
+              <strong>CdS:</strong> {proposal.cds}
             </div>
             <div className="col-md-3">
-              <strong>Group:</strong> {proposalDetails.group}
+              <strong>Group:</strong> {proposal.groups}
             </div>
             <div className="col-md-3">
-              <strong>Type:</strong> {proposalDetails.type}
+              <strong>Type:</strong> {proposal.type}
             </div>
           </div>
           <div className="mb-3">
             <strong>Required Knowledge:</strong>{" "}
-            {proposalDetails.requiredKnowledge}
+            {proposal.required_knowledge}
           </div>
           <div className="row">
             <div className="col text-start">
-            <BadButton Button text={"BACK"} onClick={()=> {navigate('/')}}></BadButton>
+            <BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/')}}></BadButton>
             </div>
             <div className="col text-end">
-            <Button text={"APPLY"}></Button>
+            <Button icon={faCheck} text={"APPLY"}></Button>
             </div>
           </div>
         </form>

@@ -79,9 +79,18 @@ export class Store {
     }
   }
 
-  async searchProposal(email, password) {
+  async getProposalsByTeacherId(keyword) {
     try {
-      const res = await searchProposalAPI();
+      const res = await getProposalsByTeacherIdAPI();
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  async searchProposal(keyword) {
+    try {
+      const res = await searchProposalAPI(keyword);
       return res.data.data;
     } catch (err) {
       return [];
@@ -115,9 +124,9 @@ export class Store {
     }
   }
 
-  async getProposal(email, password) {
+  async getProposal(proposalId) {
     try {
-      const res = await getProposalAPI();
+      const res = await getProposalAPI(proposalId);
       return res.data.data;
     } catch (err) {
       return [];
