@@ -31,7 +31,13 @@ export const searchProposal = async (keyword) => {
   try {
     const res = await client.get("/thesis-proposals/search", {
       params: {
-        title: keyword
+        title: keyword,
+        type: keyword, 
+        description: keyword, 
+        required_knowledge: keyword, 
+        notes: keyword, 
+        level: keyword, 
+        programme: keyword
       }
     });
     return res;
