@@ -37,8 +37,8 @@ const createApplication = async (req, res) => {
 // TODO: Only STUDENTS
 const getApplications = async (req, res) => {
   const query = {
-    text: "SELECT * FROM THESIS_APPLICATION WHERE student_id=$1",
-    values: ["s125"], //should be the logged-in student_id
+    text: "SELECT student_id, thesis_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, groups, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE student_id=$1",
+    values: [req.userId],
   };
   try {
     const results = await pool.query(query).then((result) => {
@@ -54,7 +54,7 @@ const getApplications = async (req, res) => {
 const getApplicationById = async (req, res) => {
   const query = {
     text: "SELECT student_id, thesis_application.status, cv_uri, title, type, required_knowledge, notes, level, programme, deadline  FROM THESIS_APPLICATION JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE student_id=$1 AND id=$2",
-    values: ["s125", req.params.applicationId],
+    values: [req.userId, req.params.applicationId],
   };
   try {
     const results = await pool.query(query).then((result) => {
@@ -99,7 +99,7 @@ function getSomePromise(applicationId) {
 // TODO: Only TEACHERS, in particular the SUPERVISOR of a thesis
 const updateApplication = async (req, res) => {
   // TODO: session-based id
-  const loggedProfessor = 't123';
+  const loggedProfessor = req.userId;
   notAuthorized = true;
   try {
     const { applicationId } = req.params;
@@ -165,9 +165,11 @@ const updateApplication = async (req, res) => {
 
 // TODO: Only TEACHERS
 const getReceivedApplications = async (req, res) => {
+  console.log("querying with :");
+  console.log(req.userId);
   const query = {
     text: "SELECT student_id, thesis_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, groups, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1",
-    values: ["t123"], //should be the logged-in professor
+    values: [req.userId],
   };
   try {
     const results = await pool.query(query).then((result) => {

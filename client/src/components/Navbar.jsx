@@ -67,11 +67,11 @@ function MyNavbar() {
           <div style={{ lineHeight: "200%" }}>
             <Nav variant="underline">
               {store.user.type === "student" ? (
-                <Nav.Link className="d-inline-flex text-white" href="/">
+                <Nav.Link className="d-inline-flex text-white" href="/thesis-proposals">
                   THESIS
                 </Nav.Link>
               ) : (
-                <Nav.Link className="text-white" href="/applications">
+                <Nav.Link className="text-white" href="/received-applications">
                   APPLICATIONS
                 </Nav.Link>
               )}
@@ -79,7 +79,7 @@ function MyNavbar() {
                 <Nav.Link
                   style={{ marginLeft: "30px" }}
                   className="text-white"
-                  href="/"
+                  href="/my-applications"
                 >
                   MY APPLICATIONS
                 </Nav.Link>
@@ -87,9 +87,9 @@ function MyNavbar() {
                 <Nav.Link
                   style={{ marginLeft: "30px" }}
                   className="text-white"
-                  href="/Myproposals"
+                  href="/my-thesis-proposals"
                 >
-                  MY PROPOSAL
+                  MY PROPOSALS
                 </Nav.Link>
               )}
             </Nav>

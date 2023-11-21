@@ -18,6 +18,15 @@ export const getReceivedApplications = async () => {
   }
 };
 
+export const getMyApplications = async () => {
+  try {
+    const res = await client.get("/my-applications");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const searchProposal = async (keyword) => {
   try {
     const res = await client.get("/thesis-proposals/search", {

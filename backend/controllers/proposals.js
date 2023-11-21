@@ -134,6 +134,34 @@ const getProposalbyId = async (req, res) => {
   }
 };
 
+const getProposalsByTeacher = async (req, res) => {
+  const query = {
+    text: "SELECT * FROM thesis_proposal WHERE supervisor_id=$1",
+    values: [req.user.id],
+  };
+  try {
+    const results = await pool.query(query).then((result) => {
+      if (result.rowCount != 0) {
+        return res.status(200).json({ msg: "OK", data: result.rows });
+      } else {
+        return res.status(404).json({ msg: "Resource not found" });
+      }
+    });
+  } catch (error) {
+    errorMsg = "";
+    switch (error.code) {
+      case "22P02":
+        errorMsg = "Invalid data provided.";
+        break;
+      default:
+        errorMsg = "Unknown error occurred.";
+        break;
+    }
+    console.log(error);
+    return res.status(500).json({ msg: errorMsg });
+  }
+};
+
 const updateProposal = async (req, res) => {
   // TODO check if proposal is owned by the professor who makes the request
   // TODO validation of submitted fields
@@ -226,6 +254,7 @@ const searchProposal = async (req, res) => {
 
 module.exports = {
   getProposals,
+  getProposalsByTeacher,
   getProposalbyId,
   createProposal,
   updateProposal,
