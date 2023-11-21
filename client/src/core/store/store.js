@@ -7,6 +7,7 @@ import {
   getMyApplications as getMyApplicationsAPI,
   postProposals as postProposalsAPI,
   getProposal as getProposalAPI,
+  getProposalsByTeacherId as getProposalsByTeacherIdAPI
 } from "../API/proposals";
 import { toast } from "react-toastify";
 export class Store {
@@ -63,6 +64,15 @@ export class Store {
   async getProposals(email, password) {
     try {
       const res = await getProposalsAPI();
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  async getProposalsByTeacherId(email, password) {
+    try {
+      const res = await getProposalsByTeacherIdAPI();
       return res.data.data;
     } catch (err) {
       return [];

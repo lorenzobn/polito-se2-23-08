@@ -16,11 +16,17 @@ export default function MyProposals() {
         // since the handler function of useEffect can't be async directly
         // we need to define it separately and run it
         const handleEffect = async () => {
-        const proposals = await store.getProposals();
-        setProposals(proposals);
+          if (localStorage.getItem('type') === 'student'){
+            const proposals = await store.getProposals();
+            setProposals(proposals);
+          }
+          if (localStorage.getItem('type') === 'professor'){
+            const proposals = await store.getProposalsByTeacherId();
+            setProposals(proposals);
+          }
         };
         handleEffect();
-    }, []);
+    }, [localStorage.getItem('type')]);
 
     return (
         <>
@@ -77,7 +83,8 @@ export default function MyProposals() {
                                     <div >
                                         <div >
                                             <p>{e.description}</p>
-                                            <p><a className="border-thesis-view">VIEW</a></p>
+                                            <p><a className="border-thesis-view">VIEW PROPOSAL </a></p>
+                                            
                                         </div>
                                     </div>
                                 </div>

@@ -9,7 +9,7 @@ import ThesisList from "./components/ThesisList";
 import ProposalPage from "./components/ProposalPage";
 import MyProposals from "./components/MyProposals";
 import Applications from "./components/Applications";
-import AcceptApplications from "./components/AcceptApplication";
+import DecideApplication from "./components/DecideApplication";
 import { StoreContext } from "./core/store/Provider";
 import Login from "./components/Login";
 import "react-toastify/dist/ReactToastify.css";
@@ -46,8 +46,12 @@ function App() {
             element={<Applications></Applications>}
           ></Route>
           <Route
-            path="/applications/acceptApplication"
-            element={<AcceptApplications></AcceptApplications>}
+            path="/received-applications/:thesisId"
+            element={<DecideApplication></DecideApplication>}
+          ></Route>
+          <Route
+            path="/showApplication/:applicationId"
+            element={<DecideApplication></DecideApplication>}
           ></Route>
           <Route
             path="/thesis-proposals"

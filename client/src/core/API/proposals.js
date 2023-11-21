@@ -9,6 +9,15 @@ export const getProposals = async () => {
   }
 };
 
+export const getProposalsByTeacherId = async () => {
+  try {
+    const res = await client.get("my-thesis-proposals");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const getReceivedApplications = async () => {
   try {
     const res = await client.get("/received-applications");

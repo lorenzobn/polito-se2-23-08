@@ -10,6 +10,7 @@ const {
   getApplications,
   getApplicationById,
   getReceivedApplications,
+  getReceivedApplicationsByThesisId,
   createApplication,
   updateApplication,
 } = require("./controllers/applications.js");
@@ -35,7 +36,7 @@ router.get("/self", verifyToken, fetchSelf);
 /* ADD STUFF HERE */
 router.post("/thesis-proposals", verifyTeacherToken, createProposal);
 router.get("/thesis-proposals", getProposals);
-router.get("/my-thesis-proposals", getProposalsByTeacher);
+router.get("/my-thesis-proposals", verifyTeacherToken, getProposalsByTeacher);
 router.get("/thesis-proposals/search", verifyToken, searchProposal);
 router.get("/thesis-proposals/:proposalId", verifyToken, getProposalbyId);
 router.put("/thesis-proposals/:proposalId", verifyTeacherToken, updateProposal);
@@ -55,6 +56,13 @@ router.get(
   verifyTeacherToken,
   getReceivedApplications
 );
+
+router.get(
+  "/received-applications/:thesisId",
+  verifyTeacherToken,
+  getReceivedApplicationsByThesisId
+);
+
 router.put(
   "/received-applications/:applicationId",
   verifyTeacherToken,

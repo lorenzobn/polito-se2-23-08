@@ -168,8 +168,25 @@ const getReceivedApplications = async (req, res) => {
   console.log("querying with :");
   console.log(req.userId);
   const query = {
-    text: "SELECT student_id, thesis_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, groups, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1",
+    text: "SELECT COUNT(*) AS num_applications, title, description, deadline, thesis_id FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 GROUP BY thesis_id, title, description, deadline",
     values: [req.userId],
+  };
+  try {
+    const results = await pool.query(query).then((result) => {
+      return res.status(200).json({ msg: "OK", data: result.rows });
+    });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ msg: "An unknown error occurred." });
+  }
+};
+
+const getReceivedApplicationsByThesisId = async (req, res) => {
+  console.log("querying with :");
+  console.log(req.userId);
+  const query = {
+    text: "SELECT student_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, groups, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 AND thesis_id=$2",
+    values: [req.userId, req.params.thesisId],
   };
   try {
     const results = await pool.query(query).then((result) => {
@@ -204,5 +221,6 @@ module.exports = {
   getApplicationById,
   createApplication,
   updateApplication,
-  getReceivedApplications
+  getReceivedApplications,
+  getReceivedApplicationsByThesisId
 };

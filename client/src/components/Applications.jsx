@@ -16,12 +16,10 @@ export default function Applications() {
         // here I check the localStorage for userType, then in the request the cookie brings the authentication token
         const handleEffect = async () => {
           if (localStorage.getItem('type') === 'student'){
-            console.log(store.user.type);
             const applications = await store.getMyApplications();
             setApplications(applications);
           }
           if (localStorage.getItem('type') === 'professor'){
-            console.log(store.user.type);
             const applications = await store.getReceivedApplications();
             setApplications(applications);
           }
@@ -42,7 +40,7 @@ export default function Applications() {
                     <Col lg={{span:9, offset:3 }} >
                         {
                             applications.map((e) =>
-                                <div key={e.id} className="thesis-section">
+                                <div key={e.thesis_id} className="thesis-section">
                                     <header>
                                         <h2 className="border-thesis-title"><Nav.Link href="/">{e.title}</Nav.Link></h2>
                                     </header>
@@ -50,8 +48,9 @@ export default function Applications() {
                                         <div >
                                             <p>{e.description}</p>
                                             <p>{e.deadline}</p>
+                                            <p>Number of applicants: {e.num_applications}</p>
                                             {localStorage.getItem('type') === 'professor' ? 
-                                            <p><a className="border-thesis-view" href="applications/acceptApplication">VIEW APPLICATION</a></p> : <></>}
+                                            <p><a className="border-thesis-view" href={`received-applications/${e.thesis_id}`}>VIEW APPLICATIONS</a></p> : <></>}
                                         </div>
                                     </div>
                                 </div>

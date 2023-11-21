@@ -137,9 +137,10 @@ const getProposalbyId = async (req, res) => {
 const getProposalsByTeacher = async (req, res) => {
   const query = {
     text: "SELECT * FROM thesis_proposal WHERE supervisor_id=$1",
-    values: [req.user.id],
+    values: [req.userId],
   };
   try {
+    console.log
     const results = await pool.query(query).then((result) => {
       if (result.rowCount != 0) {
         return res.status(200).json({ msg: "OK", data: result.rows });

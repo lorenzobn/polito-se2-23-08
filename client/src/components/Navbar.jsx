@@ -86,7 +86,7 @@ function MyNavbar() {
                 <Nav.Link
                   style={{ marginLeft: "30px" }}
                   className="text-white"
-                  href="/my-thesis-proposals"
+                  href="/thesis-proposals"
                 >
                   MY PROPOSALS
                 </Nav.Link>

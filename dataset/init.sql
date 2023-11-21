@@ -187,7 +187,7 @@
  INSERT INTO THESIS_PROPOSAL(title, SUPERVISOR_ID,
                               type, groups, description, 
                               required_knowledge, notes, level, programme, 
-                              deadline, status) VALUES ('AI in Autonomous Vehicles', 't125', 'Practical-based', 'AI and Data Science', 'This thesis explores the implementation of AI in autonomous vehicles, focusing on machine learning algorithms.', 
+                              deadline, status) VALUES ('AI in Autonomous Vehicles', 't124', 'Practical-based', 'AI and Data Science', 'This thesis explores the implementation of AI in autonomous vehicles, focusing on machine learning algorithms.', 
 														'Machine Learning, Computer Vision', 'Please submit a brief overview of your relevant experience.', 'MSc', 'LM-32',
                                                        '2024-03-01', 'active');
 
@@ -200,6 +200,9 @@
 
  INSERT INTO THESIS_APPLICATION(student_id, thesis_id, status, 
                               cv_uri) VALUES ('s123', 1, 'idle', '');
+                      
+ INSERT INTO THESIS_APPLICATION(student_id, thesis_id, status, 
+                              cv_uri) VALUES ('s124', 2, 'idle', '');
   
  INSERT INTO THESIS_APPLICATION(student_id, thesis_id, status, 
                               cv_uri) VALUES ('s124', 3, 'idle', '');
