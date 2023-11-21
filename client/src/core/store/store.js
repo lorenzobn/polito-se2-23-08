@@ -115,9 +115,9 @@ export class Store {
     }
   }
 
-  async postProposals(email, password) {
+  async postProposals(title, SUPERVISOR_id, type, groups, description, requiredKnowledge, notes, level, programme, deadline , status) {
     try {
-      const res = await postProposalsAPI();
+      const res = await postProposalsAPI(title, SUPERVISOR_id, type, groups, description, requiredKnowledge, notes, level, programme, deadline , status);
       return res.data.data;
     } catch (err) {
       return [];

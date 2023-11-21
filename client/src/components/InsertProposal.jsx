@@ -52,7 +52,7 @@ function InsertProposal() {
   });
 
   const store = useContext(StoreContext);
-  const [insertPrposals, setInsertProposals] = useState([]);
+  const [insertProposals, setInsertProposals] = useState([]);
 
   const [combinedData, setCombinedData] = useState({
     ...formData,
@@ -67,10 +67,9 @@ function InsertProposal() {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
     const handleEffect = async () => {
-      const insertPrposals = await store.postProposals(combinedData);
-      setInsertProposals(insertPrposals);
+      // const insertPrposals = await store.postProposals(combinedData);
+      // setInsertProposals(insertPrposals);
 
-      //ADD THIS TO GITHUB
       setCombinedData({
         ...formData,
         keywords: selectedKeywords,
@@ -101,7 +100,26 @@ function InsertProposal() {
       alert("Please fill in all the fields.");
       return;
     }
-    console.log("Form submitted!", combinedData);
+    const SUPERVISOR_id = "t123";
+    const notes = "noooooo";
+    const status = "OK";
+    const groups = "LM-32";
+    const insertProposal = store.postProposals(
+      formData.title,
+      combinedData.type,
+      formData.description,
+      formData.knowledge,
+      combinedData.level,
+      combinedData.program,
+      formData.deadline,
+      notes,
+      status,
+      SUPERVISOR_id,
+      groups
+    );
+    setInsertProposals(insertProposal);
+    console.log("test1:", insertProposals);
+    //console.log("Form submitted!", combinedData);
   };
   const handleInputChange = (e) => {
     setFormData({
