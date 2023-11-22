@@ -88,6 +88,9 @@ function ProposalPage() {
             <strong>Required Knowledge:</strong>{" "}
             {proposal.required_knowledge}
           </div>
+          <div className="mb-3">
+            <strong>{proposal.notes}</strong>
+          </div>
           <div className="row">
             <div className="col text-start">
             <BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/')}}></BadButton>
