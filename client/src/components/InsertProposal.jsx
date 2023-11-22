@@ -49,11 +49,12 @@ function InsertProposal() {
     knowledge: "",
     level: "Bachelor",
     deadline: "",
-    notes:"",
+    notes: "",
   });
 
   const store = useContext(StoreContext);
   const [insertProposals, setInsertProposals] = useState([]);
+  const navigate = useNavigate();
 
   const [combinedData, setCombinedData] = useState({
     ...formData,
@@ -121,7 +122,6 @@ function InsertProposal() {
       });
     } else {
       const SUPERVISOR_id = "t123";
-      const notes = "noooooo";
       const status = "OK";
       const groups = "LM-32";
       const insertProposal = store.postProposals(
@@ -280,7 +280,7 @@ function InsertProposal() {
               id="notes"
               name="notes"
               placeholder="Enter additional notes here..."
-              value={formData.description}
+              value={formData.notes}
               onChange={handleInputChange}
               rows="3"
             ></textarea>
