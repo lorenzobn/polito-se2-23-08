@@ -121,21 +121,19 @@ function InsertProposal() {
         position: toast.POSITION.TOP_CENTER,
       });
     } else {
-      const SUPERVISOR_id = "t123";
-      const status = "OK";
-      const groups = "LM-32";
+      const status = "active";
       const insertProposal = store.postProposals(
         formData.title,
-        SUPERVISOR_id,
         combinedData.type,
-        groups,
         formData.description,
         formData.knowledge,
         formData.notes,
         combinedData.level,
         combinedData.program,
         formData.deadline,
-        status
+        status,
+        combinedData.keywords,
+
       );
       setInsertProposals(insertProposal);
       toast.success("Your proposal submitted successfully!", {
