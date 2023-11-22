@@ -1,10 +1,13 @@
 import Navbar from "./Navbar";
 import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { TagsInput } from "react-tag-input-component";
 import "../App.css";
 import Button from "./Button";
 import { StoreContext } from "../core/store/Provider";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const KeyCodes = {
   comma: 188,
@@ -14,7 +17,6 @@ const KeyCodes = {
 const levels = [
   { value: "BSc", label: "Bachelor" },
   { value: "MSc", label: "Master" },
-  //{ value: "PhD", label: "PhD" },
 ];
 
 const programs = [
@@ -85,41 +87,64 @@ function InsertProposal() {
     e.preventDefault();
 
     // Check if any of the inputs are empty
-    if (
-      formData.title.trim() === "" ||
-      formData.description.trim() === "" ||
-      formData.knowledge.trim() === "" ||
-      formData.level.trim() === "" ||
-      formData.deadline.trim() === "" ||
-      selectedKeywords.length === 0 ||
-      selectedLevel.length === 0 ||
-      selectedProgram.length === 0 ||
-      selectedType.length === 0
-    ) {
-      alert("Please fill in all the fields.");
-      return;
+    if (formData.title.trim() === "") {
+      toast.error("Title shouldn't be empty!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else if (formData.description.trim() === "") {
+      toast.error("Description shouldn't be empty!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else if (formData.knowledge.trim() === "") {
+      toast.error("Required knowledge shouldn't be empty!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else if (formData.deadline.trim() === "") {
+      toast.error("Deadline shouldn't be empty!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else if (selectedKeywords.length === 0) {
+      toast.error("Keywords shouldn't be empty!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else if (selectedLevel.length === 0) {
+      toast.error("Level shouldn't be empty!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else if (selectedProgram.length === 0) {
+      toast.error("Program shouldn't be empty!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else if (selectedType.length === 0) {
+      toast.error("Type shouldn't be empty!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else {
+      const SUPERVISOR_id = "t123";
+      const notes = "noooooo";
+      const status = "OK";
+      const groups = "LM-32";
+      const insertProposal = store.postProposals(
+        formData.title,
+        combinedData.type,
+        formData.description,
+        formData.knowledge,
+        combinedData.level,
+        combinedData.program,
+        formData.deadline,
+        notes,
+        status,
+        SUPERVISOR_id,
+        groups
+      );
+      setInsertProposals(insertProposal);
+      toast.success("Your proposal submitted successfully!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      navigate("/thesis-proposals");
     }
-    const SUPERVISOR_id = "t123";
-    const notes = "noooooo";
-    const status = "OK";
-    const groups = "LM-32";
-    const insertProposal = store.postProposals(
-      formData.title,
-      combinedData.type,
-      formData.description,
-      formData.knowledge,
-      combinedData.level,
-      combinedData.program,
-      formData.deadline,
-      notes,
-      status,
-      SUPERVISOR_id,
-      groups
-    );
-    setInsertProposals(insertProposal);
-    console.log("test1:", insertProposals);
-    //console.log("Form submitted!", combinedData);
   };
+
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
