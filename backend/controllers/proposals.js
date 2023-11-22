@@ -2,37 +2,118 @@
 const pool = require("../db/connection");
 const Joi = require("@hapi/joi");
 
+const coSupervisorAdd = async (thesisId, name, surname, external) => {
+  let query = "";
+  const query2 = `
+  INSERT INTO THESIS_CO_SUPERVISION (THESIS_PROPOSAL_id, INTERNAL_CO_SUPERVISOR_id, EXTERNAL_CO_SUPERVISOR_id, is_external)
+  VALUES ($1, $2, $3, $4)
+  RETURNING *;
+  `;
+  if (external) {
+    query = {
+      text: "SELECT * FROM EXTERNAL_CO_SUPERVISOR WHERE name=$1 AND surname=$2",
+      values: [name, surname],
+    };
+  } else {
+    query = {
+      text: "SELECT * FROM TEACHER WHERE name=$1 AND surname=$2",
+      values: [name, surname],
+    };
+  }
+
+  try {
+    const results = await pool.query(query).then(async (result) => {
+      if (result.rowCount != 0) {
+        let id = result.rows[0].id;
+        if (external) {
+          const values2 = [
+            thesisId,
+            null,
+            id,
+            true,
+          ];
+          const result2 = await pool.query(query2, values2);
+        } else {
+          const values2 = [
+            thesisId,
+            id,
+            null,
+            false,
+          ];
+          const result2 = await pool.query(query2, values2);
+        }
+
+
+      } else {
+        return -1;
+      }
+    });
+  } catch (error) {
+    errorMsg = "";
+    switch (error.code) {
+      case "22P02":
+        errorMsg = "Invalid data provided.";
+        break;
+      default:
+        errorMsg = "Unknown error occurred.";
+        break;
+    }
+    console.log(error);
+    return -1;
+  }
+}
+
+const keywordsAdd = async (thesisId, keyword) => {
+  const query = `
+  INSERT INTO KEYWORDS VALUES($1, $2);
+  `;
+  const values = [
+    thesisId,
+    keyword
+  ];
+  try {
+    const results = await pool.query(query, values);
+  } catch (error) {
+    return error;
+  }
+
+}
+
 const createProposal = async (req, res) => {
   try {
     const proposalSchema = Joi.object({
       title: Joi.string().required(),
-      SUPERVISOR_id: Joi.string().required(),
-      coSupervisors: Joi.array(), // TODO: validate array of object in this format [{id: 1, isExternal: true}, {id: 2, isExternal: false}]
+      //SUPERVISOR_id: Joi.string().required(), // TODO: should be taken from req.userId
+      coSupervisors: Joi.array(),
       type: Joi.string().required(),
-      groups: Joi.string(),
       description: Joi.string().required(),
       requiredKnowledge: Joi.string().required(),
       notes: Joi.string().allow(""),
-      level: Joi.string().required(),
+      level: Joi.string().required().valid('BSc', 'MSc'),
       programme: Joi.string().required(),
-      deadline: Joi.date().required(),
+      deadline: Joi.date().required(), //default format is MM/DD/YYYY
       status: Joi.string(),
+      keywords: Joi.array()
     });
 
+    let SUPERVISOR_id = req.userId;
     const { error, value } = proposalSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ msg: error.details[0].message });
     }
 
-    //receive as a parameter the list of cosupervisors in the format [{id: 1, isExternal: true}, {id: 2, isExternal: false}]
-    const {coSupervisors} = req.body;
-
     //parameters proposal
-    const { title, SUPERVISOR_id, type, groups, description, requiredKnowledge, notes, level, programme, deadline, status } = req.body;
+    const { title, type, groups, description, requiredKnowledge, notes, level, programme, deadline, status, keywords, coSupervisors } = req.body;
 
+    const r = await pool.query('SELECT COD_GROUP FROM TEACHER WHERE id=$1', [SUPERVISOR_id]);
+    if (!r || !r) {
+      return res.status(500).json({ msg: 'Error with the cod_group.' });
+    }
+    const cod_group = r.rows[0].cod_group;
+    let activeStatus = 'active';
 
     const query = `
-      INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, groups, description, required_knowledge, notes, level, programme, deadline, status)
+      INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, COD_GROUP, description, required_knowledge, notes, level, programme, deadline, status)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
       RETURNING *;
     `;
@@ -41,47 +122,33 @@ const createProposal = async (req, res) => {
       title,
       SUPERVISOR_id,
       type,
-      groups,
+      cod_group,
       description,
       requiredKnowledge,
       notes,
       level,
       programme,
       deadline,
-      status,
+      activeStatus,
     ];
 
     const result = await pool.query(query, values);
+    if (!result || !result.rows) {
+      return res.status(500).json({ msg: 'Error inserting the proposal.' });
+    }
 
+    const newId = result.rows[0].id;
     //adding co supervisors to the proposal
-    const query2 = `
-        INSERT INTO THESIS_CO_SUPERVISION (THESIS_PROPOSAL_id, INTERNAL_CO_SUPERVISOR_id, EXTERNAL_CO_SUPERVISOR_id, is_external   )
-        VALUES ($1, $2, $3, $4)
-        RETURNING *;
-    `;
-
     //for each co supervisor, add a row in the THESIS_CO_SUPERVISION table
-    for(var i = 0; i < coSupervisors.length; i++)
-    {
-      if(coSupervisors[i].isExternal === true)
-      {
-        var external = coSupervisors[i].id;
-        var internal = null;
+    for (var i = 0; i < coSupervisors.length; i++) {
+      if (coSupervisors[i].isExternal === true) {
+        let r = await coSupervisorAdd(newId, coSupervisors[i].name, coSupervisors[i].surname, true)
       }
-      else 
-      {
-        var external = null;
-        var internal = coSupervisors[i].id;
-      }
+    }
 
-      const values2 = [
-        result.rows[0].id,
-        internal,
-        external,
-        coSupervisors[i].isExternal,
-      ];
-      
-      const result2 = await pool.query(query2, values2);
+    //let's add keywords now
+    for (var i = 0; i < keywords.length; i++) {
+      let r = await keywordsAdd(newId, keywords[i]);
     }
 
     return res
@@ -230,7 +297,7 @@ const searchProposal = async (req, res) => {
     });
 
     const { error, value } = proposalSchema.validate(req.query);
-    const {title, type, description, required_knowledge, notes, level, programme} = req.query;
+    const { title, type, description, required_knowledge, notes, level, programme } = req.query;
 
     const query = `
       SELECT * FROM thesis_proposal
@@ -244,8 +311,7 @@ const searchProposal = async (req, res) => {
         return res.status(404).json({ msg: "Resource not found" });
       }
     });
-  } catch(error)
-  {
+  } catch (error) {
     console.error(error.message);
     return res.status(500).json({ msg: "An unknown error occurred." });
   }

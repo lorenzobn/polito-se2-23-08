@@ -35,6 +35,7 @@ router.get("/self", verifyToken, fetchSelf);
 
 /* ADD STUFF HERE */
 router.post("/thesis-proposals", verifyTeacherToken, createProposal);
+//router.post("/thesis-proposals", createProposal);
 router.get("/thesis-proposals", getProposals);
 router.get("/my-thesis-proposals", verifyTeacherToken, getProposalsByTeacher);
 router.get("/thesis-proposals/search", verifyToken, searchProposal);

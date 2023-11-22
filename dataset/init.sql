@@ -50,7 +50,7 @@
    title varchar(150) NOT NULL,
    SUPERVISOR_id varchar(30) NOT NULL,
    type varchar(30) NOT NULL,
-   groups varchar(20) NOT NULL,         /* SHOULD BE CLARIFIED */
+   COD_GROUP varchar(25) NOT NULL,
    description varchar(500) NOT NULL,
    required_knowledge varchar(50) NOT NULL,
    notes varchar(500),
@@ -59,7 +59,8 @@
    deadline date NOT NULL,
    status varchar(10) not NULL,
    FOREIGN KEY (SUPERVISOR_ID) references TEACHER(id),
-   FOREIGN KEY (programme) references degree(COD_DEGREE)
+   FOREIGN KEY (programme) references degree(COD_DEGREE),
+   FOREIGN key(COD_GROUP) REFERENCES GROUPS(COD_GROUP)
   );
 
   CREATE TABLE IF NOT EXISTS THESIS_CO_SUPERVISION (
@@ -123,11 +124,11 @@
   INSERT INTO GROUPS VALUES('AAA3', 'DAUIN', 'Gruppo di Cloud Computing');
   INSERT INTO GROUPS VALUES('AAA4', 'DAUIN', 'Gruppo di Big Data');
 
-  INSERT INTO student(id,name,surname,gender,nationality,email,COD_DEGREE,ENROLLMENT_YEAR) values (
+  INSERT INTO student(id,name,surname,gender,nationality,email, COD_DEGREE,ENROLLMENT_YEAR) values (
     's123','Marco','Rossi','M','italian','marco.rossi@email.com','LM-32',2019
   );
 
-  INSERT INTO student(id,name,surname,gender,nationality,email,COD_DEGREE,ENROLLMENT_YEAR) values (
+  INSERT INTO student(id,name,surname,gender,nationality,email, COD_DEGREE,ENROLLMENT_YEAR) values (
     's124','Federica','Verdi','F','italian','federica.verdi@email.com','LM-19',2022
   );
 
@@ -169,25 +170,25 @@
   
 
  INSERT INTO THESIS_PROPOSAL(title, SUPERVISOR_ID,
-                              type, groups, description, 
+                              type, COD_GROUP, description, 
                               required_knowledge, notes, level, programme, 
-                              deadline, status) VALUES (' Investigating the biomedical applications of coordination cages', 't123', 'Industrial and work', 'Chemistry',
+                              deadline, status) VALUES (' Investigating the biomedical applications of coordination cages', 't123', 'AAA1', 'Chemistry',
                                                         'Metallocages represent an exciting field of supramolecular chemistry concerned with the assembly of specific ligands and metals to form discrete structures. Coordination cages have applications in catalysis',
                                                         'None', '', 'MSc', 'LM-19',
                                                         '2023-12-31', 'active');
 
  INSERT INTO THESIS_PROPOSAL(title, SUPERVISOR_ID,
-                              type, groups, description, 
+                              type, COD_GROUP, description, 
                               required_knowledge, notes, level, programme, 
-                              deadline, status) VALUES ('Maximising social welfare in selfish multi-modal routing using strategic information design for quantal response travelers', 't124', 'In-company work', 'Cloud Computing',
+                              deadline, status) VALUES ('Maximising social welfare in selfish multi-modal routing using strategic information design for quantal response travelers', 't124', 'In-company work', 'AAA2',
                                                         'Traditional selfish routing literature quantifies inefficiency in transportation systems with single-attribute costs using price-of-anarchy (PoA), and provides various technical approaches (e.g. marginal cost pricing) to improve PoA of the overall network', 
                                                         'None', '', 'MSc', 'LM-32',
                              							'2024-01-01', 'active');
                                                         
  INSERT INTO THESIS_PROPOSAL(title, SUPERVISOR_ID,
-                              type, groups, description, 
+                              type, COD_GROUP, description, 
                               required_knowledge, notes, level, programme, 
-                              deadline, status) VALUES ('AI in Autonomous Vehicles', 't124', 'Practical-based', 'AI and Data Science', 'This thesis explores the implementation of AI in autonomous vehicles, focusing on machine learning algorithms.', 
+                              deadline, status) VALUES ('AI in Autonomous Vehicles', 't124', 'Practical-based', 'AAA2', 'This thesis explores the implementation of AI in autonomous vehicles, focusing on machine learning algorithms.', 
 														'Machine Learning, Computer Vision', 'Please submit a brief overview of your relevant experience.', 'MSc', 'LM-32',
                                                        '2024-03-01', 'active');
 
