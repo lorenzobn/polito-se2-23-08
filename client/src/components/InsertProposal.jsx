@@ -273,6 +273,7 @@ function InsertProposal() {
 
           <div className="d-flex justify-content-end mt-4">
             <Button text={"Confirm"} onClick={handleSubmit}></Button>
+            <ToastContainer />
           </div>
         </form>
       </div>
