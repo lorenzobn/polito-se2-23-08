@@ -16,7 +16,7 @@ const createApplication = async (req, res) => {
       return res.status(400).json({ msg: error.details[0].message });
     }
     const query = `
-      INSERT INTO application (student_id, thesis_id, status, cv_uri)
+      INSERT INTO thesis_application (student_id, thesis_id, status, cv_uri)
       VALUES ($1, $2, $3, $4)
       RETURNING *;
     `;

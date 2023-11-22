@@ -37,7 +37,7 @@ export default function Applications() {
                     </Col>
                 </Row>
                 <Row className="border-thesis-div">
-                    <Col lg={{span:9, offset:3 }} >
+                    <Col lg={{span:8, offset:2 }} >
                         {
                             applications.map((e) =>
                                 <div key={e.thesis_id} className="thesis-section">
