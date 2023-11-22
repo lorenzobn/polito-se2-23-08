@@ -36,9 +36,19 @@ export const getMyApplications = async () => {
   }
 };
 
-export const searchProposal = async () => {
+export const searchProposal = async (keyword) => {
   try {
-    const res = await client.get("/thesis-proposals/search");
+    const res = await client.get("/thesis-proposals/search", {
+      params: {
+        title: keyword,
+        type: keyword, 
+        description: keyword, 
+        required_knowledge: keyword, 
+        notes: keyword, 
+        level: keyword, 
+        programme: keyword
+      }
+    });
     return res;
   } catch (err) {
     throw err;
@@ -54,9 +64,9 @@ export const postProposals = async () => {
   }
 };
 
-export const getProposal = async () => {
+export const getProposal = async (proposalId) => {
   try {
-    const res = await client.get("thesis-proposals/:proposalId");
+    const res = await client.get(`thesis-proposals/${proposalId}`);
     return res;
   } catch (err) {
     throw err;

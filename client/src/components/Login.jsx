@@ -1,14 +1,19 @@
 import React, { useState, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { Form, Row, Col, Button } from "react-bootstrap";
 import { StoreContext } from "../core/store/Provider";
 
 export default function Login() {
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const store = useContext(StoreContext);
+  const navigate = useNavigate();
+
   const loginHandler = (e) => {
     e.preventDefault();
     store.login(email, password);
+    navigate('/portal')
   };
 
   return (

@@ -285,6 +285,7 @@ const updateProposal = async (req, res) => {
 
 // TODO: add groups
 const searchProposal = async (req, res) => {
+ 
   try {
     const proposalSchema = Joi.object({
       title: Joi.string(),
@@ -295,9 +296,10 @@ const searchProposal = async (req, res) => {
       level: Joi.string(),
       programme: Joi.string()
     });
-
+ 
+  
     const { error, value } = proposalSchema.validate(req.query);
-    const { title, type, description, required_knowledge, notes, level, programme } = req.query;
+    const {title, type, description, required_knowledge, notes, level, programme} = req.query;
 
     const query = `
       SELECT * FROM thesis_proposal
