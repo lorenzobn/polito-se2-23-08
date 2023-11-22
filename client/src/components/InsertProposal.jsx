@@ -42,7 +42,6 @@ function InsertProposal() {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState("");
   const [selectedProgram, setSelectedProgram] = useState("");
-  const [selectedGroups, setSelectedGroups] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [formData, setFormData] = useState({
     title: "",
@@ -50,6 +49,7 @@ function InsertProposal() {
     knowledge: "",
     level: "Bachelor",
     deadline: "",
+    notes:"",
   });
 
   const store = useContext(StoreContext);
@@ -126,16 +126,16 @@ function InsertProposal() {
       const groups = "LM-32";
       const insertProposal = store.postProposals(
         formData.title,
+        SUPERVISOR_id,
         combinedData.type,
+        groups,
         formData.description,
         formData.knowledge,
+        formData.notes,
         combinedData.level,
         combinedData.program,
         formData.deadline,
-        notes,
-        status,
-        SUPERVISOR_id,
-        groups
+        status
       );
       setInsertProposals(insertProposal);
       toast.success("Your proposal submitted successfully!", {
@@ -269,6 +269,21 @@ function InsertProposal() {
               name="keywoards"
               placeHolder="Enter keywoards"
             />
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="notes" className="form-label">
+              Note:
+            </label>
+            <textarea
+              className="form-control border rounded px-3 py-2 mt-1 mb-2"
+              id="notes"
+              name="notes"
+              placeholder="Enter additional notes here..."
+              value={formData.description}
+              onChange={handleInputChange}
+              rows="3"
+            ></textarea>
           </div>
 
           <div className="d-flex justify-content-end mt-4">
