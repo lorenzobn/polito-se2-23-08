@@ -9,6 +9,7 @@ import {
   getProposal as getProposalAPI,
   getProposalsByTeacherId as getProposalsByTeacherIdAPI
 } from "../API/proposals";
+import { createApplication as createApplicationAPI } from "../API/applications";
 import { toast } from "react-toastify";
 export class Store {
   constructor() {
@@ -102,6 +103,17 @@ export class Store {
       const res = await getReceivedApplicationsAPI();
       return res.data.data;
     } catch (err) {
+      return [];
+    }
+  }
+
+  async createApplication(application) {
+    try {
+      const res = await createApplicationAPI(application);
+      toast.success("Application created");
+      return res.data.data;
+    } catch (err) {
+      toast.error('Cannot create applicaton')
       return [];
     }
   }

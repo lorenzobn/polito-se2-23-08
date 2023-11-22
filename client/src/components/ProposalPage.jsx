@@ -20,6 +20,17 @@ function ProposalPage() {
     store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
   }, []);
 
+  const handleApply = () => {
+    const application = {
+      student_id: store.user.id,
+      thesis_id: parseInt(param.id),
+      thesis_status:"idle",
+      cv_uri:""
+    }
+    store.createApplication(application).then(() => navigate('/'))
+
+  }
+
   const proposalDetails = {
     title: "Title",
     description:
@@ -82,7 +93,7 @@ function ProposalPage() {
             <BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/')}}></BadButton>
             </div>
             <div className="col text-end">
-            <Button icon={faCheck} text={"APPLY"}></Button>
+            <Button icon={faCheck} text={"APPLY"} onClick={handleApply}></Button>
             </div>
           </div>
         </form>

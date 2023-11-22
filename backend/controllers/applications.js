@@ -3,12 +3,13 @@ const Joi = require("@hapi/joi");
 
 // TODO: Only STUDENTS
 const createApplication = async (req, res) => {
+  
   try {
     const applicationSchema = Joi.object({
-      studentId: Joi.string().required(),
-      thesisId: Joi.number().integer().required(),
-      status: Joi.string().valid("idle", "approved", "rejected").required(),
-      cvUri: Joi.string().allow(""),
+      student_id: Joi.string().required(),
+      thesis_id: Joi.number().integer().required(),
+      thesis_status: Joi.string().valid("idle", "approved", "rejected").required(),
+      cv_uri: Joi.string().allow(""),
     });
 
     const { error, value } = applicationSchema.validate(req.body);
@@ -21,8 +22,8 @@ const createApplication = async (req, res) => {
       RETURNING *;
     `;
 
-    const values = [value.studentId, value.thesisId, value.status, value.cvUri];
-
+    const values = [value.student_id, value.thesis_id, value.thesis_status, value.cv_uri];
+    console.log(values)
     const result = await pool.query(query, values);
 
     return res
