@@ -78,13 +78,12 @@ export default function MyProposals() {
                             proposals.map((e) =>
                                 <div key={e.id} className="thesis-section">
                                     <header>
-                                        <h2 className="border-thesis-title"><Nav.Link href="/">{e.title}</Nav.Link></h2>
+                                        <h2 className="border-thesis-title"><Nav.Link href={`/proposalpage/${e.id}`}>{e.title}</Nav.Link></h2>
                                     </header>
                                     <div >
                                         <div >
                                             <p>{e.description}</p>
-                                            <p><a className="border-thesis-view">VIEW PROPOSAL </a></p>
-                                            
+                                            <p><a className="border-thesis-view" href={`/proposalpage/${e.id}`}>VIEW PROPOSAL </a></p>
                                         </div>
                                     </div>
                                 </div>

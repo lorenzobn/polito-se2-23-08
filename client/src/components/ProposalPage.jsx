@@ -93,10 +93,10 @@ function ProposalPage() {
           </div>
           <div className="row">
             <div className="col text-start">
-            <BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/')}}></BadButton>
+            {localStorage.getItem('type') === 'student'?<BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/')}}></BadButton>:<BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/thesis-proposals')}}></BadButton>}
             </div>
             <div className="col text-end">
-            <Button icon={faCheck} text={"APPLY"} onClick={handleApply}></Button>
+            {localStorage.getItem('type') === 'student'?<Button icon={faCheck} text={"APPLY"} onClick={handleApply}></Button>:<></>}
             </div>
           </div>
         </form>

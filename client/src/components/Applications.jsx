@@ -42,7 +42,7 @@ export default function Applications() {
                             applications.map((e) =>
                                 <div key={e.thesis_id} className="thesis-section">
                                     <header>
-                                        <h2 className="border-thesis-title"><Nav.Link href="/">{e.title}</Nav.Link></h2>
+                                        <h2 className="border-thesis-title"><Nav.Link href={`received-applications/${e.thesis_id}`}>{e.title}</Nav.Link></h2>
                                     </header>
                                     <div >
                                         <div >
