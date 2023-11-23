@@ -76,7 +76,21 @@ const keywordsAdd = async (thesisId, keyword) => {
   } catch (error) {
     return error;
   }
+}
 
+const getKeywords = async (thesisId) => {
+  const query = `
+  SELECT keyword FROM KEYWORDS WHERE thesisId=$1;
+  `;
+  const values = [
+    thesisId
+  ];
+  try {
+    const results = await pool.query(query, values)
+    return results.rows
+  } catch (error) {
+    return error;
+  }
 }
 
 const createProposal = async (req, res) => {
@@ -175,13 +189,14 @@ const getProposals = async (req, res) => {
 
 const getProposalbyId = async (req, res) => {
   const query = {
-    text: "SELECT * FROM thesis_proposal WHERE id=$1",
+    text: "SELECT thesis_proposal.id,teacher.name as sName, teacher.surname as sSurname, title,type,groups.name as groupName,description,required_knowledge,notes,level,programme,deadline,status,cod_degree,title_degree FROM thesis_proposal JOIN groups ON thesis_proposal.cod_group=groups.cod_group JOIN degree ON thesis_proposal.programme=degree.cod_degree JOIN teacher ON thesis_proposal.supervisor_id=teacher.id WHERE thesis_proposal.id=$1",
     values: [req.params.proposalId],
   };
   try {
-    const results = await pool.query(query).then((result) => {
+    const results = await pool.query(query).then(async (result) => {
       if (result.rowCount != 0) {
-        return res.status(200).json({ msg: "OK", data: result.rows });
+        let r = await getKeywords(req.params.proposalId);
+        return res.status(200).json({ msg: "OK", data: result.rows, keywords: r});       
       } else {
         return res.status(404).json({ msg: "Resource not found" });
       }
