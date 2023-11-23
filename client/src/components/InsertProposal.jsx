@@ -8,6 +8,7 @@ import Button from "./Button";
 import { StoreContext } from "../core/store/Provider";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { MultiSelect } from "react-multi-select-component";
 
 const KeyCodes = {
   comma: 188,
@@ -36,6 +37,12 @@ const options = [
   { value: "BE", label: "BE" },
 ];
 
+const internal_co_supervisors = [
+  { label: "t123", value: "Enrico Bini" },
+  { label: "t124", value: "Matteo Sereno" },
+  { label: "t125", value: "Monsutti Alessandro", disabled: true },
+];
+
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 function InsertProposal() {
@@ -51,6 +58,9 @@ function InsertProposal() {
     deadline: "",
     notes: "",
   });
+
+  const [selectedInternalCoSupervisors, setSelectedInternalCoSupervisors] =
+    useState([]);
 
   const [userType, setUserType] = useState([]);
 
@@ -245,13 +255,14 @@ function InsertProposal() {
             </div>
 
             <div className="col-md-6">
-              <label htmlFor="type" className="form-label block">
-                Type:
+              <label htmlFor="co-supervisors" className="form-label block">
+                Co-supervisors:
               </label>
-              <Select
-                defaultValue={selectedType}
-                onChange={setSelectedType}
-                options={options}
+              <MultiSelect
+                options={internal_co_supervisors}
+                value={selectedInternalCoSupervisors}
+                onChange={setSelectedInternalCoSupervisors}
+                labelledBy="Select"
               />
             </div>
 
@@ -268,6 +279,20 @@ function InsertProposal() {
                 onChange={handleInputChange}
               />
             </div>
+          </div>
+
+          <div className="mb-3">
+            <label htmlFor="type" className="form-label block">
+              Type:
+            </label>
+            <input
+              type="text"
+              className="form-control border rounded px-3 py-2 mt-1 mb-2"
+              id="type"
+              name="type"
+              placeholder="Enter type..."
+              onChange={setSelectedType}
+            />
           </div>
 
           <div className="mb-3">
