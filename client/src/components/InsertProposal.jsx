@@ -73,8 +73,8 @@ function InsertProposal() {
     const handleEffect = async () => {
       if (store.user.type == "student") {
         setUserType("student");
-      } else if (store.user.type == "teacher") {
-        setUserType("teacher");
+      } else if (store.user.type == "professor") {
+        setUserType("professor");
       }
 
       setCombinedData({
