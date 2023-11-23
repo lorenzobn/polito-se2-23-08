@@ -324,13 +324,19 @@ const searchProposal = async (req, res) => {
       description: Joi.string(),
       required_knowledge: Joi.string(),
       notes: Joi.string(),
-      level: Joi.string(),
+      level: Joi.string().valid('BSc', 'MSc'),
       programme: Joi.string()
     });
  
-  
+    
     const { error, value } = proposalSchema.validate(req.query);
-    const {title, type, description, required_knowledge, notes, level, programme} = req.query;
+    let {title, type, description, required_knowledge, notes, level, programme} = req.query;
+    title = title.toLowerCase()
+    type = type.toLowerCase()
+    description = description.toLowerCase() 
+    required_knowledge = required_knowledge.toLowerCase()
+    notes = notes.toLowerCase()
+    //programme = programme.toLowerCase() //not yet, becasue the programme is a CODE
 
     const query = `
       SELECT * FROM thesis_proposal
