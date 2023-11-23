@@ -5,6 +5,7 @@ const {
   createProposal,
   updateProposal,
   searchProposal,
+  getAllCdS,
 } = require("./controllers/proposals.js");
 const {
   getApplications,
@@ -51,6 +52,7 @@ router.get(
 );
 
 //router.get("/my-applications/decisions", getApplicationsDecisions);
+router.get("/cds", getAllCdS)
 
 router.get(
   "/received-applications",
