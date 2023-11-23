@@ -72,7 +72,6 @@ function InsertProposal() {
     ...formData,
     keywords: selectedKeywords,
     level: selectedLevel.value,
-    group: selectedGroups.value,
     program: selectedProgram.value,
     type: selectedType.value,
   });
