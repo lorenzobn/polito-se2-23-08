@@ -25,18 +25,6 @@ const programs = [
   { value: "LM-19", label: "Chemical Engineering" },
 ];
 
-const groups = [
-  { value: "AI", label: "AI" },
-  { value: "SE", label: "SE" },
-  { value: "Network", label: "Network" },
-];
-
-const options = [
-  { value: "CE", label: "CE" },
-  { value: "ME", label: "ME" },
-  { value: "BE", label: "BE" },
-];
-
 const internal_co_supervisors = [
   { label: "t123", value: "Enrico Bini" },
   { label: "t124", value: "Matteo Sereno" },
@@ -54,9 +42,9 @@ function InsertProposal() {
     title: "",
     description: "",
     knowledge: "",
-    level: "Bachelor",
     deadline: "",
     notes: "",
+    type:"",
   });
 
   const [selectedInternalCoSupervisors, setSelectedInternalCoSupervisors] =
@@ -71,9 +59,8 @@ function InsertProposal() {
   const [combinedData, setCombinedData] = useState({
     ...formData,
     keywords: selectedKeywords,
-    level: selectedLevel.value,
+    level: selectedLevel,
     program: selectedProgram.value,
-    type: selectedType.value,
   });
 
   useEffect(() => {
@@ -90,13 +77,11 @@ function InsertProposal() {
         ...formData,
         keywords: selectedKeywords,
         level: selectedLevel.value,
-        group: selectedGroups.value,
         program: selectedProgram.value,
-        type: selectedType.value,
       });
     };
     handleEffect();
-  }, [formData, selectedKeywords]);
+  }, [formData, selectedKeywords, userType]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -135,7 +120,7 @@ function InsertProposal() {
         toast.error("Program shouldn't be empty!", {
           position: toast.POSITION.TOP_CENTER,
         });
-      } else if (selectedType.length === 0) {
+      } else if (formData.type.trim() === "") {
         toast.error("Type shouldn't be empty!", {
           position: toast.POSITION.TOP_CENTER,
         });
@@ -143,7 +128,7 @@ function InsertProposal() {
         const status = "active";
         const insertProposal = store.postProposals(
           formData.title,
-          combinedData.type,
+          formData.type,
           formData.description,
           formData.knowledge,
           formData.notes,
@@ -289,8 +274,9 @@ function InsertProposal() {
               className="form-control border rounded px-3 py-2 mt-1 mb-2"
               id="type"
               name="type"
+              value={formData.type}
               placeholder="Enter type..."
-              onChange={setSelectedType}
+              onChange={handleInputChange}
             />
           </div>
 
