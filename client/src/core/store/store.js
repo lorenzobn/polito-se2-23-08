@@ -9,6 +9,7 @@ import {
   getProposal as getProposalAPI,
   getProposalsByTeacherId as getProposalsByTeacherIdAPI
 } from "../API/proposals";
+import { createApplication as createApplicationAPI } from "../API/applications";
 import { toast } from "react-toastify";
 export class Store {
   constructor() {
@@ -106,6 +107,17 @@ export class Store {
     }
   }
 
+  async createApplication(application) {
+    try {
+      const res = await createApplicationAPI(application);
+      toast.success("Application created");
+      return res.data.data;
+    } catch (err) {
+      toast.error('Cannot create applicaton')
+      return [];
+    }
+  }
+
   async getMyApplications(email, password) {
     try {
       const res = await getMyApplicationsAPI();
@@ -115,9 +127,9 @@ export class Store {
     }
   }
 
-  async postProposals(email, password) {
+  async postProposals(title, type, description, requiredKnowledge, notes, level, programme, deadline , status, keywords) {
     try {
-      const res = await postProposalsAPI();
+      const res = await postProposalsAPI(title, type, description, requiredKnowledge, notes, level, programme, deadline , status, keywords);
       return res.data.data;
     } catch (err) {
       return [];

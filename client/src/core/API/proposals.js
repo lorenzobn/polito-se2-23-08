@@ -55,9 +55,20 @@ export const searchProposal = async (keyword) => {
   }
 };
 
-export const postProposals = async () => {
+export const postProposals = async (title, type, description, requiredKnowledge, notes, level, programme, deadline , status, keywords) => {
   try {
-    const res = await client.post("/thesis-proposals");
+    const res = await client.post("/thesis-proposals" , {
+      title,
+      type,
+      description,
+      requiredKnowledge,
+      notes,
+      level,
+      programme,
+      deadline,
+      status,
+      keywords,
+    });
     return res;
   } catch (err) {
     throw err;

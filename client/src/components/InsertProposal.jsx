@@ -1,10 +1,14 @@
 import Navbar from "./Navbar";
 import React, { useState, useEffect, useContext } from "react";
+import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { TagsInput } from "react-tag-input-component";
 import "../App.css";
 import Button from "./Button";
 import { StoreContext } from "../core/store/Provider";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { MultiSelect } from "react-multi-select-component";
 
 const KeyCodes = {
   comma: 188,
@@ -14,13 +18,11 @@ const KeyCodes = {
 const levels = [
   { value: "BSc", label: "Bachelor" },
   { value: "MSc", label: "Master" },
-  //{ value: "PhD", label: "PhD" },
 ];
 
 const programs = [
-  { value: "CE", label: "CE" },
-  { value: "ME", label: "ME" },
-  { value: "BE", label: "BE" },
+  { value: "LM-32", label: "Computer Engineering" },
+  { value: "LM-19", label: "Chemical Engineering" },
 ];
 
 const groups = [
@@ -35,13 +37,18 @@ const options = [
   { value: "BE", label: "BE" },
 ];
 
+const internal_co_supervisors = [
+  { label: "t123", value: "Enrico Bini" },
+  { label: "t124", value: "Matteo Sereno" },
+  { label: "t125", value: "Monsutti Alessandro", disabled: true },
+];
+
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 function InsertProposal() {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState("");
   const [selectedProgram, setSelectedProgram] = useState("");
-  const [selectedGroups, setSelectedGroups] = useState("");
   const [selectedType, setSelectedType] = useState("");
   const [formData, setFormData] = useState({
     title: "",
@@ -49,10 +56,17 @@ function InsertProposal() {
     knowledge: "",
     level: "Bachelor",
     deadline: "",
+    notes: "",
   });
 
+  const [selectedInternalCoSupervisors, setSelectedInternalCoSupervisors] =
+    useState([]);
+
+  const [userType, setUserType] = useState([]);
+
   const store = useContext(StoreContext);
-  const [insertPrposals, setInsertProposals] = useState([]);
+  const [insertProposals, setInsertProposals] = useState([]);
+  const navigate = useNavigate();
 
   const [combinedData, setCombinedData] = useState({
     ...formData,
@@ -67,10 +81,12 @@ function InsertProposal() {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
     const handleEffect = async () => {
-      const insertPrposals = await store.postProposals(combinedData);
-      setInsertProposals(insertPrposals);
+      if (store.user.type == "student") {
+        setUserType("student");
+      } else if (store.user.type == "professor") {
+        setUserType("professor");
+      }
 
-      //ADD THIS TO GITHUB
       setCombinedData({
         ...formData,
         keywords: selectedKeywords,
@@ -86,23 +102,70 @@ function InsertProposal() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Check if any of the inputs are empty
-    if (
-      formData.title.trim() === "" ||
-      formData.description.trim() === "" ||
-      formData.knowledge.trim() === "" ||
-      formData.level.trim() === "" ||
-      formData.deadline.trim() === "" ||
-      selectedKeywords.length === 0 ||
-      selectedLevel.length === 0 ||
-      selectedProgram.length === 0 ||
-      selectedType.length === 0
-    ) {
-      alert("Please fill in all the fields.");
-      return;
+    if (userType === "student") {
+      toast.error("Yoy are not authorized to create proposal!!!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    } else {
+      // Check if any of the inputs are empty
+      if (formData.title.trim() === "") {
+        toast.error("Title shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (formData.description.trim() === "") {
+        toast.error("Description shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (formData.knowledge.trim() === "") {
+        toast.error("Required knowledge shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (formData.deadline.trim() === "") {
+        toast.error("Deadline shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (selectedKeywords.length === 0) {
+        toast.error("Keywords shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (selectedLevel.length === 0) {
+        toast.error("Level shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (selectedProgram.length === 0) {
+        toast.error("Program shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (selectedType.length === 0) {
+        toast.error("Type shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else {
+        const status = "active";
+        const insertProposal = store.postProposals(
+          formData.title,
+          combinedData.type,
+          formData.description,
+          formData.knowledge,
+          formData.notes,
+          combinedData.level,
+          combinedData.program,
+          formData.deadline,
+          status,
+          combinedData.keywords
+        );
+        setInsertProposals(insertProposal);
+        console.log("Insert log:", insertProposals);
+        if (insertProposal) {
+          toast.success("Your proposal submitted successfully!", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+          navigate("/thesis-proposals");
+        }
+      }
     }
-    console.log("Form submitted!", combinedData);
   };
+
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
@@ -192,13 +255,14 @@ function InsertProposal() {
             </div>
 
             <div className="col-md-6">
-              <label htmlFor="type" className="form-label block">
-                Type:
+              <label htmlFor="co-supervisors" className="form-label block">
+                Co-supervisors:
               </label>
-              <Select
-                defaultValue={selectedType}
-                onChange={setSelectedType}
-                options={options}
+              <MultiSelect
+                options={internal_co_supervisors}
+                value={selectedInternalCoSupervisors}
+                onChange={setSelectedInternalCoSupervisors}
+                labelledBy="Select"
               />
             </div>
 
@@ -218,6 +282,20 @@ function InsertProposal() {
           </div>
 
           <div className="mb-3">
+            <label htmlFor="type" className="form-label block">
+              Type:
+            </label>
+            <input
+              type="text"
+              className="form-control border rounded px-3 py-2 mt-1 mb-2"
+              id="type"
+              name="type"
+              placeholder="Enter type..."
+              onChange={setSelectedType}
+            />
+          </div>
+
+          <div className="mb-3">
             <label htmlFor="keywords" className="form-label block">
               Keywords:
             </label>
@@ -229,8 +307,24 @@ function InsertProposal() {
             />
           </div>
 
+          <div className="mb-3">
+            <label htmlFor="notes" className="form-label">
+              Note:
+            </label>
+            <textarea
+              className="form-control border rounded px-3 py-2 mt-1 mb-2"
+              id="notes"
+              name="notes"
+              placeholder="Enter additional notes here..."
+              value={formData.notes}
+              onChange={handleInputChange}
+              rows="3"
+            ></textarea>
+          </div>
+
           <div className="d-flex justify-content-end mt-4">
             <Button text={"Confirm"} onClick={handleSubmit}></Button>
+            <ToastContainer />
           </div>
         </form>
       </div>

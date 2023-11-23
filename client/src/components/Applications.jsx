@@ -37,12 +37,12 @@ export default function Applications() {
                     </Col>
                 </Row>
                 <Row className="border-thesis-div">
-                    <Col lg={{span:9, offset:3 }} >
+                    <Col lg={{span:8, offset:2 }} >
                         {
                             applications.map((e) =>
                                 <div key={e.thesis_id} className="thesis-section">
                                     <header>
-                                        <h2 className="border-thesis-title"><Nav.Link href="/">{e.title}</Nav.Link></h2>
+                                        <h2 className="border-thesis-title"><Nav.Link href={`received-applications/${e.thesis_id}`}>{e.title}</Nav.Link></h2>
                                     </header>
                                     <div >
                                         <div >

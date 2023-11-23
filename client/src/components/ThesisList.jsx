@@ -8,6 +8,7 @@ import {
   Dropdown,
   DropdownButton,
   Form,
+  Offcanvas
 } from "react-bootstrap";
 import Button from "./Button";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
@@ -18,6 +19,8 @@ function ThesisList(props) {
   const [proposals, setProposals] = useState([]);
   const [keyword, setKeyword] = useState('');
   const [degree, setDegree] = useState('All')
+  const [show, setShow] = useState(false);
+  const [filter, setFilter] = useState("")
 
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
@@ -29,12 +32,19 @@ function ThesisList(props) {
     handleEffect();
   }, []);
 
+  const handleClose = () => setShow(false);
+  const handleShow = (filter) => {
+    
+    setFilter(filter)
+    setShow(true)
+  };
+
   const handleSearch = () => {
     store.searchProposal(keyword).then(res => setProposals(res));
   }
 
   const handleKeyDown = (ev) => {
-    if(ev.keyCode == 13) {
+    if (ev.keyCode == 13) {
       ev.preventDefault()
       handleSearch()
     }
@@ -61,11 +71,11 @@ function ThesisList(props) {
             <Form inline="true">
               <Row>
                 <Col xs="auto">
-                  <Form.Control 
+                  <Form.Control
                     type="text"
-                    placeholder = 'Search'
-                    className=" mr-sm-2" 
-                    onChange={ev => {setKeyword(ev.target.value)}}
+                    placeholder='Search'
+                    className=" mr-sm-2"
+                    onChange={ev => { setKeyword(ev.target.value) }}
                     onKeyDown={handleKeyDown}
                   />
                 </Col>
@@ -81,34 +91,45 @@ function ThesisList(props) {
             lg={2}
             className="d-flex border-thesis-filter"
           >
+            <Offcanvas show={show} onHide={handleClose}>
+              <Offcanvas.Header closeButton>
+                <Offcanvas.Title>{filter}</Offcanvas.Title>
+              </Offcanvas.Header>
+              <Offcanvas.Body>
+                <Nav>
+
+                </Nav>
+              </Offcanvas.Body>
+            </Offcanvas>
             <Nav
               variant="underline"
               className="flex-column m-5"
+              onSelect={handleShow}
             >
               <Nav.Item className="d-inline-flex">
-                <Nav.Link className="filter-decoration" eventKey="research">
+                <Nav.Link className="filter-decoration" eventKey="Research Group">
                   By Research Group
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item className="d-inline-flex">
-                <Nav.Link className="filter-decoration" eventKey="authors">
+                <Nav.Link className="filter-decoration" eventKey="Supervisor">
                   By Supervisor
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item className="d-inline-flex">
-                <Nav.Link className="filter-decoration" eventKey="title">
+                <Nav.Link className="filter-decoration" eventKey="Title">
                   By Title
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item className="d-inline-flex">
-                <Nav.Link className="filter-decoration" eventKey="sub">
+                <Nav.Link className="filter-decoration" eventKey="Subject">
                   By Subject
                 </Nav.Link>
               </Nav.Item>
             </Nav>
           </Col>
           <Col lg={8}>
-            {degree === 'All'? proposals.map((e) => (
+            {degree === 'All' ? proposals.map((e) => (
               <div key={e.id} className="thesis-section">
                 <header>
                   <h2 className="border-thesis-title">
@@ -124,25 +145,25 @@ function ThesisList(props) {
                   </div>
                 </div>
               </div>
-            )):
-            proposals.filter(e => e.level === degree).map((e) => (
-              <div key={e.id} className="thesis-section">
-                <header>
-                  <h2 className="border-thesis-title">
-                    <Nav.Link href={`/proposalpage/${e.id}`}>{e.title}</Nav.Link>
-                  </h2>
-                </header>
-                <div>
+            )) :
+              proposals.filter(e => e.level === degree).map((e) => (
+                <div key={e.id} className="thesis-section">
+                  <header>
+                    <h2 className="border-thesis-title">
+                      <Nav.Link href={`/proposalpage/${e.id}`}>{e.title}</Nav.Link>
+                    </h2>
+                  </header>
                   <div>
-                    <p>{e.description}</p>
-                    <p>
-                      <a className="border-thesis-view" href={`/proposalpage/${e.id}`}>VIEW</a>
-                    </p>
+                    <div>
+                      <p>{e.description}</p>
+                      <p>
+                        <a className="border-thesis-view" href={`/proposalpage/${e.id}`}>VIEW</a>
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          }
+              ))
+            }
           </Col>
         </Row>
       </Container>

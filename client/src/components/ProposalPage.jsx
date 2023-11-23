@@ -7,12 +7,12 @@ import { StoreContext } from "../core/store/Provider";
 import { faArrowLeft, faCheck } from "@fortawesome/free-solid-svg-icons";
 
 function ProposalPage() {
-  const navigate = useNavigate()
-  const param = useParams()
-  const proposalId = param.id
+  const navigate = useNavigate();
+  const param = useParams();
+  const proposalId = param.id;
 
-  const store = useContext(StoreContext)
-  const [proposal, setProposal] = useState({})
+  const store = useContext(StoreContext);
+  const [proposal, setProposal] = useState({});
 
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
@@ -20,18 +20,14 @@ function ProposalPage() {
     store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
   }, []);
 
-  const proposalDetails = {
-    title: "Title",
-    description:
-      "In the realm of artificial intelligence, algorithms dance in the circuits of silicon minds, orchestrating a symphony of binary brilliance. Lines of code, like digital neurons, weave intricate patterns of logic and learning, giving rise to machines that navigate the seas of data with electronic finesse. In this digital tapestry, algorithms evolve, mirroring the relentless march of progress in a world where silicon dreams meet human ingenuity. As the algorithms hum in the heart of machines, the future unfolds in the language of zeros and ones, a technological sonnet sung by the collective intelligence of the digital age.",
-    requiredKnowledge: "Required Knowledge Details",
-    level: "PhD",
-    group: "Artificial Intelligent",
-    cds: "Computer Engineering",
-    type: "Research",
-    deadline: "2023-11-15",
-    keywords: "ML, NL, Python",
-    supervisor: "Professor Torchiano",
+  const handleApply = () => {
+    const application = {
+      student_id: store.user.id,
+      thesis_id: parseInt(param.id),
+      thesis_status: "idle",
+      cv_uri: "",
+    };
+    store.createApplication(application).then(() => navigate("/"));
   };
 
   return (
@@ -48,7 +44,8 @@ function ProposalPage() {
             </strong>
           </div>
           <div className="mb-3">
-            <strong>Supervisor:</strong> {proposal.supervisor_id}
+            <strong>Supervisor:</strong>{" "}
+            {proposal.sname + " " + proposal.ssurname}
           </div>
           <div className="mb-3">
             <strong>Deadline:</strong> {proposal.deadline}
@@ -64,25 +61,27 @@ function ProposalPage() {
               <strong>Level:</strong> {proposal.level}
             </div>
             <div className="col-md-3">
-              <strong>CdS:</strong> {proposal.cds}
+              <strong>CdS:</strong> {proposal.programme}
             </div>
             <div className="col-md-3">
-              <strong>Group:</strong> {proposal.groups}
+              <strong>Group:</strong> {proposal.groupname}
             </div>
             <div className="col-md-3">
               <strong>Type:</strong> {proposal.type}
             </div>
           </div>
           <div className="mb-3">
-            <strong>Required Knowledge:</strong>{" "}
-            {proposal.required_knowledge}
+            <strong>Required Knowledge:</strong> {proposal.required_knowledge}
+          </div>
+          <div className="mb-3">
+            <strong>{proposal.notes}</strong>
           </div>
           <div className="row">
             <div className="col text-start">
-            <BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/')}}></BadButton>
+            {localStorage.getItem('type') === 'student'?<BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/')}}></BadButton>:<BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/thesis-proposals')}}></BadButton>}
             </div>
             <div className="col text-end">
-            <Button icon={faCheck} text={"APPLY"}></Button>
+            {localStorage.getItem('type') === 'student'?<Button icon={faCheck} text={"APPLY"} onClick={handleApply}></Button>:<></>}
             </div>
           </div>
         </form>

@@ -77,7 +77,7 @@ function MyNavbar() {
           <div style={{ lineHeight: "200%" }}>
             <Nav variant="underline">
               {store.user.type === "student" ? (
-                <Nav.Link className="d-inline-flex text-white" href="/thesis-proposals">
+                <Nav.Link className="d-inline-flex text-white" href="/">
                   THESIS
                 </Nav.Link>
               ) : (
