@@ -337,10 +337,10 @@ const searchProposal = async (req, res) => {
     required_knowledge = required_knowledge.toLowerCase()
     notes = notes.toLowerCase()
     //programme = programme.toLowerCase() //not yet, becasue the programme is a CODE
-
+    //console.log(title, type, description, required_knowledge, notes, level, programme)
     const query = `
       SELECT * FROM thesis_proposal
-      WHERE title LIKE '%${title}%' OR type LIKE '%${type}%' OR description LIKE '%${description}%' OR required_knowledge LIKE '%${required_knowledge}%' OR notes LIKE '%${notes}%' OR level LIKE '%${level}%' OR programme LIKE '%${programme}%';
+      WHERE LOWER(title) LIKE '%${title}%' OR LOWER(type) LIKE '%${type}%' OR LOWER(description) LIKE '%${description}%' OR LOWER(required_knowledge) LIKE '%${required_knowledge}%' OR LOWER(notes) LIKE '%${notes}%' OR LOWER(programme) LIKE '%${programme}%';
     `;
 
     const results = await pool.query(query).then((result) => {
