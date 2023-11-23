@@ -139,7 +139,6 @@ function InsertProposal() {
           combinedData.keywords
         );
         setInsertProposals(insertProposal);
-        console.log("Insert log:", insertProposals);
         if (insertProposal) {
           toast.success("Your proposal submitted successfully!", {
             position: toast.POSITION.TOP_CENTER,
