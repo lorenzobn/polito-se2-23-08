@@ -52,6 +52,8 @@ function InsertProposal() {
     notes: "",
   });
 
+  const [userType, setUserType] = useState([]);
+
   const store = useContext(StoreContext);
   const [insertProposals, setInsertProposals] = useState([]);
   const navigate = useNavigate();
@@ -69,8 +71,12 @@ function InsertProposal() {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
     const handleEffect = async () => {
-      // const insertPrposals = await store.postProposals(combinedData);
-      // setInsertProposals(insertPrposals);
+      const user = await store.fetchSelf();
+      if (user.type == "student") {
+        setUserType("student");
+      } else if (user.type == "teacher") {
+        setUserType("teacher");
+      }
 
       setCombinedData({
         ...formData,
@@ -87,59 +93,67 @@ function InsertProposal() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    // Check if any of the inputs are empty
-    if (formData.title.trim() === "") {
-      toast.error("Title shouldn't be empty!", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    } else if (formData.description.trim() === "") {
-      toast.error("Description shouldn't be empty!", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    } else if (formData.knowledge.trim() === "") {
-      toast.error("Required knowledge shouldn't be empty!", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    } else if (formData.deadline.trim() === "") {
-      toast.error("Deadline shouldn't be empty!", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    } else if (selectedKeywords.length === 0) {
-      toast.error("Keywords shouldn't be empty!", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    } else if (selectedLevel.length === 0) {
-      toast.error("Level shouldn't be empty!", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    } else if (selectedProgram.length === 0) {
-      toast.error("Program shouldn't be empty!", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-    } else if (selectedType.length === 0) {
-      toast.error("Type shouldn't be empty!", {
+    if (userType === "student") {
+      toast.error("Yoy are not authorized to create proposal!!!", {
         position: toast.POSITION.TOP_CENTER,
       });
     } else {
-      const status = "active";
-      const insertProposal = store.postProposals(
-        formData.title,
-        combinedData.type,
-        formData.description,
-        formData.knowledge,
-        formData.notes,
-        combinedData.level,
-        combinedData.program,
-        formData.deadline,
-        status,
-        combinedData.keywords,
-
-      );
-      setInsertProposals(insertProposal);
-      toast.success("Your proposal submitted successfully!", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-      navigate("/thesis-proposals");
+      // Check if any of the inputs are empty
+      if (formData.title.trim() === "") {
+        toast.error("Title shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (formData.description.trim() === "") {
+        toast.error("Description shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (formData.knowledge.trim() === "") {
+        toast.error("Required knowledge shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (formData.deadline.trim() === "") {
+        toast.error("Deadline shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (selectedKeywords.length === 0) {
+        toast.error("Keywords shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (selectedLevel.length === 0) {
+        toast.error("Level shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (selectedProgram.length === 0) {
+        toast.error("Program shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else if (selectedType.length === 0) {
+        toast.error("Type shouldn't be empty!", {
+          position: toast.POSITION.TOP_CENTER,
+        });
+      } else {
+        const status = "active";
+        const insertProposal = store.postProposals(
+          formData.title,
+          combinedData.type,
+          formData.description,
+          formData.knowledge,
+          formData.notes,
+          combinedData.level,
+          combinedData.program,
+          formData.deadline,
+          status,
+          combinedData.keywords
+        );
+        setInsertProposals(insertProposal);
+        console.log("Insert log:", insertProposals);
+        if (insertProposal) {
+          toast.success("Your proposal submitted successfully!", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+          navigate("/thesis-proposals");
+        }
+      }
     }
   };
 
