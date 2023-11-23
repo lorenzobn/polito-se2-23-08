@@ -71,10 +71,9 @@ function InsertProposal() {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
     const handleEffect = async () => {
-      const user = await store.fetchSelf();
-      if (user.type == "student") {
+      if (store.user.type == "student") {
         setUserType("student");
-      } else if (user.type == "teacher") {
+      } else if (store.user.type == "teacher") {
         setUserType("teacher");
       }
 
