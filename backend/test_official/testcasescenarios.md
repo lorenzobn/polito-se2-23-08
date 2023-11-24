@@ -286,12 +286,11 @@ Error message: "Description is required."
 - Display a list of all applications, including relevant details such as student name, proposal title, application status, and submission date.
 
 
-## **T.5.2 Filter Applications by Student Name:**
+## **T.5.2 Filter Applications by ID:**
 **Input:**
-- Professor ID: [valid professor ID]
-- Student Name: [partial or complete name of a student]
+- Proposal ID: [valid proposal ID]
 **Expected Output:**
-- Display a filtered list of applications related to the specified student name, including relevant details.
+- Display a filtered list of applications related to the proposal, including relevant details.
 
 
 ## **T.5.3 Filter Applications by Status (Accepted):**
