@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 import { useNavigate } from "react-router-dom";
-import politoImg from "../../images/polito.jpeg";
 function MyNavbar() {
   const store = useContext(StoreContext);
 
