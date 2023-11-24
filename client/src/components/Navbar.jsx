@@ -5,7 +5,7 @@ import { StoreContext } from "../core/store/Provider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUser } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
-import { useNavigate } from "react-router-dom";
+
 function MyNavbar() {
   const store = useContext(StoreContext);
 
