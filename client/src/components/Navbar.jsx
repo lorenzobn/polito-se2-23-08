@@ -9,7 +9,6 @@ import { useNavigate } from "react-router-dom";
 import politoImg from "../../images/polito.jpeg";
 function MyNavbar() {
   const store = useContext(StoreContext);
-  const navigate = useNavigate();
 
   return (
     <Container className="nav-wrap" fluid>
@@ -24,34 +23,36 @@ function MyNavbar() {
               <Button
                 text={"Login"}
                 icon={faUser}
-                onClick={() => navigate("/login")}
+                onClick={() => {
+                  store.login();
+                }}
               ></Button>
             </div>
           )}{" "}
           {store.user.authenticated && (
             <>
-            <div style={{color:'white', fontSize:'120%'}}>
-              {`${store.user.id}`}
-            </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <div style={{color:'white', fontSize:'120%'}}>
-              {`${store.user.name} ${store.user.surname}`}
-            </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;
-            <NavDropdown
-              title={
-                <FontAwesomeIcon
-                  style={{ color: "white", fontSize: "24px" }}
-                  icon={faUser}
-                />
-              }
-              className="mr-5"
-            >
-              <NavDropdown.Item href="/portal">My Profile</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="/portal">Settings</NavDropdown.Item>
-              <NavDropdown.Item >Logout</NavDropdown.Item>
-            </NavDropdown>
+              <div style={{ color: "white", fontSize: "120%" }}>
+                {`${store.user.id}`}
+              </div>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <div style={{ color: "white", fontSize: "120%" }}>
+                {`${store.user.name} ${store.user.surname}`}
+              </div>
+              &nbsp;&nbsp;&nbsp;&nbsp;
+              <NavDropdown
+                title={
+                  <FontAwesomeIcon
+                    style={{ color: "white", fontSize: "24px" }}
+                    icon={faUser}
+                  />
+                }
+                className="mr-5"
+              >
+                <NavDropdown.Item href="/portal">My Profile</NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item href="/portal">Settings</NavDropdown.Item>
+                <NavDropdown.Item>Logout</NavDropdown.Item>
+              </NavDropdown>
             </>
           )}
         </Col>
@@ -77,7 +78,10 @@ function MyNavbar() {
           <div style={{ lineHeight: "200%" }}>
             <Nav variant="underline">
               {store.user.type === "student" ? (
-                <Nav.Link className="d-inline-flex text-white" href="/">
+                <Nav.Link
+                  className="d-inline-flex text-white"
+                  href="/thesis-proposals"
+                >
                   THESIS
                 </Nav.Link>
               ) : (

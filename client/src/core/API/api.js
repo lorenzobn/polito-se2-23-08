@@ -7,4 +7,5 @@ export const client = axios.create({
     "Content-Type": "application/json",
     auth: localStorage.getItem("auth"),
   },
+  withCredentials: true,
 });

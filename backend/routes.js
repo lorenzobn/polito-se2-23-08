@@ -16,14 +16,17 @@ const {
   updateApplication,
 } = require("./controllers/applications.js");
 
-const { userLogin } = require("./controllers/auth.js");
+const {
+  userLogin,
+  login,
+  assertion,
+  tokenVerification,
+  authorize,
+  logout,
+} = require("./controllers/auth.js");
 
 const express = require("express");
-const {
-  verifyToken,
-  verifyStudentToken,
-  verifyTeacherToken,
-} = require("./middleware/authMiddleware");
+
 const { fetchSelf } = require("./controllers/users.js");
 const router = express.Router();
 
@@ -32,48 +35,44 @@ router.get("/", (req, res) => {
   res.status(200).json({ msg: "health check passed! API is alive." });
 });
 
-router.get("/self", verifyToken, fetchSelf);
+router.get("/self", authorize, fetchSelf);
 
 /* ADD STUFF HERE */
-router.post("/thesis-proposals", verifyTeacherToken, createProposal);
+router.post("/thesis-proposals", authorize, createProposal);
 //router.post("/thesis-proposals", createProposal);
 router.get("/thesis-proposals", getProposals);
-router.get("/my-thesis-proposals", verifyTeacherToken, getProposalsByTeacher);
-router.get("/thesis-proposals/search", verifyToken, searchProposal);
-router.get("/thesis-proposals/:proposalId", verifyToken, getProposalbyId);
-router.put("/thesis-proposals/:proposalId", verifyTeacherToken, updateProposal);
+router.get("/my-thesis-proposals", authorize, getProposalsByTeacher);
+router.get("/thesis-proposals/search", authorize, searchProposal);
+router.get("/thesis-proposals/:proposalId", authorize, getProposalbyId);
+router.put("/thesis-proposals/:proposalId", authorize, updateProposal);
 
-router.post("/my-applications", verifyStudentToken, createApplication);
-router.get("/my-applications", verifyStudentToken, getApplications);
-router.get(
-  "/my-applications/:applicationId",
-  verifyStudentToken,
-  getApplicationById
-);
+router.post("/my-applications", authorize, createApplication);
+router.get("/my-applications", authorize, getApplications);
+router.get("/my-applications/:applicationId", authorize, getApplicationById);
 
 //router.get("/my-applications/decisions", getApplicationsDecisions);
 router.get("/cds", getAllCdS)
 
-router.get(
-  "/received-applications",
-  verifyTeacherToken,
-  getReceivedApplications
-);
+router.get("/received-applications", authorize, getReceivedApplications);
 
 router.get(
   "/received-applications/:thesisId",
-  verifyTeacherToken,
+  authorize,
   getReceivedApplicationsByThesisId
 );
 
 router.put(
   "/received-applications/:applicationId",
-  verifyTeacherToken,
+  authorize,
   updateApplication
 );
 
 // AUTHENTICATION ROUTES
 //router.post('/register', userSignup);
-router.post("/login", userLogin);
+router.get("/login", login);
+router.post("/logout", logout);
+
+router.post("/sso/acs", assertion);
+router.post("/sso/verification", tokenVerification);
 
 module.exports = router;

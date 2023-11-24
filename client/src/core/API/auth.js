@@ -1,8 +1,17 @@
 import { client } from "./api";
 
-export const login = async (email, password) => {
+export const loginVerification = async (token) => {
   try {
-    const res = await client.post("login", { email, password });
+    const res = await client.post("sso/verification", { token });
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const login = async () => {
+  try {
+    const res = await client.get("login");
     return res;
   } catch (err) {
     throw err;

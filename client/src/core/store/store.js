@@ -1,5 +1,9 @@
 import { makeObservable, observable, action } from "mobx";
-import { login as loginAPI, fetchSelf as fetchSelfAPI } from "../API/auth";
+import {
+  login as loginAPI,
+  fetchSelf as fetchSelfAPI,
+  loginVerification as loginVerificationAPI,
+} from "../API/auth";
 import {
   getProposals as getProposalsAPI,
   searchProposal as searchProposalAPI,
@@ -7,7 +11,7 @@ import {
   getMyApplications as getMyApplicationsAPI,
   postProposals as postProposalsAPI,
   getProposal as getProposalAPI,
-  getProposalsByTeacherId as getProposalsByTeacherIdAPI
+  getProposalsByTeacherId as getProposalsByTeacherIdAPI,
 } from "../API/proposals";
 import { createApplication as createApplicationAPI } from "../API/applications";
 import { toast } from "react-toastify";
@@ -26,22 +30,24 @@ export class Store {
       login: action,
     });
   }
-  async login(email, password) {
+  async login() {
     try {
-      const res = await loginAPI(email, password);
-      console.log(res.status);
-      console.log(res);
-      console.log(res.data);
+      const res = await loginAPI();
       if (res.status === 200) {
-        // this object contains all user data that must be saved in the localStorage, including its id (s123, t123, etc...)
-        this.user = res.data;
-        // save auth jwt to localstorage for subsequent requests
-        localStorage.setItem("auth", res.data.token);
-        localStorage.setItem("type", res.data.type);
-        toast.success("Logged in");
+        window.location.href = res.data.redirectUrl;
       } else {
-        console.log("Oh NOOOO");
-        toast.error("Error on login");
+      }
+    } catch (err) {
+      toast.error("Error on login");
+    }
+  }
+  async loginVerification(token) {
+    try {
+      const res = await loginVerificationAPI(token);
+      console.log(res);
+      if (res.status === 200) {
+        // window.location.href = res.data.redirectUrl;
+      } else {
       }
     } catch (err) {
       toast.error("Error on login");

@@ -1,70 +1,108 @@
 const pool = require("../db/connection");
-//const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
+const samlify = require("samlify");
+const path = require("path");
+const fs = require("fs");
+const samlifyValidator = require("@authenio/samlify-xsd-schema-validator");
+const crypto = require("crypto");
 
+samlify.setSchemaValidator(samlifyValidator);
 
-const userLogin = async (req, res) => {
+const randomSecret = crypto.randomBytes(32).toString("hex");
+
+let appLoginSessions = [];
+
+const idpMetaDataPath = path.join(__dirname, "../idp-meta.xml");
+const idpMetadata = fs.readFileSync(idpMetaDataPath, "utf8");
+const idpCertPath = path.join(__dirname, "../idp-cert.pem");
+const idpCert = fs.readFileSync(idpCertPath, "utf8");
+
+const spOptions = {
+  entityID: "urn:dev-4ovpyp08m022lhpz.us.auth0.com",
+  assertEndpoint: "http://localhost:3000/api/v1.0/sso/acs",
+  loginEndpoint: "http://localhost:3000/api/v1.0/login",
+  forceAuthn: false,
+  authnContext:
+    "urn:oasis:names:tc:SAML:2.0:ac:classes:PasswordProtectedTransport",
+};
+const idpOptions = {
+  metadata: idpMetadata,
+  certificate: idpCert,
+};
+
+const { ServiceProvider, IdentityProvider } = samlify;
+const sp = ServiceProvider(spOptions);
+const idp = IdentityProvider(idpOptions);
+
+const login = async (req, res) => {
+
+  res.json({
+    redirectUrl:
+      "https://dev-4ovpyp08m022lhpz.us.auth0.com/samlp/bvdcn8wtkXNhbfwppeRvxxSyOocJ3mY8?connection=polito",
+  });
+};
+const assertion = async (req, res) => {
   try {
-    const { email, password } = req.body;
-    let realPwd = '';
-    let userObj = {};
-    let type = '';
-    const student = await pool.query(
-      "SELECT * FROM student WHERE email = $1",
-      [email]
-    );
-
-    const teacher = await pool.query(
-      "SELECT * FROM teacher WHERE email = $1",
-      [email]
-    );
-
-    if (student.rows.length === 0 && teacher.rows.length === 0) {
-      return res.status(400).json({ msg: "Invalid email" });
+    const { extract } = await sp.parseLoginResponse(idp, "post", req);
+    // TODO add other attributes, after adding them in
+    if (extract) {
+      userObj = {
+        email:
+          extract.attributes[
+            "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress"
+          ],
+      };
     }
-
-    if (student.rows[0]){
-      userObj = student.rows[0];
-      realPwd = student.rows[0].id;
-      type = "student";
-    } else {
-      userObj = teacher.rows[0];
-      realPwd = teacher.rows[0].id;
-      type = "professor";
-    }
-
-    // INSECURE PWD CHECK, JUST FOR THE PROTOTYPE
-    //const passwordMatch = await bcrypt.compare(password, realPwd);
-    if (password !== realPwd) {
-      return res.status(401).json({ error: 'Authentication failed' });
-    }
-
-    const token = jwt.sign(userObj, 'your-secret-key', {
-      expiresIn: '1h',
+    const token = jwt.sign(userObj, randomSecret, {
+      expiresIn: "2m",
     });
-
-    res.status(200).json({ id: userObj.id, type: type, token });
-
+    appLoginSessions.push(token);
+    res.redirect(`http://localhost:5173/sso-callback?token=${token}`);
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: 'Login failed' });
-  }
-}
-
-/*
-const userSignup = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
-    const user = new User({ username, password: hashedPassword });
-    await user.save();
-    res.status(201).json({ message: 'User registered successfully' });
-  } catch (error) {
-    res.status(500).json({ error: 'Registration failed' });
+    console.log("Error parsing SAML response:", error);
+    res.status(500).send("Internal Server Error");
   }
 };
-*/
 
+const tokenVerification = async (req, res) => {
+  try {
+    const { token } = req.body;
+    const data = await jwt.decode(token, randomSecret);
+    
+    req.session.user = { email: data.email, type: "student" };
+
+    res.status(200).send();
+  } catch (error) {
+    console.log(error);
+    res.status(401).send("unauthorized");
+  }
+};
+
+const logout = async (req, res) => {
+  try {
+    await req.session.destroy();
+    res.status(200).send();
+  } catch (error) {
+    console.log(error);
+    res.status(401).send("unauthorized");
+  }
+};
+
+const authorize = async (req, res, next) => {
+  try {
+    if (!req.session.user) {
+      res.status(401).json("unauthorized");
+    }
+    next();
+  } catch (error) {
+    console.log(error);
+    res.status(401).send("unauthorized");
+  }
+};
 module.exports = {
-  userLogin
+  login,
+  assertion,
+  tokenVerification,
+  logout,
+  authorize,
 };
