@@ -18,6 +18,14 @@ export const login = async () => {
   }
 };
 
+export const logout = async () => {
+  try {
+    const res = await client.post("logout");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
 export const fetchSelf = async () => {
   try {
     const res = await client.get("self");

@@ -9,7 +9,11 @@ const crypto = require("crypto");
 samlify.setSchemaValidator(samlifyValidator);
 
 const randomSecret = crypto.randomBytes(32).toString("hex");
-
+const userRoles = {
+  teacher: "teacher",
+  student: "student",
+  any: "any",
+};
 let appLoginSessions = [];
 
 const idpMetaDataPath = path.join(__dirname, "../idp-meta.xml");
@@ -35,7 +39,7 @@ const sp = ServiceProvider(spOptions);
 const idp = IdentityProvider(idpOptions);
 
 const login = async (req, res) => {
-
+  console.log(req.session);
   res.json({
     redirectUrl:
       "https://dev-4ovpyp08m022lhpz.us.auth0.com/samlp/bvdcn8wtkXNhbfwppeRvxxSyOocJ3mY8?connection=polito",
@@ -68,10 +72,33 @@ const tokenVerification = async (req, res) => {
   try {
     const { token } = req.body;
     const data = await jwt.decode(token, randomSecret);
-    
-    req.session.user = { email: data.email, type: "student" };
+    const { email } = data;
 
-    res.status(200).send();
+    let userObj = {};
+    const student = await pool.query("SELECT * FROM student WHERE email = $1", [
+      email,
+    ]);
+
+    const teacher = await pool.query("SELECT * FROM teacher WHERE email = $1", [
+      email,
+    ]);
+
+    if (student.rows.length === 0 && teacher.rows.length === 0) {
+      return res.status(401).json({ msg: "Invalid email" });
+    }
+
+    if (student.rows[0]) {
+      userObj = student.rows[0];
+      realPwd = student.rows[0].id;
+      type = userRoles.teacher;
+    } else {
+      userObj = teacher.rows[0];
+      realPwd = teacher.rows[0].id;
+      type = userRoles.student;
+    }
+    userObj.role = type;
+    req.session.user = userObj;
+    return res.status(200).json({ data: userObj });
   } catch (error) {
     console.log(error);
     res.status(401).send("unauthorized");
@@ -88,16 +115,21 @@ const logout = async (req, res) => {
   }
 };
 
-const authorize = async (req, res, next) => {
-  try {
-    if (!req.session.user) {
-      res.status(401).json("unauthorized");
+const authorize = (role) => {
+  return async (req, res, next) => {
+    try {
+      if (!req.session.user) {
+        return res.status(401).json("unauthorized");
+      }
+      if (role !== userRoles.any && res.session.user.role !== role) {
+        return res.status(401).json("unauthorized");
+      }
+      next();
+    } catch (error) {
+      console.log(error);
+      res.status(401).send("unauthorized");
     }
-    next();
-  } catch (error) {
-    console.log(error);
-    res.status(401).send("unauthorized");
-  }
+  };
 };
 module.exports = {
   login,
@@ -105,4 +137,5 @@ module.exports = {
   tokenVerification,
   logout,
   authorize,
+  userRoles,
 };

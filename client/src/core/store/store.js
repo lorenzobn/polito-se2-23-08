@@ -3,6 +3,7 @@ import {
   login as loginAPI,
   fetchSelf as fetchSelfAPI,
   loginVerification as loginVerificationAPI,
+  logout as logoutAPI,
 } from "../API/auth";
 import {
   getProposals as getProposalsAPI,
@@ -19,7 +20,7 @@ export class Store {
   constructor() {
     this.user = {
       id: "",
-      type: "",
+      role: "",
       authenticated: false,
     };
     this.loading = false;
@@ -41,13 +42,30 @@ export class Store {
       toast.error("Error on login");
     }
   }
+  async logout() {
+    try {
+      const res = await logoutAPI();
+      if (res.status === 200) {
+        this.user = this.user = {
+          id: "",
+          type: "",
+          authenticated: false,
+        };
+        window.location.href = "/";
+      } else {
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
   async loginVerification(token) {
     try {
       const res = await loginVerificationAPI(token);
-      console.log(res);
+
       if (res.status === 200) {
-        // window.location.href = res.data.redirectUrl;
+        return true;
       } else {
+        return false;
       }
     } catch (err) {
       toast.error("Error on login");
@@ -61,8 +79,9 @@ export class Store {
         // still authenticated
         this.user = res.data.data;
         this.user.authenticated = true;
-      } else {
-        // TODO let user know that they are logged out (maybe because token is expired or whatever)
+      }
+      if (res?.status === 401) {
+        this.logout();
       }
     } catch (err) {
       return [];
@@ -119,7 +138,7 @@ export class Store {
       toast.success("Application created");
       return res.data.data;
     } catch (err) {
-      toast.error('Cannot create applicaton')
+      toast.error("Cannot create applicaton");
       return [];
     }
   }
@@ -133,9 +152,31 @@ export class Store {
     }
   }
 
-  async postProposals(title, type, description, requiredKnowledge, notes, level, programme, deadline , status, keywords) {
+  async postProposals(
+    title,
+    type,
+    description,
+    requiredKnowledge,
+    notes,
+    level,
+    programme,
+    deadline,
+    status,
+    keywords
+  ) {
     try {
-      const res = await postProposalsAPI(title, type, description, requiredKnowledge, notes, level, programme, deadline , status, keywords);
+      const res = await postProposalsAPI(
+        title,
+        type,
+        description,
+        requiredKnowledge,
+        notes,
+        level,
+        programme,
+        deadline,
+        status,
+        keywords
+      );
       return res.data.data;
     } catch (err) {
       return [];
