@@ -129,6 +129,11 @@ function ThesisList(props) {
             </Nav>
           </Col>
           <Col lg={8}>
+            {proposals.length == 0?<header style={{textAlign:'center'}}>
+                  <h2 className="border-thesis-title">
+                    No Matches Found
+                  </h2>
+                </header>:<></>}
             {degree === 'All' ? proposals.map((e) => (
               <div key={e.id} className="thesis-section">
                 <header>
