@@ -51,6 +51,36 @@ const coSupervisorAdd = async (thesisId, name, surname, external) => {
   }
 };
 
+const getExtCoSupervisors = async (req, res) => {
+  const query = `
+  SELECT name,surname FROM EXTERNAL_CO_SUPERVISOR;
+  `;
+  const values = [];
+  try {
+    const results = await pool.query(query, values)
+    return res
+      .status(201)
+      .json({ data: results.rows });
+  } catch (error) {
+    return error;
+  }
+}
+
+const getCoSupervisors = async (req, res) => {
+  const query = `
+  SELECT name,surname FROM TEACHER;
+  `;
+  const values = [];
+  try {
+    const results = await pool.query(query, values)
+    return res
+      .status(201)
+      .json({ data: results.rows });
+  } catch (error) {
+    return error;
+  }
+}
+
 const keywordsAdd = async (thesisId, keyword) => {
   const query = `
   INSERT INTO KEYWORDS VALUES($1, $2);
@@ -79,7 +109,7 @@ const getKeywords = async (thesisId) => {
 }
 
 
-const getAllCdS = async(req, res) => {
+const getAllCdS = async (req, res) => {
   const query = `
   SELECT * FROM DEPARTMENT;
   `;
@@ -87,8 +117,8 @@ const getAllCdS = async(req, res) => {
   try {
     const results = await pool.query(query, values)
     return res
-    .status(201)
-    .json({ data: results.rows});
+      .status(201)
+      .json({ data: results.rows });
   } catch (error) {
     return error;
   }
@@ -217,7 +247,7 @@ const getProposalbyId = async (req, res) => {
     const results = await pool.query(query).then(async (result) => {
       if (result.rowCount != 0) {
         let r = await getKeywords(req.params.proposalId);
-        return res.status(200).json({ msg: "OK", data: result.rows, keywords: r});       
+        return res.status(200).json({ msg: "OK", data: result.rows, keywords: r });
       } else {
         return res.status(404).json({ msg: "Resource not found" });
       }
@@ -330,13 +360,13 @@ const searchProposal = async (req, res) => {
       level: Joi.string().valid('BSc', 'MSc'),
       programme: Joi.string()
     });
- 
-    
+
+
     const { error, value } = proposalSchema.validate(req.query);
-    let {title, type, description, required_knowledge, notes, level, programme} = req.query;
+    let { title, type, description, required_knowledge, notes, level, programme } = req.query;
     title = title.toLowerCase()
     type = type.toLowerCase()
-    description = description.toLowerCase() 
+    description = description.toLowerCase()
     required_knowledge = required_knowledge.toLowerCase()
     notes = notes.toLowerCase()
     //programme = programme.toLowerCase() //not yet, becasue the programme is a CODE
@@ -363,6 +393,8 @@ module.exports = {
   getProposals,
   getProposalsByTeacher,
   getProposalbyId,
+  getExtCoSupervisors,
+  getCoSupervisors,
   createProposal,
   updateProposal,
   searchProposal,

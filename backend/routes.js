@@ -2,6 +2,8 @@ const {
   getProposals,
   getProposalsByTeacher,
   getProposalbyId,
+  getExtCoSupervisors,
+  getCoSupervisors,
   createProposal,
   updateProposal,
   searchProposal,
@@ -39,7 +41,6 @@ router.get("/self", authorize(userRoles.any), fetchSelf);
 
 /* ADD STUFF HERE */
 router.post("/thesis-proposals", authorize(userRoles.teacher), createProposal);
-//router.post("/thesis-proposals", createProposal);
 router.get("/thesis-proposals", getProposals);
 router.get(
   "/my-thesis-proposals",
@@ -96,6 +97,17 @@ router.put(
   authorize(userRoles.teacher),
   updateApplication
 );
+
+//TODO: authorize these routes
+router.get(
+  "/ext-cosupervisors",
+  getExtCoSupervisors
+)
+
+router.get(
+  "/cosupervisors",
+  getCoSupervisors
+)
 
 router.get("/login", login);
 router.post("/sso/acs", assertion);
