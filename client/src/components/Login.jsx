@@ -16,6 +16,12 @@ export default function Login() {
     navigate('/portal')
   };
 
+  const handleKeyDown = (ev) => {
+    if (ev.keyCode == 13) {
+      loginHandler(ev);
+    }
+  }
+
   return (
     <div>
       <Row>
@@ -38,7 +44,7 @@ export default function Login() {
             <div className="p-4">
               <hr />
 
-              <Form onSubmit={loginHandler}>
+              <Form onSubmit={loginHandler} onKeyDown={handleKeyDown}>
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                   <Form.Label>Email address</Form.Label>
                   <Form.Control
