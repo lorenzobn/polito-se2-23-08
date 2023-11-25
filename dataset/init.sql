@@ -172,7 +172,7 @@
  INSERT INTO THESIS_PROPOSAL(title, SUPERVISOR_ID,
                               type, COD_GROUP, description, 
                               required_knowledge, notes, level, programme, 
-                              deadline, status) VALUES (' Investigating the biomedical applications of coordination cages', 't123', 'AAA1', 'Chemistry',
+                              deadline, status) VALUES (' Investigating the biomedical applications of coordination cages', 't123', 'In-practice work', 'AAA1',
                                                         'Metallocages represent an exciting field of supramolecular chemistry concerned with the assembly of specific ligands and metals to form discrete structures. Coordination cages have applications in catalysis',
                                                         'None', '', 'MSc', 'LM-19',
                                                         '2023-12-31', 'active');

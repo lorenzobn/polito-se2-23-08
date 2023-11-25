@@ -5,26 +5,36 @@ const pkg = require("body-parser");
 const dotenv = require("dotenv");
 dotenv.config();
 const { json, urlencoded } = pkg;
+const crypto = require("crypto");
 
 const app = express();
 app.use(cookieParser());
 app.use(json());
 app.use(urlencoded({ extended: false }));
-
+const session = require("express-session");
 
 // CORS options to access APIs
-/*
+
 const corsOptions = {
-  origin: "http://localhost:3000",
+  origin: "http://localhost:5173",
   credentials: true,
 };
-*/
-app.use(cors());
 
+app.use(cors(corsOptions));
+const randomSecret = crypto.randomBytes(32).toString("hex");
+
+app.use(
+  session({
+    secret: randomSecret,
+    cookie: { maxAge: 1000 * 60 * 60 * 2 },
+    resave: false,
+    saveUninitialized: true,
+  }) //2 hours
+);
 
 const thesisRouter = require("./routes.js");
 
-app.use('/api/v1.0', thesisRouter);
+app.use("/api/v1.0", thesisRouter);
 //registerRoutes(app);
 
 const PORT = process.env.PORT || 3000;

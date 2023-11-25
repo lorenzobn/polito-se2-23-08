@@ -13,6 +13,7 @@ import DecideApplication from "./components/DecideApplication";
 import { StoreContext } from "./core/store/Provider";
 import Login from "./components/Login";
 import "react-toastify/dist/ReactToastify.css";
+import SSOCallback from "./components/SSOCallback";
 
 function App() {
   const store = useContext(StoreContext);
@@ -27,6 +28,7 @@ function App() {
         <Routes>
           <Route path="/" element={<ThesisList></ThesisList>}></Route>
           <Route path="/login" element={<Login />}></Route>
+          <Route path="/sso-callback" element={<SSOCallback />}></Route>
 
           <Route path="/portal" element={<Portal></Portal>}></Route>
           <Route

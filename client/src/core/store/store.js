@@ -1,5 +1,10 @@
 import { makeObservable, observable, action } from "mobx";
-import { login as loginAPI, fetchSelf as fetchSelfAPI } from "../API/auth";
+import {
+  login as loginAPI,
+  fetchSelf as fetchSelfAPI,
+  loginVerification as loginVerificationAPI,
+  logout as logoutAPI,
+} from "../API/auth";
 import {
   getProposals as getProposalsAPI,
   searchProposal as searchProposalAPI,
@@ -7,7 +12,7 @@ import {
   getMyApplications as getMyApplicationsAPI,
   postProposals as postProposalsAPI,
   getProposal as getProposalAPI,
-  getProposalsByTeacherId as getProposalsByTeacherIdAPI
+  getProposalsByTeacherId as getProposalsByTeacherIdAPI,
 } from "../API/proposals";
 import { createApplication as createApplicationAPI } from "../API/applications";
 import { toast } from "react-toastify";
@@ -15,7 +20,7 @@ export class Store {
   constructor() {
     this.user = {
       id: "",
-      type: "",
+      role: "",
       authenticated: false,
     };
     this.loading = false;
@@ -26,22 +31,41 @@ export class Store {
       login: action,
     });
   }
-  async login(email, password) {
+  async login() {
     try {
-      const res = await loginAPI(email, password);
-      console.log(res.status);
-      console.log(res);
-      console.log(res.data);
+      const res = await loginAPI();
       if (res.status === 200) {
-        // this object contains all user data that must be saved in the localStorage, including its id (s123, t123, etc...)
-        this.user = res.data;
-        // save auth jwt to localstorage for subsequent requests
-        localStorage.setItem("auth", res.data.token);
-        localStorage.setItem("type", res.data.type);
-        toast.success("Logged in");
+        window.location.href = res.data.redirectUrl;
       } else {
-        console.log("Oh NOOOO");
-        toast.error("Error on login");
+      }
+    } catch (err) {
+      toast.error("Error on login");
+    }
+  }
+  async logout() {
+    try {
+      const res = await logoutAPI();
+      if (res.status === 200) {
+        this.user = this.user = {
+          id: "",
+          type: "",
+          authenticated: false,
+        };
+        window.location.href = "/";
+      } else {
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  }
+  async loginVerification(token) {
+    try {
+      const res = await loginVerificationAPI(token);
+
+      if (res.status === 200) {
+        return true;
+      } else {
+        return false;
       }
     } catch (err) {
       toast.error("Error on login");
@@ -55,8 +79,9 @@ export class Store {
         // still authenticated
         this.user = res.data.data;
         this.user.authenticated = true;
-      } else {
-        // TODO let user know that they are logged out (maybe because token is expired or whatever)
+      }
+      if (res?.status === 401) {
+        this.logout();
       }
     } catch (err) {
       return [];
@@ -113,7 +138,7 @@ export class Store {
       toast.success("Application created");
       return res.data.data;
     } catch (err) {
-      toast.error('Cannot create applicaton')
+      toast.error("Cannot create applicaton");
       return [];
     }
   }
@@ -127,9 +152,31 @@ export class Store {
     }
   }
 
-  async postProposals(title, type, description, requiredKnowledge, notes, level, programme, deadline , status, keywords) {
+  async postProposals(
+    title,
+    type,
+    description,
+    requiredKnowledge,
+    notes,
+    level,
+    programme,
+    deadline,
+    status,
+    keywords
+  ) {
     try {
-      const res = await postProposalsAPI(title, type, description, requiredKnowledge, notes, level, programme, deadline , status, keywords);
+      const res = await postProposalsAPI(
+        title,
+        type,
+        description,
+        requiredKnowledge,
+        notes,
+        level,
+        programme,
+        deadline,
+        status,
+        keywords
+      );
       return res.data.data;
     } catch (err) {
       return [];

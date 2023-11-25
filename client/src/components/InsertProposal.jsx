@@ -26,9 +26,9 @@ const programs = [
 ];
 
 const internal_co_supervisors = [
-  { label: "t123", value: "Enrico Bini" },
-  { label: "t124", value: "Matteo Sereno" },
-  { label: "t125", value: "Monsutti Alessandro", disabled: true },
+  { value: "t123", label: "Enrico Bini" },
+  { value: "t124", label: "Matteo Sereno" },
+  { value: "t125", label: "Monsutti Alessandro", disabled: true },
 ];
 
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
@@ -87,7 +87,7 @@ function InsertProposal() {
     e.preventDefault();
 
     if (userType === "student") {
-      toast.error("Yoy are not authorized to create proposal!!!", {
+      toast.error("You are not authorized to create proposal.", {
         position: toast.POSITION.TOP_CENTER,
       });
     } else {

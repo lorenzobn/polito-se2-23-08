@@ -2,7 +2,7 @@ const pool = require("../db/connection");
 
 const fetchSelf = async (req, res) => {
   try {
-    const id = req.userId;
+    const id = req.session.user.id;
 
     const student = await pool.query("SELECT * FROM student WHERE id = $1", [
       id,

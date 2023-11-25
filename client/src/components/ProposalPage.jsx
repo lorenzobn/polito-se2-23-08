@@ -48,6 +48,9 @@ function ProposalPage() {
             {proposal.sname + " " + proposal.ssurname}
           </div>
           <div className="mb-3">
+            <strong>Co-Supervisors:</strong>
+          </div>
+          <div className="mb-3">
             <strong>Deadline:</strong> {proposal.deadline}
           </div>
           <div className="mb-3">
