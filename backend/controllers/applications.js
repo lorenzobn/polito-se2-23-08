@@ -183,7 +183,7 @@ const getReceivedApplicationsByThesisId = async (req, res) => {
   console.log("querying with :");
   console.log(req.session.user.id);
   const query = {
-    text: "SELECT student_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, groups, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 AND thesis_id=$2",
+    text: "SELECT student_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 AND thesis_id=$2",
     values: [req.session.user.id, req.params.thesisId],
   };
   try {
