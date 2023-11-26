@@ -196,6 +196,25 @@ const getReceivedApplicationsByThesisId = async (req, res) => {
   }
 };
 
+const didStudentApply = async (req, res) => {
+  const query = {
+    text: "SELECT * FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE student_id=$1 AND thesis_id=$2",
+    values: [req.session.user.id, req.params.thesisId],
+  };
+  try {
+    const results = await pool.query(query).then((result) => {
+      if (result.rowCount == 0)
+        return res.status(200).json({ studentId : req.session.user.id, proposalId : req.params.thesisId, applied : false });
+      else
+        return res.status(200).json({ studentId : req.session.user.id, proposalId : req.params.thesisId, applied : true });
+    });
+  } catch (error) {
+    console.error(error.message);
+    return res.status(500).json({ msg: "An unknown error occurred." });
+  }
+};
+
+
 // TODO: Only STUDENTS
 /*
 const getApplicationsDecisions = async (req, res) => {
@@ -217,6 +236,7 @@ const getApplicationsDecisions = async (req, res) => {
 module.exports = {
   getApplications,
   getApplicationById,
+  didStudentApply,
   createApplication,
   updateApplication,
   getReceivedApplications,

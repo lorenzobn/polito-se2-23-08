@@ -17,6 +17,7 @@ const {
   getReceivedApplicationsByThesisId,
   createApplication,
   updateApplication,
+  didStudentApply,
 } = require("./controllers/applications.js");
 
 const {
@@ -96,6 +97,12 @@ router.put(
   "/received-applications/:applicationId",
   authorize(userRoles.teacher),
   updateApplication
+);
+
+router.get(
+  "/check-application/:thesisId",
+  authorize(userRoles.student),
+  didStudentApply
 );
 
 //TODO: authorize all these routes
