@@ -55,7 +55,7 @@ export const searchProposal = async (keyword) => {
   }
 };
 
-export const postProposals = async (title, type, description, requiredKnowledge, notes, level, programme, deadline , status, keywords) => {
+export const postProposals = async (title, type, description, requiredKnowledge, notes, level, programme, deadline , status, keywords, coSupervisors) => {
   try {
     const res = await client.post("/thesis-proposals" , {
       title,
@@ -68,6 +68,7 @@ export const postProposals = async (title, type, description, requiredKnowledge,
       deadline,
       status,
       keywords,
+      coSupervisors,
     });
     return res;
   } catch (err) {
@@ -82,4 +83,35 @@ export const getProposal = async (proposalId) => {
   } catch (err) {
     throw err;
   }
+  
+};
+
+export const getCds = async () => {
+  try {
+    const res = await client.get("/cds");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+  
+};
+
+export const getCoSupervisors = async () => {
+  try {
+    const res = await client.get("/cosupervisors");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+  
+};
+
+export const getExternalCoSupervisors = async () => {
+  try {
+    const res = await client.get("/ext-cosupervisors");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+  
 };

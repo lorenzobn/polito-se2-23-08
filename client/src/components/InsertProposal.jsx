@@ -20,16 +20,14 @@ const levels = [
   { value: "MSc", label: "Master" },
 ];
 
-const programs = [
-  { value: "LM-32", label: "Computer Engineering" },
-  { value: "LM-19", label: "Chemical Engineering" },
-];
+// const programs = [
+//   { value: "LM-32", label: "Computer Engineering" },
+//   { value: "LM-19", label: "Chemical Engineering" },
+// ];
 
-const internal_co_supervisors = [
-  { value: "t123", label: "Enrico Bini" },
-  { value: "t124", label: "Matteo Sereno" },
-  { value: "t125", label: "Monsutti Alessandro", disabled: true },
-];
+let cdss = [];
+let internal_co_supervisors = [];
+let external_co_supervisors = [];
 
 const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
@@ -37,18 +35,22 @@ function InsertProposal() {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState("");
   const [selectedProgram, setSelectedProgram] = useState("");
-  const [selectedType, setSelectedType] = useState("");
+  const [modifiedInternal, setModifiedInternal] = useState([]);
+  const [modifiedExternal, setModifiedExternal] = useState([]);
+  //const [selectedType, setSelectedType] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
     knowledge: "",
     deadline: "",
     notes: "",
-    type:"",
+    type: "",
   });
 
-  const [selectedInternalCoSupervisors, setSelectedInternalCoSupervisors] =
-    useState([]);
+  const [selectedInternalCoSupervisors, setSelectedInternalCoSupervisors] = useState([]);
+
+  const [selectedExternalCoSupervisors, setSelectedExternalCoSupervisors] = useState([]);
+  const [co_supervisor, setCoSupervisor] = useState([]);
 
   const [userType, setUserType] = useState([]);
 
@@ -63,6 +65,8 @@ function InsertProposal() {
     program: selectedProgram.value,
   });
 
+  //const [allCds, setCds] = useState([]);
+
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
@@ -72,6 +76,59 @@ function InsertProposal() {
       } else if (store.user.type == "professor") {
         setUserType("professor");
       }
+      //getting cds from server
+      const cds = await store.getCds();
+      //console.log(cds);
+      for (let index = 0; index < cds.length; index++) {
+        cdss[index] = {
+          value: cds[index].cod_degree,
+          label: cds[index].title_degree,
+        };
+      }
+
+      //getting internal-co-supervisors from server
+      const co_supervisors = await store.getCoSupervisors();
+      for (let index = 0; index < co_supervisors.length; index++) {
+        internal_co_supervisors[index] = {
+          name: co_supervisors[index].name,
+          surname: co_supervisors[index].surname,
+          value: co_supervisors[index].name,
+          label: co_supervisors[index].name + " " + co_supervisors[index].surname,
+          isExternal: false,
+        };
+      }
+    
+      //getting external-co-supervisors from server
+      const co_supervisors_external = await store.getExternalCoSupervisors();
+      for (let index = 0; index < co_supervisors_external.length; index++) {
+        external_co_supervisors[index] = {
+          name: co_supervisors_external[index].name,
+          surname: co_supervisors_external[index].surname,
+          value: co_supervisors_external[index].name,
+          label:
+            co_supervisors_external[index].name +
+            " " +
+            co_supervisors_external[index].surname,
+          isExternal: true,
+        };
+      }
+
+      setModifiedInternal(selectedInternalCoSupervisors.map(({ name, surname, isExternal }) => ({
+        name,
+        surname,
+        isExternal,
+      })));
+      //console.log("Modified INTERNAL" , modifiedInternal);
+      setModifiedExternal(selectedExternalCoSupervisors.map(({ name, surname, isExternal }) => ({
+        name,
+        surname,
+        isExternal,
+      })));
+      //console.log("Modified EXTERNAL" , modifiedExternal);
+
+      setCoSupervisor([...modifiedInternal, ... modifiedExternal]);
+      //console.log("FINAAAAAAAAAAL:" , co_supervisor);
+
 
       setCombinedData({
         ...formData,
@@ -81,10 +138,13 @@ function InsertProposal() {
       });
     };
     handleEffect();
-  }, [formData, selectedKeywords, userType]);
+  }, [formData, selectedKeywords]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    console.log("LOG:" , combinedData);
+    console.log("TYPE:" , userType);
 
     if (userType === "student") {
       toast.error("You are not authorized to create proposal.", {
@@ -136,14 +196,15 @@ function InsertProposal() {
           combinedData.program,
           formData.deadline,
           status,
-          combinedData.keywords
+          combinedData.keywords,
+          co_supervisor,
         );
         setInsertProposals(insertProposal);
         if (insertProposal) {
           toast.success("Your proposal submitted successfully!", {
             position: toast.POSITION.TOP_CENTER,
           });
-          navigate("/thesis-proposals");
+          //navigate("/thesis-proposals");
         }
       }
     }
@@ -214,8 +275,8 @@ function InsertProposal() {
             />
           </div>
 
-          <div className="row g-3">
-            <div className="col-md-6">
+          <div className="row g-3 mb-3">
+            <div className="col-md-4">
               <label htmlFor="level" className="form-label block">
                 Level:
               </label>
@@ -226,30 +287,18 @@ function InsertProposal() {
               />
             </div>
 
-            <div className="col-md-6">
+            <div className="col-md-4">
               <label htmlFor="programmes" className="form-label block">
                 CdS /programmes:
               </label>
               <Select
                 defaultValue={selectedProgram}
                 onChange={setSelectedProgram}
-                options={programs}
+                options={cdss}
               />
             </div>
 
-            <div className="col-md-6">
-              <label htmlFor="co-supervisors" className="form-label block">
-                Co-supervisors:
-              </label>
-              <MultiSelect
-                options={internal_co_supervisors}
-                value={selectedInternalCoSupervisors}
-                onChange={setSelectedInternalCoSupervisors}
-                labelledBy="Select"
-              />
-            </div>
-
-            <div className="col-md-6">
+            <div className="col-md-4">
               <label htmlFor="deadline" className="form-label block">
                 Deadline:
               </label>
@@ -260,6 +309,36 @@ function InsertProposal() {
                 name="deadline"
                 value={formData.deadline}
                 onChange={handleInputChange}
+              />
+            </div>
+
+            <div className="col-md-6">
+              <label
+                htmlFor="internal-co-supervisors"
+                className="form-label block"
+              >
+                Internal Co-supervisors:
+              </label>
+              <MultiSelect
+                options={internal_co_supervisors}
+                value={selectedInternalCoSupervisors}
+                onChange={setSelectedInternalCoSupervisors}
+                labelledBy="Select"
+              />
+            </div>
+
+            <div className="col-md-6">
+              <label
+                htmlFor="External-co-supervisors"
+                className="form-label block"
+              >
+                External Co-supervisors:
+              </label>
+              <MultiSelect
+                options={external_co_supervisors}
+                value={selectedExternalCoSupervisors}
+                onChange={setSelectedExternalCoSupervisors}
+                labelledBy="Select"
               />
             </div>
           </div>
@@ -287,7 +366,7 @@ function InsertProposal() {
               value={selectedKeywords}
               onChange={handleTagsChange}
               name="keywoards"
-              placeHolder="Enter keywoards"
+              placeHolder="Enter keywoards and press Enter"
             />
           </div>
 

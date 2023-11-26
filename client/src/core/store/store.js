@@ -13,6 +13,9 @@ import {
   postProposals as postProposalsAPI,
   getProposal as getProposalAPI,
   getProposalsByTeacherId as getProposalsByTeacherIdAPI,
+  getCds as getAllCdSAPI,
+  getCoSupervisors as getCoSupervisorsAPI,
+  getExternalCoSupervisors as getExtCoSupervisorsAPI,
 } from "../API/proposals";
 import { createApplication as createApplicationAPI } from "../API/applications";
 import { toast } from "react-toastify";
@@ -162,7 +165,8 @@ export class Store {
     programme,
     deadline,
     status,
-    keywords
+    keywords,
+    coSupervisors
   ) {
     try {
       const res = await postProposalsAPI(
@@ -175,7 +179,8 @@ export class Store {
         programme,
         deadline,
         status,
-        keywords
+        keywords,
+        coSupervisors,
       );
       return res.data.data;
     } catch (err) {
@@ -192,7 +197,33 @@ export class Store {
     }
   }
 
+  async getCds() {
+    try {
+      const res = await getAllCdSAPI();
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  async getCoSupervisors() {
+    try {
+      const res = await getCoSupervisorsAPI();
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  async getExternalCoSupervisors() {
+    try {
+      const res = await getExtCoSupervisorsAPI();
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
   setLoading(state) {}
 }
-
 export default new Store();
