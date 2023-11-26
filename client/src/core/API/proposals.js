@@ -104,7 +104,7 @@ export const getCoSupervisors = async () => {
 
 export const getAllCds = async () => {
   try {
-    const res = await client.get("/cosupervisors");
+    const res = await client.get("/cds");
     return res;
   } catch (err) {
     throw err;

@@ -68,7 +68,7 @@ const getExtCoSupervisors = async (req, res) => {
 
 const getCoSupervisors = async (req, res) => {
   const query = `
-  SELECT name,surname FROM TEACHER;
+  SELECT id,name,surname FROM TEACHER;
   `;
   const values = [];
   try {
