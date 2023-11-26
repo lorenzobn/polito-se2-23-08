@@ -83,3 +83,30 @@ export const getProposal = async (proposalId) => {
     throw err;
   }
 };
+
+export const getAllGroups = async () => {
+  try {
+    const res = await client.get("/groups");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getCoSupervisors = async () => {
+  try {
+    const res = await client.get("/cosupervisors");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getAllCds = async () => {
+  try {
+    const res = await client.get("/cosupervisors");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
