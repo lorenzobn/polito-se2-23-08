@@ -43,7 +43,7 @@ export default function Applications() {
                             applications.map((e) =>
                                 <div key={e.thesis_id} className="thesis-section">
                                     <header>
-                                        <h2 className="border-thesis-title">{localStorage.getItem('type') === 'professor'? 
+                                        <h2 className="border-thesis-title">{store.user.type === 'professor'? 
                                         <Nav.Link href={`received-applications/${e.thesis_id}`}>{e.title}</Nav.Link>: 
                                         <Nav.Link href={`proposalpage/${e.thesis_id}`}>{e.title}</Nav.Link>}</h2>
                                     </header>
@@ -51,7 +51,6 @@ export default function Applications() {
                                         <div >
                                             <p>{e.description}</p>
                                             <p>{e.deadline}</p>
-                                            <p>Number of applicants: {e.num_applications}</p>
                                             {store.user && store.user.type === 'professor' ? 
                                             <p><a className="border-thesis-view" href={`received-applications/${e.thesis_id}`}>VIEW APPLICATIONS</a></p> : <></>}
                                         </div>
