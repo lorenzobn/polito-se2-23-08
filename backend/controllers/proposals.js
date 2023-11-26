@@ -111,7 +111,7 @@ const getKeywords = async (thesisId) => {
 
 const getAllCdS = async (req, res) => {
   const query = `
-  SELECT * FROM DEPARTMENT;
+  SELECT * FROM DEGREE;
   `;
   const values = [];
   try {
