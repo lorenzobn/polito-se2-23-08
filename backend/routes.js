@@ -7,6 +7,8 @@ const {
   createProposal,
   updateProposal,
   searchProposal,
+  getAllCdS,
+  getAllGroups,
 } = require("./controllers/proposals.js");
 const {
   getApplications,
@@ -96,7 +98,7 @@ router.put(
   updateApplication
 );
 
-//TODO: authorize these routes
+//TODO: authorize all these routes
 router.get(
   "/ext-cosupervisors",
   getExtCoSupervisors
@@ -106,6 +108,9 @@ router.get(
   "/cosupervisors",
   getCoSupervisors
 )
+
+router.get("/cds", getAllCdS)
+router.get("/groups", getAllGroups)
 
 router.get("/login", login);
 router.post("/sso/acs", assertion);
