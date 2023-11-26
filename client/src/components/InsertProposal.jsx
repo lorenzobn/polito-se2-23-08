@@ -20,11 +20,6 @@ const levels = [
   { value: "MSc", label: "Master" },
 ];
 
-// const programs = [
-//   { value: "LM-32", label: "Computer Engineering" },
-//   { value: "LM-19", label: "Chemical Engineering" },
-// ];
-
 let cdss = [];
 let internal_co_supervisors = [];
 let external_co_supervisors = [];
@@ -37,7 +32,6 @@ function InsertProposal() {
   const [selectedProgram, setSelectedProgram] = useState("");
   const [modifiedInternal, setModifiedInternal] = useState([]);
   const [modifiedExternal, setModifiedExternal] = useState([]);
-  //const [selectedType, setSelectedType] = useState("");
   const [formData, setFormData] = useState({
     title: "",
     description: "",
@@ -47,9 +41,11 @@ function InsertProposal() {
     type: "",
   });
 
-  const [selectedInternalCoSupervisors, setSelectedInternalCoSupervisors] = useState([]);
+  const [selectedInternalCoSupervisors, setSelectedInternalCoSupervisors] =
+    useState([]);
 
-  const [selectedExternalCoSupervisors, setSelectedExternalCoSupervisors] = useState([]);
+  const [selectedExternalCoSupervisors, setSelectedExternalCoSupervisors] =
+    useState([]);
   const [co_supervisor, setCoSupervisor] = useState([]);
 
   const [userType, setUserType] = useState([]);
@@ -65,8 +61,6 @@ function InsertProposal() {
     program: selectedProgram.value,
   });
 
-  //const [allCds, setCds] = useState([]);
-
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
@@ -78,7 +72,6 @@ function InsertProposal() {
       }
       //getting cds from server
       const cds = await store.getCds();
-      //console.log(cds);
       for (let index = 0; index < cds.length; index++) {
         cdss[index] = {
           value: cds[index].cod_degree,
@@ -93,11 +86,12 @@ function InsertProposal() {
           name: co_supervisors[index].name,
           surname: co_supervisors[index].surname,
           value: co_supervisors[index].name,
-          label: co_supervisors[index].name + " " + co_supervisors[index].surname,
+          label:
+            co_supervisors[index].name + " " + co_supervisors[index].surname,
           isExternal: false,
         };
       }
-    
+
       //getting external-co-supervisors from server
       const co_supervisors_external = await store.getExternalCoSupervisors();
       for (let index = 0; index < co_supervisors_external.length; index++) {
@@ -113,22 +107,23 @@ function InsertProposal() {
         };
       }
 
-      setModifiedInternal(selectedInternalCoSupervisors.map(({ name, surname, isExternal }) => ({
-        name,
-        surname,
-        isExternal,
-      })));
-      //console.log("Modified INTERNAL" , modifiedInternal);
-      setModifiedExternal(selectedExternalCoSupervisors.map(({ name, surname, isExternal }) => ({
-        name,
-        surname,
-        isExternal,
-      })));
-      //console.log("Modified EXTERNAL" , modifiedExternal);
+      setModifiedInternal(
+        selectedInternalCoSupervisors.map(({ name, surname, isExternal }) => ({
+          name,
+          surname,
+          isExternal,
+        }))
+      );
 
-      setCoSupervisor([...modifiedInternal, ... modifiedExternal]);
-      //console.log("FINAAAAAAAAAAL:" , co_supervisor);
+      setModifiedExternal(
+        selectedExternalCoSupervisors.map(({ name, surname, isExternal }) => ({
+          name,
+          surname,
+          isExternal,
+        }))
+      );
 
+      setCoSupervisor([...modifiedInternal, ...modifiedExternal]);
 
       setCombinedData({
         ...formData,
@@ -143,8 +138,8 @@ function InsertProposal() {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log("LOG:" , combinedData);
-    console.log("TYPE:" , userType);
+    console.log("LOG:", combinedData);
+    console.log("TYPE:", userType);
 
     if (userType === "student") {
       toast.error("You are not authorized to create proposal.", {
@@ -197,14 +192,14 @@ function InsertProposal() {
           formData.deadline,
           status,
           combinedData.keywords,
-          co_supervisor,
+          co_supervisor
         );
         setInsertProposals(insertProposal);
         if (insertProposal) {
           toast.success("Your proposal submitted successfully!", {
             position: toast.POSITION.TOP_CENTER,
           });
-          //navigate("/thesis-proposals");
+          navigate("/thesis-proposals");
         }
       }
     }
