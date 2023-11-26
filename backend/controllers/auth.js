@@ -90,18 +90,18 @@ const tokenVerification = async (req, res) => {
     if (student.rows[0]) {
       userObj = student.rows[0];
       realPwd = student.rows[0].id;
-      type = userRoles.teacher;
+      type = userRoles.student;
     } else {
       userObj = teacher.rows[0];
       realPwd = teacher.rows[0].id;
-      type = userRoles.student;
+      type = userRoles.teacher;
     }
     userObj.role = type;
     req.session.user = userObj;
     return res.status(200).json({ data: userObj });
   } catch (error) {
     console.log(error);
-    res.status(401).send("unauthorized");
+    res.status(401).send("Unauthorized");
   }
 };
 
@@ -111,7 +111,7 @@ const logout = async (req, res) => {
     res.status(200).send();
   } catch (error) {
     console.log(error);
-    res.status(401).send("unauthorized");
+    res.status(401).send("Unauthorized");
   }
 };
 
@@ -119,15 +119,15 @@ const authorize = (role) => {
   return async (req, res, next) => {
     try {
       if (!req.session.user) {
-        return res.status(401).json("unauthorized");
+        return res.status(401).json("Unauthorized");
       }
-      if (role !== userRoles.any && res.session.user.role !== role) {
-        return res.status(401).json("unauthorized");
+      if (role !== userRoles.any && req.session.user.role !== role) {
+        return res.status(401).json("Unauthorized");
       }
       next();
     } catch (error) {
       console.log(error);
-      res.status(401).send("unauthorized");
+      res.status(401).send("Unauthorized");
     }
   };
 };

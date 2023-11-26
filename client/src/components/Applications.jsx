@@ -15,18 +15,19 @@ export default function Applications() {
         // we need to define it separately and run it
         // here I check the localStorage for userType, then in the request the cookie brings the authentication token
         const handleEffect = async () => {
-          if (localStorage.getItem('type') === 'student'){
+          let s = await store.fetchSelf();
+          if (store.user.type === 'student'){
             const applications = await store.getMyApplications();
             setApplications(applications);
           }
-          if (localStorage.getItem('type') === 'professor'){
+          if (store.user.type === 'professor'){
             const applications = await store.getReceivedApplications();
             setApplications(applications);
           }
           
         };
         handleEffect();
-      }, [localStorage.getItem('type')]);
+      }, [store.user.type]);
 
     return (
         <>
@@ -51,7 +52,7 @@ export default function Applications() {
                                             <p>{e.description}</p>
                                             <p>{e.deadline}</p>
                                             <p>Number of applicants: {e.num_applications}</p>
-                                            {localStorage.getItem('type') === 'professor' ? 
+                                            {store.user && store.user.type === 'professor' ? 
                                             <p><a className="border-thesis-view" href={`received-applications/${e.thesis_id}`}>VIEW APPLICATIONS</a></p> : <></>}
                                         </div>
                                     </div>
