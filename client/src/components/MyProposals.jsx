@@ -16,17 +16,18 @@ export default function MyProposals() {
         // since the handler function of useEffect can't be async directly
         // we need to define it separately and run it
         const handleEffect = async () => {
-          if (localStorage.getItem('type') === 'student'){
+          let s = await store.fetchSelf();
+          if (store.user.type === 'student'){
             const proposals = await store.getProposals();
             setProposals(proposals);
           }
-          if (localStorage.getItem('type') === 'professor'){
+          if (store.user.type === 'professor'){
             const proposals = await store.getProposalsByTeacherId();
             setProposals(proposals);
           }
         };
         handleEffect();
-    }, [localStorage.getItem('type')]);
+    }, [store.user.type]);
 
     return (
         <>

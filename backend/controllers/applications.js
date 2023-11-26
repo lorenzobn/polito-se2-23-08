@@ -39,7 +39,7 @@ const createApplication = async (req, res) => {
 const getApplications = async (req, res) => {
   const query = {
     text: "SELECT student_id, thesis_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, groups, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE student_id=$1",
-    values: [req.userId],
+    values: [req.session.user.id],
   };
   try {
     const results = await pool.query(query).then((result) => {
@@ -51,11 +51,11 @@ const getApplications = async (req, res) => {
   }
 };
 
-// TODO: Only STUDENTS, in particular the student who did the application
+
 const getApplicationById = async (req, res) => {
   const query = {
     text: "SELECT student_id, thesis_application.status, cv_uri, title, type, required_knowledge, notes, level, programme, deadline  FROM THESIS_APPLICATION JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE student_id=$1 AND id=$2",
-    values: [req.userId, req.params.applicationId],
+    values: [req.session.user.id, req.params.applicationId],
   };
   try {
     const results = await pool.query(query).then((result) => {
@@ -100,7 +100,7 @@ function getSomePromise(applicationId) {
 // TODO: Only TEACHERS, in particular the SUPERVISOR of a thesis
 const updateApplication = async (req, res) => {
   // TODO: session-based id
-  const loggedProfessor = req.userId;
+  const loggedProfessor = req.session.user.id;
   notAuthorized = true;
   try {
     const { applicationId } = req.params;
@@ -166,11 +166,9 @@ const updateApplication = async (req, res) => {
 
 // TODO: Only TEACHERS
 const getReceivedApplications = async (req, res) => {
-  console.log("querying with :");
-  console.log(req.userId);
   const query = {
     text: "SELECT COUNT(*) AS num_applications, title, description, deadline, thesis_id FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 GROUP BY thesis_id, title, description, deadline",
-    values: [req.userId],
+    values: [req.session.user.id],
   };
   try {
     const results = await pool.query(query).then((result) => {
@@ -184,10 +182,10 @@ const getReceivedApplications = async (req, res) => {
 
 const getReceivedApplicationsByThesisId = async (req, res) => {
   console.log("querying with :");
-  console.log(req.userId);
+  console.log(req.session.user.id);
   const query = {
     text: "SELECT student_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, groups, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 AND thesis_id=$2",
-    values: [req.userId, req.params.thesisId],
+    values: [req.session.user.id, req.params.thesisId],
   };
   try {
     const results = await pool.query(query).then((result) => {

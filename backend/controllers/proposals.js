@@ -141,7 +141,7 @@ const createProposal = async (req, res) => {
       keywords: Joi.array(),
     });
 
-    let SUPERVISOR_id = req.userId;
+    let SUPERVISOR_id = req.session.user.id;
     const { error, value } = proposalSchema.validate(req.body);
     if (error) {
       return res.status(400).json({ msg: error.details[0].message });
@@ -269,10 +269,9 @@ const getProposalbyId = async (req, res) => {
 const getProposalsByTeacher = async (req, res) => {
   const query = {
     text: "SELECT * FROM thesis_proposal WHERE supervisor_id=$1",
-    values: [req.userId],
+    values: [req.session.user.id],
   };
   try {
-    console.log;
     const results = await pool.query(query).then((result) => {
       if (result.rowCount != 0) {
         return res.status(200).json({ msg: "OK", data: result.rows });

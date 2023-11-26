@@ -54,7 +54,7 @@ router.get(
 );
 router.get(
   "/thesis-proposals/:proposalId",
-  authorize(userRoles.teacher),
+  authorize(userRoles.any),
   getProposalbyId
 );
 router.put(
@@ -72,7 +72,6 @@ router.get("/my-applications", authorize(userRoles.student), getApplications);
 router.get(
   "/my-applications/:applicationId",
   authorize(userRoles.student),
-
   getApplicationById
 );
 
@@ -81,7 +80,6 @@ router.get(
 router.get(
   "/received-applications",
   authorize(userRoles.teacher),
-
   getReceivedApplications
 );
 
