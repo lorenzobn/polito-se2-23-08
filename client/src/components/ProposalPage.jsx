@@ -146,11 +146,13 @@ function ProposalPage() {
                     icon={faCheck}
                     text={"APPLY"}
                     onClick={() => {
-          setShowApplyModal(true);
-        }}
+                      setShowApplyModal(true);
+                    }}
                   ></Button>
                 ) : (
-                  <></>
+                  <div className="col text-center">
+                    <h2 style={{ color: "green" }}>APPLIED</h2>
+                  </div>
                 )}
               </div>
             </div>
