@@ -72,8 +72,6 @@ function ProposalPage() {
         };
       }
       setExCosupervisors(exco);
-      console.log("response", response);
-      console.log("response ex2", exco);
     };
     handleEffect();
   }, []);
