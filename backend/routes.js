@@ -68,7 +68,7 @@ router.put(
 
 router.post(
   "/my-applications",
-  // authorize(userRoles.student),
+  authorize(userRoles.student),
   createApplication
 );
 router.get("/my-applications", authorize(userRoles.student), getApplications);
