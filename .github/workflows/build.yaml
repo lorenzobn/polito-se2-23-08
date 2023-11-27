@@ -12,14 +12,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          projectBaseDir: ./backend
           fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
       - name: Install dependencies
         run:  npm install
+        working-directory: ./backend
       - name: Install Jest globally
         run:  sudo npm install -g jest
+        working-directory: ./backend
       - name: Run Tests
         run:  npm run test
+        working-directory: ./backend
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
         env:
