@@ -68,7 +68,7 @@ const getExtCoSupervisors = async (req, res) => {
 
 const getCoSupervisors = async (req, res) => {
   const query = `
-  SELECT name,surname FROM TEACHER;
+  SELECT id,name,surname FROM TEACHER;
   `;
   const values = [];
   try {
@@ -144,6 +144,21 @@ const getECoSupThesis = async (thesisId) => {
 const getAllCdS = async (req, res) => {
   const query = `
   SELECT * FROM DEGREE;
+  `;
+  const values = [];
+  try {
+    const results = await pool.query(query, values)
+    return res
+      .status(201)
+      .json({ data: results.rows });
+  } catch (error) {
+    return error;
+  }
+}
+
+const getAllGroups = async (req, res) => {
+  const query = `
+  SELECT * FROM GROUPS;
   `;
   const values = [];
   try {

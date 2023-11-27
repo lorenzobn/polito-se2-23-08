@@ -3,15 +3,17 @@ import MyNavbar from "./Navbar";
 import {
   Row,
   Col,
+  Stack,
   Nav,
   Container,
   Dropdown,
   DropdownButton,
   Form,
-  Offcanvas
+  Offcanvas,
+  Badge
 } from "react-bootstrap";
 import Button from "./Button";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faBackward, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { StoreContext } from "../core/store/Provider";
 
 function ThesisList(props) {
@@ -21,7 +23,13 @@ function ThesisList(props) {
   const [degree, setDegree] = useState('All')
   const [show, setShow] = useState(false);
   const [filter, setFilter] = useState("")
+  const [resGroups, setResGroups] = useState([])
+  const [cosupervisors, setCosupervisors] = useState([])
+  const [cds, setCds] = useState([])
+  const [search, setSearch] = useState(false)
+  const [filterTags, setFilterTags] = useState([])
 
+  let counter = 0;
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
@@ -36,11 +44,49 @@ function ThesisList(props) {
   const handleShow = (filter) => {
     
     setFilter(filter)
+    if (filter === 'Research Group')
+      store.getAllGroups().then((res) => {setResGroups(res); setShow(true)})
+    else if (filter === 'Supervisor')
+    store.getCoSupervisors().then((res) => {setCosupervisors(res); setShow(true)})
+    else if (filter === 'Cds')
+    store.getAllCds().then((res) => {setCds(res); setShow(true)})
+
     setShow(true)
   };
 
   const handleSearch = () => {
+    setSearch(true)
     store.searchProposal(keyword).then(res => setProposals(res));
+  }
+
+  const handleReset = () => {
+    setFilterTags([])
+    setSearch(false)
+    store.getProposals().then(res => setProposals(res));
+  }
+
+  const handleFilter = (ev) => {
+  
+    if (filter === 'Research Group') {
+      const filtered = proposals.filter(e => e.cod_group === ev)
+      setProposals(filtered)
+    }
+    else if (filter === 'Supervisor') {
+      const filtered = proposals.filter(e => e.supervisor_id === ev)
+      setProposals(filtered)
+    }
+    else if (filter === 'Cds') {
+      const filtered = proposals.filter(e => e.programme === ev)
+      setProposals(filtered)
+    }
+    else if (filter === 'Status') {
+      const filtered = proposals.filter(e => e.status === ev)
+      setProposals(filtered)
+    }
+    setSearch(true)
+    if (!filterTags.includes(ev))
+      setFilterTags([...filterTags, ev])
+    handleClose()
   }
 
   const handleKeyDown = (ev) => {
@@ -80,12 +126,18 @@ function ThesisList(props) {
                   />
                 </Col>
                 <Col className="d-flex justify-content-center">
-                  <Button text={"search"} icon={faMagnifyingGlass} onClick={handleSearch}></Button>
+                  <Button text={"Search"} icon={faMagnifyingGlass} onClick={handleSearch}></Button>&nbsp;&nbsp;
+                  {search === true? <Button text={"Reset"} icon={faBackward} onClick={handleReset}></Button>:<></>}
                 </Col>
               </Row>
             </Form>
           </Col>
         </Row>
+        {search === true && <Row style={{marginBottom:'1.5rem'}} className="justify-content-center">
+          <Stack className="d-inline-flex justify-content-center" direction="horizontal" gap={2}>
+            {filterTags.map(el => <Badge key={counter++} pill style={{fontSize:'90%', backgroundColor:'RGBA(252, 122, 8, 1) !important'}}>{el}</Badge>)}
+          </Stack>  
+        </Row>}
         <Row className="border-thesis-div">
           <Col
             lg={2}
@@ -96,8 +148,26 @@ function ThesisList(props) {
                 <Offcanvas.Title>{filter}</Offcanvas.Title>
               </Offcanvas.Header>
               <Offcanvas.Body>
-                <Nav>
-
+                <Nav
+                variant="underline"
+                className="flex-column m-5 justify-content-center"
+                onSelect={handleFilter}>
+                  {filter === 'Research Group' && resGroups.map(e => <Nav.Item className="d-inline-flex" key={e.cod_group}>
+                    <Nav.Link className="filter-decoration" eventKey={e.cod_group}>{e.cod_department} - {e.name}</Nav.Link>
+                    </Nav.Item>)}
+                  {filter === 'Supervisor' && cosupervisors.map(e => <Nav.Item className="d-inline-flex" key={e.id}>
+                    <Nav.Link className="filter-decoration" eventKey={e.id}>{e.surname}&nbsp;&nbsp;{e.name}</Nav.Link>
+                    </Nav.Item>)}
+                  {filter === 'Cds' && cds.map(e => <Nav.Item className="d-inline-flex" key={e.cod_department}>
+                    <Nav.Link className="filter-decoration" eventKey={e.cod_department}>{e.cod_department} - {e.name}</Nav.Link>
+                    </Nav.Item>)
+                  }
+                  {filter === 'Status' && <><Nav.Item className="d-inline-flex">
+                    <Nav.Link className="filter-decoration" eventKey={'active'}>Active</Nav.Link>
+                    </Nav.Item>
+                    <Nav.Item className="d-inline-flex">
+                      <Nav.Link className="filter-decoration" eventKey={'archived'}>Archived</Nav.Link>
+                    </Nav.Item></>}  
                 </Nav>
               </Offcanvas.Body>
             </Offcanvas>
@@ -117,13 +187,13 @@ function ThesisList(props) {
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item className="d-inline-flex">
-                <Nav.Link className="filter-decoration" eventKey="Title">
-                  By Title
+                <Nav.Link className="filter-decoration" eventKey="Cds">
+                  By Cds
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item className="d-inline-flex">
-                <Nav.Link className="filter-decoration" eventKey="Subject">
-                  By Subject
+                <Nav.Link className="filter-decoration" eventKey="Status">
+                  By Status
                 </Nav.Link>
               </Nav.Item>
             </Nav>
