@@ -270,6 +270,13 @@ const createProposal = async (req, res) => {
           coSupervisors[i].surname,
           true
         );
+      }else{
+        let r = await coSupervisorAdd(
+          newId,
+          coSupervisors[i].name,
+          coSupervisors[i].surname,
+          false
+        );
       }
     }
 

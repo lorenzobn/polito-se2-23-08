@@ -23,13 +23,10 @@ function ProposalPage() {
     program: "",
     name: "",
     surname: "",
-    group: ""
+    group: "",
   });
 
-  const [incosupervisors, setInCosupervisors] = useState({
-    name: "",
-    surname: "",
-  });
+  const [incosupervisors, setInCosupervisors] = useState([]);
 
   const [excosupervisors, setExCosupervisors] = useState([]);
 
@@ -41,9 +38,7 @@ function ProposalPage() {
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
-    // store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
-    // console.log("TEST:" , proposal.msg);
-    const handleEffect  = async () => {
+    const handleEffect = async () => {
       const response = await store.getProposal(proposalId);
       setProposal({
         title: response.data[0].title,
@@ -57,28 +52,28 @@ function ProposalPage() {
         group: response.data[0].groupname,
         name: response.data[0].sname,
         surname: response.data[0].ssurname,
-      })
+      });
       for (let index = 0; index < response.keywords.length; index++) {
         keyw.push(response.keywords[index].keyword);
       }
-      setKeywords([keyw])
+      setKeywords([keyw]);
       for (let index = 0; index < response.internal_co.length; index++) {
-        setInCosupervisors({
+        inco[index] = {
           name: response.internal_co[index].name,
           surname: response.internal_co[index].surname,
-        })
+        };
       }
+      setInCosupervisors(inco);
 
       for (let index = 0; index < response.external_co.length; index++) {
-        exco.push({
+        exco[index] = {
           name: response.external_co[index].name,
           surname: response.external_co[index].surname,
-        })
+        };
       }
       setExCosupervisors(exco);
-      console.log("response" , response);
-      console.log("response ex2" , excosupervisors);
-      
+      console.log("response", response);
+      console.log("response ex2", exco);
     };
     handleEffect();
   }, []);
@@ -111,10 +106,22 @@ function ProposalPage() {
             {proposal.name + " " + proposal.surname}
           </div>
           <div className="mb-3">
-            <strong>Internal Co-Supervisors:</strong> {incosupervisors.name + " " + incosupervisors.surname }
+            <strong>Internal Co-Supervisors:</strong>{" "}
+            {incosupervisors.map((coSupervisor, index) => (
+              <span key={index}>
+                {coSupervisor.name} {coSupervisor.surname}
+                {index < incosupervisors.length - 1 && ", "}{" "}
+              </span>
+            ))}
           </div>
           <div className="mb-3">
-            <strong>External Co-Supervisors:</strong> {excosupervisors.name + " " + excosupervisors.surname }
+            <strong>External Co-Supervisors:</strong>{" "}
+            {excosupervisors.map((coSupervisor, index) => (
+              <span key={index}>
+                {coSupervisor.name} {coSupervisor.surname}
+                {index < excosupervisors.length - 1 && ", "}{" "}
+              </span>
+            ))}
           </div>
           <div className="mb-3">
             <strong>Deadline:</strong> {proposal.deadline}
@@ -123,7 +130,7 @@ function ProposalPage() {
             <strong>{proposal.description}</strong>
           </div>
           <div className="mb-3">
-            <strong>Keywords:</strong> {keywords + " "}
+            <strong>Keywords:</strong> {keywords.join(", ")}
           </div>
           <div className="row g-3 mb-3">
             <div className="col-md-2">
@@ -145,19 +152,56 @@ function ProposalPage() {
           <div className="mb-3">
             <strong>{proposal.notes}</strong>
           </div>
-          {proposal.status !== 'active' ? <div className="row">
-            <div className="col text-start">
-            {store.user.type === 'student'?<BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/')}}></BadButton>:<BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/thesis-proposals')}}></BadButton>}
+          {proposal.status !== "active" ? (
+            <div className="row">
+              <div className="col text-start">
+                {store.user.type === "student" ? (
+                  <BadButton
+                    icon={faArrowLeft}
+                    text={"BACK"}
+                    onClick={() => {
+                      navigate("/");
+                    }}
+                  ></BadButton>
+                ) : (
+                  <BadButton
+                    icon={faArrowLeft}
+                    text={"BACK"}
+                    onClick={() => {
+                      navigate("/thesis-proposals");
+                    }}
+                  ></BadButton>
+                )}
+              </div>
+              <div className="col text-end">
+                {store.user.type === "student" ? (
+                  <Button
+                    icon={faCheck}
+                    text={"APPLY"}
+                    onClick={handleApply}
+                  ></Button>
+                ) : (
+                  <></>
+                )}
+              </div>
             </div>
-            <div className="col text-end">
-            {store.user.type === 'student'?<Button icon={faCheck} text={"APPLY"} onClick={handleApply}></Button>:<></>}
+          ) : (
+            <div className="row">
+              <div className="col text-center">
+                {store.user.type === "student" ? (
+                  <h2 style={{ color: "green" }}>APPLIED</h2>
+                ) : (
+                  <BadButton
+                    icon={faArrowLeft}
+                    text={"BACK"}
+                    onClick={() => {
+                      navigate("/thesis-proposals");
+                    }}
+                  ></BadButton>
+                )}
+              </div>
             </div>
-          </div> :
-          <div className="row">
-            <div className="col text-center">
-              {store.user.type === 'student'? <h2 style={{color:'green'}}>APPLIED</h2>:<BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/thesis-proposals')}}></BadButton>}
-            </div>
-          </div>}
+          )}
         </form>
       </div>
     </>
