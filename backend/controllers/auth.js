@@ -39,7 +39,6 @@ const sp = ServiceProvider(spOptions);
 const idp = IdentityProvider(idpOptions);
 
 const login = async (req, res) => {
-  console.log(req.session);
   res.json({
     redirectUrl:
       "https://dev-4ovpyp08m022lhpz.us.auth0.com/samlp/bvdcn8wtkXNhbfwppeRvxxSyOocJ3mY8?connection=polito",
@@ -82,7 +81,6 @@ const tokenVerification = async (req, res) => {
     const teacher = await pool.query("SELECT * FROM teacher WHERE email = $1", [
       email,
     ]);
-    console.log(student.rows[0], teacher.rows[0]);
 
     if (student.rows.length === 0 && teacher.rows.length === 0) {
       return res.status(401).json({ msg: "Invalid email" });

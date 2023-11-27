@@ -3,6 +3,8 @@ const Joi = require("@hapi/joi");
 const fs = require("fs");
 const path = require("path");
 // TODO: Only STUDENTS
+
+const uploadPath = "uploads/";
 const createApplication = async (req, res) => {
   try {
     const applicationSchema = Joi.object({
@@ -16,15 +18,13 @@ const createApplication = async (req, res) => {
 
     const { error, value } = applicationSchema.validate(req.body);
     if (error) {
+      console.log(error);
       return res.status(400).json({ msg: error.details[0].message });
     }
     const file = req.files && req.files.file;
 
     if (file) {
-      console.log(file);
-
       await fs.mkdirSync(uploadPath, { recursive: true });
-      console.log("so far so good");
       const uniqueFilename = `${Date.now()}-${file.name}`;
       const filePath = path.join(uploadPath, uniqueFilename);
       value.cv_uri = filePath;
