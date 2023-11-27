@@ -14,3 +14,11 @@ export const createApplication = async (application) => {
     }
   };
   
+  export const checkApplication = async (thesisId) => {
+    try {
+      const res = await client.get(`/check-application/${thesisId}`);
+      return res;
+    } catch (err) {
+      throw err;
+    }
+  }

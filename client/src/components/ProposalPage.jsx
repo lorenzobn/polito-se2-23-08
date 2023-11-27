@@ -13,12 +13,20 @@ function ProposalPage() {
 
   const store = useContext(StoreContext);
   const [proposal, setProposal] = useState({});
+  const [applied, setApplied] = useState(false)
 
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
     store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
+    store.checkApplication(proposalId).then((res) => setApplied(res.applied))
   }, []);
+
+  useEffect(() => {
+    // since the handler function of useEffect can't be async directly
+    // we need to define it separately and run it
+    store.checkApplication(proposalId).then((res) => setApplied(res.applied))
+  }, [applied]);
 
   const handleApply = () => {
     const application = {
@@ -88,9 +96,19 @@ function ProposalPage() {
             </div>
           </div> :
           <div className="row">
+            {store.user.type === 'student' && applied? 
             <div className="col text-center">
-              {store.user.type === 'student'? <h2 style={{color:'green'}}>APPLIED</h2>:<BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/thesis-proposals')}}></BadButton>}
+              <h2 style={{color:'green'}}>APPLIED</h2>
+            </div>:
+            <div>
+              <div className="col text-start">
+                <BadButton icon={faArrowLeft} text={"BACK"} onClick={()=> {navigate('/thesis-proposals')}}></BadButton>
+              </div>
+              <div className="col text-end">
+                <Button icon={faCheck} text={"APPLY"} onClick={handleApply}></Button>
+              </div>
             </div>
+              }
           </div>}
         </form>
       </div>
