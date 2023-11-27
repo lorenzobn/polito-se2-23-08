@@ -12,12 +12,75 @@ function ProposalPage() {
   const proposalId = param.id;
 
   const store = useContext(StoreContext);
-  const [proposal, setProposal] = useState({});
+  const [proposal, setProposal] = useState({
+    title: "",
+    description: "",
+    knowledge: "",
+    deadline: "",
+    notes: "",
+    type: "",
+    level: "",
+    program: "",
+    name: "",
+    surname: "",
+    group: ""
+  });
+
+  const [incosupervisors, setInCosupervisors] = useState({
+    name: "",
+    surname: "",
+  });
+
+  const [excosupervisors, setExCosupervisors] = useState([]);
+
+  const [keywords, setKeywords] = useState([]);
+  let keyw = [];
+  let inco = [];
+  let exco = [];
 
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
-    store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
+    // store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
+    // console.log("TEST:" , proposal.msg);
+    const handleEffect  = async () => {
+      const response = await store.getProposal(proposalId);
+      setProposal({
+        title: response.data[0].title,
+        description: response.data[0].description,
+        knowledge: response.data[0].required_knowledge,
+        deadline: response.data[0].deadline,
+        notes: response.data[0].notes,
+        type: response.data[0].type,
+        level: response.data[0].level,
+        program: response.data[0].title_degree,
+        group: response.data[0].groupname,
+        name: response.data[0].sname,
+        surname: response.data[0].ssurname,
+      })
+      for (let index = 0; index < response.keywords.length; index++) {
+        keyw.push(response.keywords[index].keyword);
+      }
+      setKeywords([keyw])
+      for (let index = 0; index < response.internal_co.length; index++) {
+        setInCosupervisors({
+          name: response.internal_co[index].name,
+          surname: response.internal_co[index].surname,
+        })
+      }
+
+      for (let index = 0; index < response.external_co.length; index++) {
+        exco.push({
+          name: response.external_co[index].name,
+          surname: response.external_co[index].surname,
+        })
+      }
+      setExCosupervisors(exco);
+      console.log("response" , response);
+      console.log("response ex2" , excosupervisors);
+      
+    };
+    handleEffect();
   }, []);
 
   const handleApply = () => {
@@ -45,10 +108,13 @@ function ProposalPage() {
           </div>
           <div className="mb-3">
             <strong>Supervisor:</strong>{" "}
-            {proposal.sname + " " + proposal.ssurname}
+            {proposal.name + " " + proposal.surname}
           </div>
           <div className="mb-3">
-            <strong>Co-Supervisors:</strong>
+            <strong>Internal Co-Supervisors:</strong> {incosupervisors.name + " " + incosupervisors.surname }
+          </div>
+          <div className="mb-3">
+            <strong>External Co-Supervisors:</strong> {excosupervisors.name + " " + excosupervisors.surname }
           </div>
           <div className="mb-3">
             <strong>Deadline:</strong> {proposal.deadline}
@@ -57,24 +123,24 @@ function ProposalPage() {
             <strong>{proposal.description}</strong>
           </div>
           <div className="mb-3">
-            <strong>Keywords:</strong> {proposal.keywords}
+            <strong>Keywords:</strong> {keywords + " "}
           </div>
           <div className="row g-3 mb-3">
             <div className="col-md-2">
               <strong>Level:</strong> {proposal.level}
             </div>
             <div className="col-md-3">
-              <strong>CdS:</strong> {proposal.title_degree}
+              <strong>CdS:</strong> {proposal.program}
             </div>
             <div className="col-md-3">
-              <strong>Group:</strong> {proposal.groupname}
+              <strong>Group:</strong> {proposal.group}
             </div>
             <div className="col-md-3">
               <strong>Type:</strong> {proposal.type}
             </div>
           </div>
           <div className="mb-3">
-            <strong>Required Knowledge:</strong> {proposal.required_knowledge}
+            <strong>Required Knowledge:</strong> {proposal.knowledge}
           </div>
           <div className="mb-3">
             <strong>{proposal.notes}</strong>
