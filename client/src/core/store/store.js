@@ -19,7 +19,10 @@ import {
   getAllProgrammes as getAllProgrammesAPI,
   getExternalCoSupervisors as getExtCoSupervisorsAPI,
 } from "../API/proposals";
-import { createApplication as createApplicationAPI } from "../API/applications";
+import { 
+  createApplication as createApplicationAPI,
+  getReceivedApplicationsByThesisId as getReceivedApplicationsByThesisIdAPI,
+} from "../API/applications";
 import { toast } from "react-toastify";
 export class Store {
   constructor() {
@@ -238,6 +241,15 @@ export class Store {
   async getAllProgrammes() {
     try {
       const res = await getAllProgrammesAPI();
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  async getReceivedApplicationsByThesisId(proposalId) {
+    try {
+      const res = await getReceivedApplicationsByThesisIdAPI(proposalId);
       return res.data.data;
     } catch (err) {
       return [];
