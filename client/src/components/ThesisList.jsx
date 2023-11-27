@@ -25,7 +25,7 @@ function ThesisList(props) {
   const [filter, setFilter] = useState("")
   const [resGroups, setResGroups] = useState([])
   const [cosupervisors, setCosupervisors] = useState([])
-  const [cds, setCds] = useState([])
+  const [programmes, setProgrammes] = useState([])
   const [search, setSearch] = useState(false)
   const [filterTags, setFilterTags] = useState([])
 
@@ -40,6 +40,30 @@ function ThesisList(props) {
     handleEffect();
   }, []);
 
+  useEffect(() => {
+    const filterFun = async () => {
+      const proposals = await store.getProposals() 
+      const filteredProposals = proposals.filter(e => {
+        return filterTags.every(cond => {
+          if (cond.type === 'Research Group') {
+            return e.cod_group === cond.id
+          }
+          else if (cond.type === 'Supervisor') {
+             return e.supervisor_id === cond.id
+          }
+          else if (cond.type === 'Programme') { 
+             return e.programme === cond.id
+          }
+          else if (cond.type === 'Status') {
+            return e.status === cond.id
+          }
+      })
+    })
+    setProposals(filteredProposals)
+    };
+    filterFun()
+  }, [filterTags])
+
   const handleClose = () => setShow(false);
   const handleShow = (filter) => {
     
@@ -48,8 +72,8 @@ function ThesisList(props) {
       store.getAllGroups().then((res) => {setResGroups(res); setShow(true)})
     else if (filter === 'Supervisor')
     store.getCoSupervisors().then((res) => {setCosupervisors(res); setShow(true)})
-    else if (filter === 'Cds')
-    store.getAllCds().then((res) => {setCds(res); setShow(true)})
+    else if (filter === 'Programme')
+    store.getAllProgrammes().then((res) => {setProgrammes(res); setShow(true)})
 
     setShow(true)
   };
@@ -67,25 +91,24 @@ function ThesisList(props) {
 
   const handleFilter = (ev) => {
   
+    let res
+    const obj = JSON.parse(ev)
     if (filter === 'Research Group') {
-      const filtered = proposals.filter(e => e.cod_group === ev)
-      setProposals(filtered)
+      res = {id:obj.cod_group, type:'Research Group', name:obj.name}
     }
     else if (filter === 'Supervisor') {
-      const filtered = proposals.filter(e => e.supervisor_id === ev)
-      setProposals(filtered)
+      res = {id:obj.id, type:'Supervisor', name:obj.surname+' '+obj.name}
     }
-    else if (filter === 'Cds') {
-      const filtered = proposals.filter(e => e.programme === ev)
-      setProposals(filtered)
+    else if (filter === 'Programme') {
+      res = {id:obj.cod_degree, type:'Programme', name:obj.cod_degree}
     }
     else if (filter === 'Status') {
-      const filtered = proposals.filter(e => e.status === ev)
-      setProposals(filtered)
+      res = {id:obj, type:'Status', name:obj}
     }
     setSearch(true)
-    if (!filterTags.includes(ev))
-      setFilterTags([...filterTags, ev])
+    if (!filterTags.some(e => e.id === res.id)) {
+      setFilterTags([...filterTags, res])
+    }
     handleClose()
   }
 
@@ -135,7 +158,7 @@ function ThesisList(props) {
         </Row>
         {search === true && <Row style={{marginBottom:'1.5rem'}} className="justify-content-center">
           <Stack className="d-inline-flex justify-content-center" direction="horizontal" gap={2}>
-            {filterTags.map(el => <Badge key={counter++} pill style={{fontSize:'90%', backgroundColor:'RGBA(252, 122, 8, 1) !important'}}>{el}</Badge>)}
+            {filterTags.map(el => <Badge key={counter++} pill style={{fontSize:'90%', backgroundColor:'RGBA(252, 122, 8, 1) !important'}}>{el.name}</Badge>)}
           </Stack>  
         </Row>}
         <Row className="border-thesis-div">
@@ -144,8 +167,8 @@ function ThesisList(props) {
             className="d-flex border-thesis-filter"
           >
             <Offcanvas show={show} onHide={handleClose}>
-              <Offcanvas.Header closeButton>
-                <Offcanvas.Title>{filter}</Offcanvas.Title>
+              <Offcanvas.Header className="justify-content-between" closeButton>
+                <Offcanvas.Title as='h2'>{filter}</Offcanvas.Title>
               </Offcanvas.Header>
               <Offcanvas.Body>
                 <Nav
@@ -153,20 +176,20 @@ function ThesisList(props) {
                 className="flex-column m-5 justify-content-center"
                 onSelect={handleFilter}>
                   {filter === 'Research Group' && resGroups.map(e => <Nav.Item className="d-inline-flex" key={e.cod_group}>
-                    <Nav.Link className="filter-decoration" eventKey={e.cod_group}>{e.cod_department} - {e.name}</Nav.Link>
+                    <Nav.Link className="filter-decoration" eventKey={JSON.stringify(e)}>{e.cod_department} - {e.name}</Nav.Link>
                     </Nav.Item>)}
                   {filter === 'Supervisor' && cosupervisors.map(e => <Nav.Item className="d-inline-flex" key={e.id}>
-                    <Nav.Link className="filter-decoration" eventKey={e.id}>{e.surname}&nbsp;&nbsp;{e.name}</Nav.Link>
+                    <Nav.Link className="filter-decoration" eventKey={JSON.stringify(e)}>{e.surname}&nbsp;&nbsp;{e.name}</Nav.Link>
                     </Nav.Item>)}
-                  {filter === 'Cds' && cds.map(e => <Nav.Item className="d-inline-flex" key={e.cod_department}>
-                    <Nav.Link className="filter-decoration" eventKey={e.cod_department}>{e.cod_department} - {e.name}</Nav.Link>
+                  {filter === 'Programme' && programmes.map(e => <Nav.Item className="d-inline-flex" key={e.cod_degree}>
+                    <Nav.Link className="filter-decoration" eventKey={JSON.stringify(e)}>{e.cod_degree} - {e.title_degree}</Nav.Link>
                     </Nav.Item>)
                   }
                   {filter === 'Status' && <><Nav.Item className="d-inline-flex">
-                    <Nav.Link className="filter-decoration" eventKey={'active'}>Active</Nav.Link>
+                    <Nav.Link className="filter-decoration" eventKey={JSON.stringify('active')}>Active</Nav.Link>
                     </Nav.Item>
                     <Nav.Item className="d-inline-flex">
-                      <Nav.Link className="filter-decoration" eventKey={'archived'}>Archived</Nav.Link>
+                      <Nav.Link className="filter-decoration" eventKey={JSON.stringify('archived')}>Archived</Nav.Link>
                     </Nav.Item></>}  
                 </Nav>
               </Offcanvas.Body>
@@ -187,8 +210,8 @@ function ThesisList(props) {
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item className="d-inline-flex">
-                <Nav.Link className="filter-decoration" eventKey="Cds">
-                  By Cds
+                <Nav.Link className="filter-decoration" eventKey="Programme">
+                  By Programme
                 </Nav.Link>
               </Nav.Item>
               <Nav.Item className="d-inline-flex">

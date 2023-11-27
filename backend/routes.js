@@ -9,6 +9,7 @@ const {
   searchProposal,
   getAllCdS,
   getAllGroups,
+  getAllProgrammes,
 } = require("./controllers/proposals.js");
 const {
   getApplications,
@@ -108,7 +109,7 @@ router.get(
   "/cosupervisors",
   getCoSupervisors
 )
-
+router.get("/programmes",getAllProgrammes)
 router.get("/cds", getAllCdS)
 router.get("/groups", getAllGroups)
 

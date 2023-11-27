@@ -110,3 +110,12 @@ export const getAllCds = async () => {
     throw err;
   }
 };
+
+export const getAllProgrammes = async () => {
+  try {
+    const res = await client.get("/programmes");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
