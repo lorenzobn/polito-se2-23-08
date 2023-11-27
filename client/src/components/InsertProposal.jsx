@@ -361,7 +361,7 @@ function InsertProposal() {
               value={selectedKeywords}
               onChange={handleTagsChange}
               name="keywoards"
-              placeHolder="Enter keywoards and press Enter"
+              placeHolder="Enter keywords and press Enter"
             />
           </div>
 

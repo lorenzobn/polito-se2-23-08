@@ -9,6 +9,7 @@ const {
   searchProposal,
   getAllCdS,
   getAllGroups,
+  getAllProgrammes,
 } = require("./controllers/proposals.js");
 const {
   getApplications,
@@ -108,10 +109,13 @@ router.get(
 //TODO: authorize all these routes
 router.get("/ext-cosupervisors", getExtCoSupervisors);
 
-router.get("/cosupervisors", getCoSupervisors);
-
-router.get("/cds", getAllCdS);
-router.get("/groups", getAllGroups);
+router.get(
+  "/cosupervisors",
+  getCoSupervisors
+)
+router.get("/programmes",getAllProgrammes)
+router.get("/cds", getAllCdS)
+router.get("/groups", getAllGroups)
 
 router.get("/login", login);
 router.post("/sso/acs", assertion);
