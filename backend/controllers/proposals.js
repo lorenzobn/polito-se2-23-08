@@ -171,21 +171,6 @@ const getAllGroups = async (req, res) => {
   }
 }
 
-const getAllGroups = async (req, res) => {
-  const query = `
-  SELECT * FROM GROUPS;
-  `;
-  const values = [];
-  try {
-    const results = await pool.query(query, values)
-    return res
-      .status(201)
-      .json({ data: results.rows });
-  } catch (error) {
-    return error;
-  }
-}
-
 const createProposal = async (req, res) => {
   try {
     const proposalSchema = Joi.object({
