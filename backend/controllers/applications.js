@@ -1,6 +1,7 @@
 const pool = require("../db/connection");
 const Joi = require("@hapi/joi");
-
+const fs = require("fs");
+const path = require("path");
 // TODO: Only STUDENTS
 const createApplication = async (req, res) => {
   try {
@@ -20,10 +21,10 @@ const createApplication = async (req, res) => {
     const file = req.files && req.files.file;
 
     if (file) {
-      const uploadPath = "uploads/";
+      console.log(file);
 
-      await fs.mkdir(uploadPath, { recursive: true });
-
+      await fs.mkdirSync(uploadPath, { recursive: true });
+      console.log("so far so good");
       const uniqueFilename = `${Date.now()}-${file.name}`;
       const filePath = path.join(uploadPath, uniqueFilename);
       value.cv_uri = filePath;
@@ -41,14 +42,13 @@ const createApplication = async (req, res) => {
       value.thesis_status,
       value.cv_uri,
     ];
-    console.log(values);
     const result = await pool.query(query, values);
 
     return res
       .status(201)
       .json({ msg: "Application created successfully", data: result.rows[0] });
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     return res.status(500).json({ msg: "An unknown error occurred." });
   }
 };

@@ -68,7 +68,7 @@ router.put(
 
 router.post(
   "/my-applications",
-  authorize(userRoles.student),
+  // authorize(userRoles.student),
   createApplication
 );
 router.get("/my-applications", authorize(userRoles.student), getApplications);
@@ -106,18 +106,12 @@ router.get(
 );
 
 //TODO: authorize all these routes
-router.get(
-  "/ext-cosupervisors",
-  getExtCoSupervisors
-)
+router.get("/ext-cosupervisors", getExtCoSupervisors);
 
-router.get(
-  "/cosupervisors",
-  getCoSupervisors
-)
+router.get("/cosupervisors", getCoSupervisors);
 
-router.get("/cds", getAllCdS)
-router.get("/groups", getAllGroups)
+router.get("/cds", getAllCdS);
+router.get("/groups", getAllGroups);
 
 router.get("/login", login);
 router.post("/sso/acs", assertion);
