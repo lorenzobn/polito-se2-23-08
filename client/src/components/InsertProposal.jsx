@@ -71,7 +71,7 @@ function InsertProposal() {
         setUserType("professor");
       }
       //getting cds from server
-      const cds = await store.getCds();
+      const cds = await store.getAllCds();
       for (let index = 0; index < cds.length; index++) {
         cdss[index] = {
           value: cds[index].cod_degree,

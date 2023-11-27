@@ -41,13 +41,13 @@ export const searchProposal = async (keyword) => {
     const res = await client.get("/thesis-proposals/search", {
       params: {
         title: keyword,
-        type: keyword, 
-        description: keyword, 
-        required_knowledge: keyword, 
-        notes: keyword, 
-        level: keyword, 
-        programme: keyword
-      }
+        type: keyword,
+        description: keyword,
+        required_knowledge: keyword,
+        notes: keyword,
+        level: keyword,
+        programme: keyword,
+      },
     });
     return res;
   } catch (err) {
@@ -55,9 +55,21 @@ export const searchProposal = async (keyword) => {
   }
 };
 
-export const postProposals = async (title, type, description, requiredKnowledge, notes, level, programme, deadline , status, keywords, coSupervisors) => {
+export const postProposals = async (
+  title,
+  type,
+  description,
+  requiredKnowledge,
+  notes,
+  level,
+  programme,
+  deadline,
+  status,
+  keywords,
+  coSupervisors
+) => {
   try {
-    const res = await client.post("/thesis-proposals" , {
+    const res = await client.post("/thesis-proposals", {
       title,
       type,
       description,
@@ -97,6 +109,15 @@ export const getAllGroups = async () => {
 export const getCoSupervisors = async () => {
   try {
     const res = await client.get("/cosupervisors");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const getExternalCoSupervisors = async () => {
+  try {
+    const res = await client.get("/ext-cosupervisors");
     return res;
   } catch (err) {
     throw err;
