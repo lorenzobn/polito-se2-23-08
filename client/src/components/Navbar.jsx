@@ -85,7 +85,7 @@ function MyNavbar() {
               {store.user.type === "student" ? (
                 <Nav.Link
                   className="d-inline-flex text-white"
-                  href="/thesis-proposals"
+                  href="/"
                 >
                   THESIS
                 </Nav.Link>

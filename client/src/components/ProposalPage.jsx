@@ -64,7 +64,7 @@ function ProposalPage() {
               <strong>Level:</strong> {proposal.level}
             </div>
             <div className="col-md-3">
-              <strong>CdS:</strong> {proposal.programme}
+              <strong>CdS:</strong> {proposal.title_degree}
             </div>
             <div className="col-md-3">
               <strong>Group:</strong> {proposal.groupname}

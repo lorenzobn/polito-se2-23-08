@@ -1,5 +1,5 @@
 import React, { useEffect, useContext } from "react";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import Portal from "./components/Portal";
 import "./assets/bootstrap.css";
 import "./App.css";
@@ -33,7 +33,7 @@ function App() {
           <Route path="/portal" element={<Portal></Portal>}></Route>
           <Route
             path="/insertProposal"
-            element={<InsertProposal></InsertProposal>}
+            element={store.user.type === 'teacher'? <InsertProposal></InsertProposal>:<Navigate replace to='/'></Navigate>}
           ></Route>
           <Route
             path="/proposalpage/:id"
@@ -57,7 +57,7 @@ function App() {
           ></Route>
           <Route
             path="/thesis-proposals"
-            element={<MyProposals></MyProposals>}
+            element={store.user.type === 'teacher'? <MyProposals></MyProposals>:<Navigate replace to='/'></Navigate>}
           ></Route>
         </Routes>
       </BrowserRouter>
