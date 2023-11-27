@@ -15,7 +15,8 @@ import {
   getProposalsByTeacherId as getProposalsByTeacherIdAPI,
   getAllGroups as getAllGroupsAPI,
   getCoSupervisors as getCoSupervisorsAPI,
-  getAllCds as getAllCdSAPI
+  getAllCds as getAllCdSAPI,
+  getAllProgrammes as getAllProgrammesAPI
 } from "../API/proposals";
 import { createApplication as createApplicationAPI } from "../API/applications";
 import { toast } from "react-toastify";
@@ -218,6 +219,15 @@ export class Store {
   async getAllCds() {
     try {
       const res = await getAllCdSAPI();
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  async getAllProgrammes() {
+    try {
+      const res = await getAllProgrammesAPI();
       return res.data.data;
     } catch (err) {
       return [];

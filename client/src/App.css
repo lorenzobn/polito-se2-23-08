@@ -161,3 +161,7 @@ a {
 .dropdown-toggle::after {
   display: none;
 }
+
+.badge {
+  background-color: #007ea8 !important;
+}

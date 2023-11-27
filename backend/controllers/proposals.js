@@ -156,6 +156,21 @@ const getAllCdS = async (req, res) => {
   }
 }
 
+const getAllProgrammes = async (req, res) => {
+  const query = `
+  SELECT * FROM DEGREE;
+  `;
+  const values = [];
+  try {
+    const results = await pool.query(query, values)
+    return res
+      .status(201)
+      .json({ data: results.rows });
+  } catch (error) {
+    return error;
+  }
+}
+
 const getAllGroups = async (req, res) => {
   const query = `
   SELECT * FROM GROUPS;
@@ -447,5 +462,6 @@ module.exports = {
   updateProposal,
   searchProposal,
   getAllCdS,
-  getAllGroups
+  getAllGroups,
+  getAllProgrammes
 };
