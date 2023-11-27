@@ -53,9 +53,12 @@ function ProposalPage() {
         name: response.data[0].sname,
         surname: response.data[0].ssurname,
       });
+      keyw = [];
+      
       for (let index = 0; index < response.keywords.length; index++) {
         keyw.push(response.keywords[index].keyword);
       }
+      
       setKeywords([keyw]);
       for (let index = 0; index < response.internal_co.length; index++) {
         inco[index] = {
