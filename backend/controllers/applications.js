@@ -3,12 +3,13 @@ const Joi = require("@hapi/joi");
 
 // TODO: Only STUDENTS
 const createApplication = async (req, res) => {
-  
   try {
     const applicationSchema = Joi.object({
       student_id: Joi.string().required(),
       thesis_id: Joi.number().integer().required(),
-      thesis_status: Joi.string().valid("idle", "approved", "rejected").required(),
+      thesis_status: Joi.string()
+        .valid("idle", "approved", "rejected")
+        .required(),
       cv_uri: Joi.string().allow(""),
     });
 
@@ -16,14 +17,31 @@ const createApplication = async (req, res) => {
     if (error) {
       return res.status(400).json({ msg: error.details[0].message });
     }
+    const file = req.files && req.files.file;
+
+    if (file) {
+      const uploadPath = "uploads/";
+
+      await fs.mkdir(uploadPath, { recursive: true });
+
+      const uniqueFilename = `${Date.now()}-${file.name}`;
+      const filePath = path.join(uploadPath, uniqueFilename);
+      value.cv_uri = filePath;
+      await file.mv(filePath);
+    }
     const query = `
       INSERT INTO thesis_application (student_id, thesis_id, status, cv_uri)
       VALUES ($1, $2, $3, $4)
       RETURNING *;
     `;
 
-    const values = [value.student_id, value.thesis_id, value.thesis_status, value.cv_uri];
-    console.log(values)
+    const values = [
+      value.student_id,
+      value.thesis_id,
+      value.thesis_status,
+      value.cv_uri,
+    ];
+    console.log(values);
     const result = await pool.query(query, values);
 
     return res
@@ -49,7 +67,6 @@ const getApplications = async (req, res) => {
     return res.status(500).json({ msg: "An unknown error occurred." });
   }
 };
-
 
 const getApplicationById = async (req, res) => {
   const query = {
@@ -93,7 +110,7 @@ function getSomePromise(applicationId) {
       console.log(error);
       reject();
     }
-  })
+  });
 }
 
 // TODO: Only TEACHERS, in particular the SUPERVISOR of a thesis
@@ -103,18 +120,18 @@ const updateApplication = async (req, res) => {
   notAuthorized = true;
   try {
     const { applicationId } = req.params;
-    getSomePromise(req.params.applicationId).then(function(supervisor){
-      if (supervisor.supervisor_id == loggedProfessor){
+    getSomePromise(req.params.applicationId).then(function (supervisor) {
+      if (supervisor.supervisor_id == loggedProfessor) {
         notAuthorized = false;
       }
     });
-    if (notAuthorized){
-      return res.status(401).json({ msg: 'Unauthorized' });
+    if (notAuthorized) {
+      return res.status(401).json({ msg: "Unauthorized" });
     } else {
       // ok, authorized
       const updateFields = req.body;
       const applicationSchema = Joi.object({
-        status: Joi.string().valid('accepted','rejected', 'idle').required()
+        status: Joi.string().valid("accepted", "rejected", "idle").required(),
       });
 
       const { error } = applicationSchema.validate(updateFields, {
@@ -153,9 +170,10 @@ const updateApplication = async (req, res) => {
         return res.status(404).json({ msg: "Application not found." });
       }
 
-      return res
-        .status(200)
-        .json({ msg: "Application updated successfully", data: result.rows[0] });
+      return res.status(200).json({
+        msg: "Application updated successfully",
+        data: result.rows[0],
+      });
     }
   } catch (error) {
     console.error(error.message);
@@ -204,16 +222,23 @@ const didStudentApply = async (req, res) => {
   try {
     const results = await pool.query(query).then((result) => {
       if (result.rowCount == 0)
-        return res.status(200).json({ studentId : req.session.user.id, proposalId : req.params.thesisId, applied : false });
+        return res.status(200).json({
+          studentId: req.session.user.id,
+          proposalId: req.params.thesisId,
+          applied: false,
+        });
       else
-        return res.status(200).json({ studentId : req.session.user.id, proposalId : req.params.thesisId, applied : true });
+        return res.status(200).json({
+          studentId: req.session.user.id,
+          proposalId: req.params.thesisId,
+          applied: true,
+        });
     });
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({ msg: "An unknown error occurred." });
   }
 };
-
 
 // TODO: Only STUDENTS
 /*
@@ -240,5 +265,5 @@ module.exports = {
   createApplication,
   updateApplication,
   getReceivedApplications,
-  getReceivedApplicationsByThesisId
+  getReceivedApplicationsByThesisId,
 };

@@ -82,6 +82,7 @@ const tokenVerification = async (req, res) => {
     const teacher = await pool.query("SELECT * FROM teacher WHERE email = $1", [
       email,
     ]);
+    console.log(student.rows[0], teacher.rows[0]);
 
     if (student.rows.length === 0 && teacher.rows.length === 0) {
       return res.status(401).json({ msg: "Invalid email" });
