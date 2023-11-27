@@ -33,7 +33,7 @@ function App() {
           <Route path="/portal" element={<Portal></Portal>}></Route>
           <Route
             path="/insertProposal"
-            element={store.user.type === 'teacher'? <InsertProposal></InsertProposal>:<Navigate replace to='/'></Navigate>}
+            element={store.user.type !== 'student'? <InsertProposal></InsertProposal>:<Navigate replace to='/'></Navigate>}
           ></Route>
           <Route
             path="/proposalpage/:id"
@@ -57,7 +57,7 @@ function App() {
           ></Route>
           <Route
             path="/thesis-proposals"
-            element={store.user.type === 'teacher'? <MyProposals></MyProposals>:<Navigate replace to='/'></Navigate>}
+            element={store.user.type !== 'student'? <MyProposals></MyProposals>:<Navigate replace to='/'></Navigate>}
           ></Route>
         </Routes>
       </BrowserRouter>
