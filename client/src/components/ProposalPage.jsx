@@ -21,6 +21,7 @@ function ProposalPage() {
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
+    store.fetchSelf();
     store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
     store.checkApplication(proposalId).then((res) => setApplied(res.applied));
   }, []);
@@ -118,7 +119,7 @@ function ProposalPage() {
           <div className="mb-3">
             <strong>{proposal?.notes}</strong>
           </div>
-          {proposal?.status !== "active" ? (
+          {proposal?.status === "active" ? (
             <div className="row">
               <div className="col text-start">
                 {store.user.type === "student" ? (
@@ -140,11 +141,13 @@ function ProposalPage() {
                 )}
               </div>
               <div className="col text-end">
-                {store.user.type === "student" ? (
+                {store.user.type === "student" && !applied ? (
                   <Button
                     icon={faCheck}
                     text={"APPLY"}
-                    onClick={setShowApplyModal(true)}
+                    onClick={() => {
+          setShowApplyModal(true);
+        }}
                   ></Button>
                 ) : (
                   <></>
@@ -154,7 +157,7 @@ function ProposalPage() {
           ) : (
             <div className="row">
               <div className="col text-center">
-                {store.user.type === "student" ? (
+                {store.user.type === "student" && applied ? (
                   <h2 style={{ color: "green" }}>APPLIED</h2>
                 ) : (
                   <BadButton
