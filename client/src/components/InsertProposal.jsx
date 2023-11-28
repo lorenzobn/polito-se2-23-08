@@ -10,10 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { MultiSelect } from "react-multi-select-component";
 
-const KeyCodes = {
-  comma: 188,
-  enter: 13,
-};
+const seprator = ["Enter", " ", ","];
 
 const levels = [
   { value: "BSc", label: "Bachelor" },
@@ -23,8 +20,6 @@ const levels = [
 let cdss = [];
 let internal_co_supervisors = [];
 let external_co_supervisors = [];
-
-const delimiters = [KeyCodes.comma, KeyCodes.enter];
 
 function InsertProposal() {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
@@ -361,7 +356,8 @@ function InsertProposal() {
               value={selectedKeywords}
               onChange={handleTagsChange}
               name="keywoards"
-              placeHolder="Enter keywords and press Enter"
+              placeHolder="Enter keywords"
+              separators={seprator}
             />
           </div>
 
