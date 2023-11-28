@@ -1,5 +1,7 @@
 const pool = require("../db/connection");
 const Joi = require("@hapi/joi");
+const { userRoles } = require("./auth");
+
 
 // TODO: Only STUDENTS
 const createApplication = async (req, res) => {
@@ -103,12 +105,8 @@ const updateApplication = async (req, res) => {
   notAuthorized = true;
   try {
     const { applicationId } = req.params;
-    getSomePromise(req.params.applicationId).then(function(supervisor){
-      if (supervisor.supervisor_id == loggedProfessor){
-        notAuthorized = false;
-      }
-    });
-    if (notAuthorized){
+    console.log(req.session.user)
+    if (req.session.user.role != userRoles.teacher ){
       return res.status(401).json({ msg: 'Unauthorized' });
     } else {
       // ok, authorized
@@ -183,7 +181,7 @@ const getReceivedApplicationsByThesisId = async (req, res) => {
   console.log("querying with :");
   console.log(req.session.user.id);
   const query = {
-    text: "SELECT student_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 AND thesis_id=$2",
+    text: "SELECT thesis_application.id as applicationId, student_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 AND thesis_id=$2",
     values: [req.session.user.id, req.params.thesisId],
   };
   try {

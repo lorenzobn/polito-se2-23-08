@@ -38,23 +38,28 @@ export default function AcceptApplications() {
         proposalId
       );
       setProposal(response);
+      //console.log("proposal:" , response);
     };
     handleEffect();
-  }, []);
+  }, [status]);
 
   const handleAccept = async (index) => {
     const selectedForm = proposal[index];
-    console.log("Accepted form at index", index, selectedForm.student_id);
-    setStatus("accepted")
-    console.log("Accept status:" , status);
-    store.applicationDecision(proposalId, status, selectedForm.student_id);
+    //console.log("Accepted form at index", index, selectedForm.student_id);
+    // console.log("test:" , selectedForm.applicationid);
+    store.applicationDecision(selectedForm.applicationid, "accepted");
+    toast.success(`You accepted ${selectedForm.student_id} application successfully!`, {
+      position: toast.POSITION.TOP_CENTER,
+    });
   };
 
   const handleReject = async (index) => {
     const selectedForm = proposal[index];
-    console.log("Rejected form at index", index, selectedForm);
-    setStatus("rejected")
-    console.log("Reject status:" , status);
+    //console.log("Rejected form at index", index, selectedForm);
+    store.applicationDecision(selectedForm.applicationid, "rejected");
+    toast.warn(`You rejected ${selectedForm.student_id} application successfully!`, {
+      position: toast.POSITION.TOP_CENTER,
+    });
   };
 
   return (
@@ -100,115 +105,3 @@ export default function AcceptApplications() {
   );
 }
 
-{
-  /* <div className="container mt-5 mb-3">
-        <form
-          className="mx-auto p-4 bg-light rounded shadow"
-          style={{ marginTop: "1px" }}
-        >
-          <div className="mb-3 mt-1 text-center">
-            <strong>
-              <h1 className="text-start ms-3">{proposalDetails.student}</h1>
-            </strong>
-          </div>
-          <div className=" text-start ms-3 mb-3">
-            <strong>Status: {proposalDetails.status}</strong>
-          </div>
-          <div className=" text-start ms-3 mb-3">{proposalDetails.cv_uri}</div>
-          <div className="row">
-            <div className="col text-center">
-              <BadButton
-                icon={faX}
-                text={"REJECT"}
-                onClick={() =>
-                  toast("You have successfully rejected the proposal")
-                }
-              ></BadButton>
-            </div>
-            <div className="col text-center">
-              <Button
-                icon={faCheck}
-                text={"ACCEPT"}
-                onClick={() =>
-                  toast("You have succesfully accepted the proposal")
-                }
-              ></Button>
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <div className="container mt-5 mb-3">
-        <form
-          className="mx-auto p-4 bg-light rounded shadow"
-          style={{ marginTop: "1px" }}
-        >
-          <div className="mb-3 mt-1 text-center">
-            <strong>
-              <h1 className="text-start ms-3">{proposalDetails.student}</h1>
-            </strong>
-          </div>
-          <div className=" text-start ms-3 mb-3">
-            <strong>Status: {proposalDetails.status}</strong>
-          </div>
-          <div className=" text-start ms-3 mb-3">{proposalDetails.cv_uri}</div>
-          <div className="row">
-            <div className="col text-center">
-              <BadButton
-                icon={faX}
-                text={"REJECT"}
-                onClick={() =>
-                  toast("You have successfully rejected the proposal")
-                }
-              ></BadButton>
-            </div>
-            <div className="col text-center">
-              <Button
-                icon={faCheck}
-                text={"ACCEPT"}
-                onClick={() =>
-                  toast("You have succesfully accepted the proposal")
-                }
-              ></Button>
-            </div>
-          </div>
-        </form>
-      </div>
-
-      <div className="container mt-5 mb-3">
-        <form
-          className="mx-auto p-4 bg-light rounded shadow"
-          style={{ marginTop: "1px" }}
-        >
-          <div className="mb-3 mt-1 text-center">
-            <strong>
-              <h1 className="text-start ms-3">{proposalDetails.student}</h1>
-            </strong>
-          </div>
-          <div className=" text-start ms-3 mb-3">
-            <strong>Status: {proposalDetails.status}</strong>
-          </div>
-          <div className=" text-start ms-3 mb-3">{proposalDetails.cv_uri}</div>
-          <div className="row">
-            <div className="col text-center">
-              <BadButton
-                icon={faX}
-                text={"REJECT"}
-                onClick={() =>
-                  toast("You have successfully rejected the proposal")
-                }
-              ></BadButton>
-            </div>
-            <div className="col text-center">
-              <Button
-                icon={faCheck}
-                text={"ACCEPT"}
-                onClick={() =>
-                  toast("You have succesfully accepted the proposal")
-                }
-              ></Button>
-            </div>
-          </div>
-        </form>
-      </div> */
-}
