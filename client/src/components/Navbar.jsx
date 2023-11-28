@@ -87,7 +87,7 @@ function MyNavbar() {
                   className="d-inline-flex text-white"
                   href="/"
                 >
-                  THESIS
+                  THESES
                 </Nav.Link>
               ) : (
                 <Nav.Link className="text-white" href="/received-applications">
