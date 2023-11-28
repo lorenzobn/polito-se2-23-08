@@ -1,8 +1,15 @@
 // import models here
 const pool = require("../db/connection");
 const Joi = require("@hapi/joi");
-const { coSupervisorAdd, getExtCoSupervisors, getCoSupervisors, keywordsAdd, getKeywords, getCoSupThesis, getECoSupThesis } = require("./utils");
-
+const {
+  coSupervisorAdd,
+  getExtCoSupervisors,
+  getCoSupervisors,
+  keywordsAdd,
+  getKeywords,
+  getCoSupThesis,
+  getECoSupThesis,
+} = require("./utils");
 
 const getAllCdS = async (req, res) => {
   const query = `
@@ -10,14 +17,12 @@ const getAllCdS = async (req, res) => {
   `;
   const values = [];
   try {
-    const results = await pool.query(query, values)
-    return res
-      .status(201)
-      .json({ data: results.rows });
+    const results = await pool.query(query, values);
+    return res.status(201).json({ data: results.rows });
   } catch (error) {
     return error;
   }
-}
+};
 
 const getAllProgrammes = async (req, res) => {
   const query = `
@@ -25,14 +30,12 @@ const getAllProgrammes = async (req, res) => {
   `;
   const values = [];
   try {
-    const results = await pool.query(query, values)
-    return res
-      .status(201)
-      .json({ data: results.rows });
+    const results = await pool.query(query, values);
+    return res.status(201).json({ data: results.rows });
   } catch (error) {
     return error;
   }
-}
+};
 
 const getAllGroups = async (req, res) => {
   const query = `
@@ -40,14 +43,12 @@ const getAllGroups = async (req, res) => {
   `;
   const values = [];
   try {
-    const results = await pool.query(query, values)
-    return res
-      .status(201)
-      .json({ data: results.rows });
+    const results = await pool.query(query, values);
+    return res.status(201).json({ data: results.rows });
   } catch (error) {
     return error;
   }
-}
+};
 
 const createProposal = async (req, res) => {
   try {
@@ -133,7 +134,7 @@ const createProposal = async (req, res) => {
           coSupervisors[i].surname,
           true
         );
-      }else{
+      } else {
         let r = await coSupervisorAdd(
           newId,
           coSupervisors[i].name,
@@ -171,6 +172,7 @@ const getProposals = async (req, res) => {
 };
 
 const getProposalbyId = async (req, res) => {
+
   const query = {
     text: "SELECT thesis_proposal.id,teacher.name as sName, teacher.surname as sSurname, title,type,groups.name as groupName,description,required_knowledge,notes,level,programme,deadline,status,cod_degree,title_degree FROM thesis_proposal JOIN groups ON thesis_proposal.cod_group=groups.cod_group JOIN degree ON thesis_proposal.programme=degree.cod_degree JOIN teacher ON thesis_proposal.supervisor_id=teacher.id WHERE thesis_proposal.id=$1",
     values: [req.params.proposalId],
@@ -181,7 +183,13 @@ const getProposalbyId = async (req, res) => {
         let r = await getKeywords(req.params.proposalId);
         let inC = await getCoSupThesis(req.params.proposalId);
         let exC = await getECoSupThesis(req.params.proposalId);
-        return res.status(200).json({ msg: "OK", data: result.rows, keywords: r, external_co: exC, internal_co: inC });
+        return res.status(200).json({
+          msg: "OK",
+          data: result.rows,
+          keywords: r,
+          external_co: exC,
+          internal_co: inC,
+        });
       } else {
         return res.status(404).json({ msg: "Resource not found" });
       }
@@ -247,7 +255,6 @@ const updateProposal = async (req, res) => {
       keywords: Joi.array(),
     });
 
-    
     const { proposalId } = req.params;
     const updateFields = req.body;
 
@@ -306,18 +313,25 @@ const searchProposal = async (req, res) => {
       description: Joi.string(),
       required_knowledge: Joi.string(),
       notes: Joi.string(),
-      level: Joi.string().valid('BSc', 'MSc'),
-      programme: Joi.string()
+      level: Joi.string().valid("BSc", "MSc"),
+      programme: Joi.string(),
     });
 
-
     const { error, value } = proposalSchema.validate(req.query);
-    let { title, type, description, required_knowledge, notes, level, programme } = req.query;
-    title = title.toLowerCase()
-    type = type.toLowerCase()
-    description = description.toLowerCase()
-    required_knowledge = required_knowledge.toLowerCase()
-    notes = notes.toLowerCase()
+    let {
+      title,
+      type,
+      description,
+      required_knowledge,
+      notes,
+      level,
+      programme,
+    } = req.query;
+    title = title.toLowerCase();
+    type = type.toLowerCase();
+    description = description.toLowerCase();
+    required_knowledge = required_knowledge.toLowerCase();
+    notes = notes.toLowerCase();
     //programme = programme.toLowerCase() //not yet, becasue the programme is a CODE
     //console.log(title, type, description, required_knowledge, notes, level, programme)
     const query = `
@@ -349,5 +363,5 @@ module.exports = {
   searchProposal,
   getAllCdS,
   getAllGroups,
-  getAllProgrammes
+  getAllProgrammes,
 };

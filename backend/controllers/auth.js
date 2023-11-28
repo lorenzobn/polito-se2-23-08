@@ -118,13 +118,16 @@ const logout = async (req, res) => {
 const authorize = (role) => {
   return async (req, res, next) => {
     try {
+      if (role === userRoles.any) {
+        return next();
+      }
       if (!req.session.user) {
         return res.status(401).json("Unauthorized");
       }
       if (role !== userRoles.any && req.session.user.role !== role) {
         return res.status(401).json("Unauthorized");
       }
-      next();
+      return next();
     } catch (error) {
       console.log(error);
       res.status(401).send("Unauthorized");
