@@ -1,144 +1,7 @@
 // import models here
 const pool = require("../db/connection");
 const Joi = require("@hapi/joi");
-
-const coSupervisorAdd = async (thesisId, name, surname, external) => {
-  let query = "";
-  const query2 = `
-  INSERT INTO THESIS_CO_SUPERVISION (THESIS_PROPOSAL_id, INTERNAL_CO_SUPERVISOR_id, EXTERNAL_CO_SUPERVISOR_id, is_external)
-  VALUES ($1, $2, $3, $4)
-  RETURNING *;
-  `;
-  if (external) {
-    query = {
-      text: "SELECT * FROM EXTERNAL_CO_SUPERVISOR WHERE name=$1 AND surname=$2",
-      values: [name, surname],
-    };
-  } else {
-    query = {
-      text: "SELECT * FROM TEACHER WHERE name=$1 AND surname=$2",
-      values: [name, surname],
-    };
-  }
-
-  try {
-    const results = await pool.query(query).then(async (result) => {
-      if (result.rowCount != 0) {
-        let id = result.rows[0].id;
-        if (external) {
-          const values2 = [thesisId, null, id, true];
-          const result2 = await pool.query(query2, values2);
-        } else {
-          const values2 = [thesisId, id, null, false];
-          const result2 = await pool.query(query2, values2);
-        }
-      } else {
-        return -1;
-      }
-    });
-  } catch (error) {
-    errorMsg = "";
-    switch (error.code) {
-      case "22P02":
-        errorMsg = "Invalid data provided.";
-        break;
-      default:
-        errorMsg = "Unknown error occurred.";
-        break;
-    }
-    console.log(error);
-    return -1;
-  }
-};
-
-const getExtCoSupervisors = async (req, res) => {
-  const query = `
-  SELECT name,surname FROM EXTERNAL_CO_SUPERVISOR;
-  `;
-  const values = [];
-  try {
-    const results = await pool.query(query, values)
-    return res
-      .status(201)
-      .json({ data: results.rows });
-  } catch (error) {
-    return error;
-  }
-}
-
-const getCoSupervisors = async (req, res) => {
-  const query = `
-  SELECT id,name,surname FROM TEACHER;
-  `;
-  const values = [];
-  try {
-    const results = await pool.query(query, values)
-    return res
-      .status(201)
-      .json({ data: results.rows });
-  } catch (error) {
-    return error;
-  }
-}
-
-const keywordsAdd = async (thesisId, keyword) => {
-  const query = `
-  INSERT INTO KEYWORDS VALUES($1, $2);
-  `;
-  const values = [thesisId, keyword];
-  try {
-    const results = await pool.query(query, values);
-  } catch (error) {
-    return error;
-  }
-}
-
-const getKeywords = async (thesisId) => {
-  const query = `
-  SELECT keyword FROM KEYWORDS WHERE thesisId=$1;
-  `;
-  const values = [
-    thesisId
-  ];
-  try {
-    const results = await pool.query(query, values)
-    return results.rows
-  } catch (error) {
-    return error;
-  }
-}
-
-// This function returns the internal cosupervisors for a specific thesis
-const getCoSupThesis = async (thesisId) => {
-  const query = `
-  SELECT name,surname FROM TEACHER JOIN THESIS_CO_SUPERVISION ON TEACHER.id=THESIS_CO_SUPERVISION.internal_co_supervisor_id WHERE is_external=FALSE AND thesis_proposal_id=$1;
-  `;
-  const values = [
-    thesisId
-  ];
-  try {
-    const results = await pool.query(query, values)
-    return results.rows
-  } catch (error) {
-    return error;
-  }
-}
-
-// This function returns the external cosupervisors for a specific thesis
-const getECoSupThesis = async (thesisId) => {
-  const query = `
-  SELECT name,surname FROM EXTERNAL_CO_SUPERVISOR JOIN THESIS_CO_SUPERVISION ON EXTERNAL_CO_SUPERVISOR.id=THESIS_CO_SUPERVISION.external_co_supervisor_id WHERE is_external=TRUE AND thesis_proposal_id=$1;
-  `;
-  const values = [
-    thesisId
-  ];
-  try {
-    const results = await pool.query(query, values)
-    return results.rows
-  } catch (error) {
-    return error;
-  }
-}
+const { coSupervisorAdd, getExtCoSupervisors, getCoSupervisors, keywordsAdd, getKeywords, getCoSupThesis, getECoSupThesis } = require("./utils");
 
 
 const getAllCdS = async (req, res) => {
@@ -369,6 +232,22 @@ const updateProposal = async (req, res) => {
   // TODO check if proposal is owned by the professor who makes the request
   // TODO validation of submitted fields
   try {
+    const proposalSchema = Joi.object({
+      title: Joi.string().required(),
+      //SUPERVISOR_id: Joi.string().required(), // TODO: should be taken from req.userId
+      coSupervisors: Joi.array(),
+      type: Joi.string().required(),
+      description: Joi.string().required(),
+      requiredKnowledge: Joi.string().required(),
+      notes: Joi.string().allow(""),
+      level: Joi.string().required().valid("BSc", "MSc"),
+      programme: Joi.string().required(),
+      deadline: Joi.date().required(), //default format is MM/DD/YYYY
+      status: Joi.string(),
+      keywords: Joi.array(),
+    });
+
+    
     const { proposalId } = req.params;
     const updateFields = req.body;
 
