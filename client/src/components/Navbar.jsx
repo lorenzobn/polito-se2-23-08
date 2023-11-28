@@ -82,34 +82,38 @@ function MyNavbar() {
         <Col className="d-flex justify-content-around">
           <div style={{ lineHeight: "200%" }}>
             <Nav variant="underline">
-              {store.user.type === "student" ? (
-                <Nav.Link
-                  className="d-inline-flex text-white"
-                  href="/"
-                >
-                  THESES
-                </Nav.Link>
-              ) : (
-                <Nav.Link className="text-white" href="/received-applications">
-                  APPLICATIONS
-                </Nav.Link>
-              )}
-              {store.user.type === "student" ? (
-                <Nav.Link
-                  style={{ marginLeft: "30px" }}
-                  className="text-white"
-                  href="/my-applications"
-                >
-                  MY APPLICATIONS
-                </Nav.Link>
-              ) : (
-                <Nav.Link
-                  style={{ marginLeft: "30px" }}
-                  className="text-white"
-                  href="/thesis-proposals"
-                >
-                  MY PROPOSALS
-                </Nav.Link>
+              {store.user.role === "" && <div>&nbsp;</div>}
+              {store?.user?.type === "student" && (
+                <div className="d-flex ">
+                  <Nav.Link
+                    style={{ marginLeft: "30px" }}
+                    className="text-white mx-4"
+                    href="/my-applications"
+                  >
+                    MY APPLICATIONS
+                  </Nav.Link>
+
+                  <Nav.Link className="d-inline-flex text-white" href="/">
+                    THESES
+                  </Nav.Link>
+                </div>
+              )}{" "}
+              {store?.user?.type === "professor" && (
+                <div className="d-flex ">
+                  <Nav.Link
+                    style={{ marginLeft: "30px" }}
+                    className="text-white  mx-4"
+                    href="/thesis-proposals"
+                  >
+                    MY PROPOSALS
+                  </Nav.Link>
+                  <Nav.Link
+                    className="text-white"
+                    href="/received-applications"
+                  >
+                    APPLICATIONS
+                  </Nav.Link>
+                </div>
               )}
             </Nav>
           </div>
