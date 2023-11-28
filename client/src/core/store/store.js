@@ -22,6 +22,7 @@ import {
 import { 
   createApplication as createApplicationAPI,
   getReceivedApplicationsByThesisId as getReceivedApplicationsByThesisIdAPI,
+  putApplicationStatus as putApplicationStatusAPI,
 } from "../API/applications";
 import { toast } from "react-toastify";
 export class Store {
@@ -250,6 +251,15 @@ export class Store {
   async getReceivedApplicationsByThesisId(proposalId) {
     try {
       const res = await getReceivedApplicationsByThesisIdAPI(proposalId);
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  async applicationDecision(proposalId, status, student_id) {
+    try {
+      const res = await putApplicationStatusAPI(proposalId, status, student_id);
       return res.data.data;
     } catch (err) {
       return [];

@@ -27,6 +27,7 @@ export default function AcceptApplications() {
   const proposalId = param.thesisId;
   const store = useContext(StoreContext);
 
+  const [status, setStatus] = useState("");
   const [proposal, setProposal] = useState([]);
 
   useEffect(() => {
@@ -41,14 +42,19 @@ export default function AcceptApplications() {
     handleEffect();
   }, []);
 
-  const handleAccept = (index) => {
+  const handleAccept = async (index) => {
     const selectedForm = proposal[index];
-    console.log("Accepted form at index", index, selectedForm);
+    console.log("Accepted form at index", index, selectedForm.student_id);
+    setStatus("accepted")
+    console.log("Accept status:" , status);
+    store.applicationDecision(proposalId, status, selectedForm.student_id);
   };
 
-  const handleReject = (index) => {
+  const handleReject = async (index) => {
     const selectedForm = proposal[index];
     console.log("Rejected form at index", index, selectedForm);
+    setStatus("rejected")
+    console.log("Reject status:" , status);
   };
 
   return (
