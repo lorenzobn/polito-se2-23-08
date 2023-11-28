@@ -41,7 +41,7 @@ app.use(addVirtualClockMIddleware);
 app.use(addVirtualClockToResMiddleware);
 
 app.use("/api/v1.0", thesisRouter);
-//registerRoutes(app);
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
