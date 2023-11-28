@@ -21,6 +21,19 @@ const addVirtualClockMIddleware = (req, res, next) => {
   next();
 };
 
+const addVirtualClockToResMiddleware = (req, res, next) => {
+  if (req?.session?.clock?.time) {
+    const originalJson = res.json;
+
+    res.json = function (data) {
+      data.virtual_time = req.session.clock.time;
+
+      originalJson.call(res, data);
+    };
+  }
+  next();
+};
+
 const setVirtualClock = (req, res, next) => {
   const { time } = req.body;
   if (!req.session) {
@@ -34,4 +47,8 @@ const setVirtualClock = (req, res, next) => {
   return res.status(200).json({ msg: "virtual clock is set" });
 };
 
-module.exports = { setVirtualClock, addVirtualClockMIddleware };
+module.exports = {
+  setVirtualClock,
+  addVirtualClockMIddleware,
+  addVirtualClockToResMiddleware,
+};
