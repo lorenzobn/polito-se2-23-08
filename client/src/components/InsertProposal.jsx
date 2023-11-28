@@ -150,10 +150,10 @@ function InsertProposal() {
         toast.error("Description shouldn't be empty!", {
           position: toast.POSITION.TOP_CENTER,
         });
-      } else if (formData.knowledge.trim() === "") {
+      /*} else if (formData.knowledge.trim() === "") {
         toast.error("Required knowledge shouldn't be empty!", {
           position: toast.POSITION.TOP_CENTER,
-        });
+        });*/
       } else if (formData.deadline.trim() === "") {
         toast.error("Deadline shouldn't be empty!", {
           position: toast.POSITION.TOP_CENTER,
