@@ -2,15 +2,15 @@ const pool = require("../db/connection");
 const Joi = require("@hapi/joi");
 const { userRoles } = require("./auth");
 
-
 // TODO: Only STUDENTS
 const createApplication = async (req, res) => {
-  
   try {
     const applicationSchema = Joi.object({
       student_id: Joi.string().required(),
       thesis_id: Joi.number().integer().required(),
-      thesis_status: Joi.string().valid("idle", "approved", "rejected").required(),
+      thesis_status: Joi.string()
+        .valid("idle", "approved", "rejected")
+        .required(),
       cv_uri: Joi.string().allow(""),
     });
 
@@ -24,8 +24,13 @@ const createApplication = async (req, res) => {
       RETURNING *;
     `;
 
-    const values = [value.student_id, value.thesis_id, value.thesis_status, value.cv_uri];
-    console.log(values)
+    const values = [
+      value.student_id,
+      value.thesis_id,
+      value.thesis_status,
+      value.cv_uri,
+    ];
+    console.log(values);
     const result = await pool.query(query, values);
 
     return res
@@ -39,8 +44,8 @@ const createApplication = async (req, res) => {
 
 const getApplications = async (req, res) => {
   const query = {
-    text: "SELECT student_id, thesis_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, groups.name as groupName, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id JOIN groups ON thesis_proposal.cod_group=groups.cod_group WHERE student_id=$1",
-    values: [req.session.user.id],
+    text: "SELECT student_id, thesis_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, groups.name as groupName, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id JOIN groups ON thesis_proposal.cod_group=groups.cod_group WHERE student_id=$1 AND thesis_proposal.created_at < $2",
+    values: [req.session.user.id, req.session.clock.time],
   };
   try {
     const results = await pool.query(query).then((result) => {
@@ -52,11 +57,14 @@ const getApplications = async (req, res) => {
   }
 };
 
-
 const getApplicationById = async (req, res) => {
   const query = {
-    text: "SELECT student_id, thesis_application.status, cv_uri, title, type, required_knowledge, notes, level, programme, deadline  FROM THESIS_APPLICATION JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE student_id=$1 AND id=$2",
-    values: [req.session.user.id, req.params.applicationId],
+    text: "SELECT student_id, thesis_application.status, cv_uri, title, type, required_knowledge, notes, level, programme, deadline  FROM THESIS_APPLICATION JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE student_id=$1 AND id=$2 AND thesis_application.created_at < $3 ",
+    values: [
+      req.session.user.id,
+      req.params.applicationId,
+      req.session.clock.time,
+    ],
   };
   try {
     const results = await pool.query(query).then((result) => {
@@ -95,7 +103,7 @@ function getSomePromise(applicationId) {
       console.log(error);
       reject();
     }
-  })
+  });
 }
 
 // TODO: Only TEACHERS, in particular the SUPERVISOR of a thesis
@@ -105,14 +113,14 @@ const updateApplication = async (req, res) => {
   notAuthorized = true;
   try {
     const { applicationId } = req.params;
-    console.log(req.session.user)
-    if (req.session.user.role != userRoles.teacher ){
-      return res.status(401).json({ msg: 'Unauthorized' });
+    console.log(req.session.user);
+    if (req.session.user.role != userRoles.teacher) {
+      return res.status(401).json({ msg: "Unauthorized" });
     } else {
       // ok, authorized
       const updateFields = req.body;
       const applicationSchema = Joi.object({
-        status: Joi.string().valid('accepted','rejected', 'idle').required()
+        status: Joi.string().valid("accepted", "rejected", "idle").required(),
       });
 
       const { error } = applicationSchema.validate(updateFields, {
@@ -136,12 +144,13 @@ const updateApplication = async (req, res) => {
       const query = `
         UPDATE thesis_application
         SET ${setClause}
-        WHERE id = $1
+        WHERE id = $1 AND created_at < $2
         RETURNING *;
       `;
 
       const values = [
         applicationId,
+        req.session.clock.time,
         ...Object.values(updateFields).filter((value) => value !== undefined),
       ];
 
@@ -151,9 +160,10 @@ const updateApplication = async (req, res) => {
         return res.status(404).json({ msg: "Application not found." });
       }
 
-      return res
-        .status(200)
-        .json({ msg: "Application updated successfully", data: result.rows[0] });
+      return res.status(200).json({
+        msg: "Application updated successfully",
+        data: result.rows[0],
+      });
     }
   } catch (error) {
     console.error(error.message);
@@ -164,8 +174,8 @@ const updateApplication = async (req, res) => {
 // TODO: Only TEACHERS
 const getReceivedApplications = async (req, res) => {
   const query = {
-    text: "SELECT COUNT(*) AS num_applications, title, description, deadline, thesis_id FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 GROUP BY thesis_id, title, description, deadline",
-    values: [req.session.user.id],
+    text: "SELECT COUNT(*) AS num_applications, title, description, deadline, thesis_id FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 AND thesis_application.created_at < $2 GROUP BY thesis_id, title, description, deadline",
+    values: [req.session.user.id, req.session.clock.time],
   };
   try {
     const results = await pool.query(query).then((result) => {
@@ -178,11 +188,9 @@ const getReceivedApplications = async (req, res) => {
 };
 
 const getReceivedApplicationsByThesisId = async (req, res) => {
-  console.log("querying with :");
-  console.log(req.session.user.id);
   const query = {
-    text: "SELECT thesis_application.id as applicationId, student_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 AND thesis_id=$2",
-    values: [req.session.user.id, req.params.thesisId],
+    text: "SELECT thesis_application.id as applicationId, student_id, thesis_proposal.status as proposalStatus, thesis_application.status as applicationStatus, cv_uri, title, type, description, required_knowledge, notes, level, programme, deadline FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 AND thesis_id=$2 AND thesis_application.created_at < $3 ",
+    values: [req.session.user.id, req.params.thesisId, req.session.clock.time],
   };
   try {
     const results = await pool.query(query).then((result) => {
@@ -196,22 +204,29 @@ const getReceivedApplicationsByThesisId = async (req, res) => {
 
 const didStudentApply = async (req, res) => {
   const query = {
-    text: "SELECT * FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE student_id=$1 AND thesis_id=$2",
-    values: [req.session.user.id, req.params.thesisId],
+    text: "SELECT * FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE student_id=$1 AND thesis_id=$2 AND created_at < $3",
+    values: [req.session.user.id, req.params.thesisId, req.session.clock.time],
   };
   try {
     const results = await pool.query(query).then((result) => {
       if (result.rowCount == 0)
-        return res.status(200).json({ studentId : req.session.user.id, proposalId : req.params.thesisId, applied : false });
+        return res.status(200).json({
+          studentId: req.session.user.id,
+          proposalId: req.params.thesisId,
+          applied: false,
+        });
       else
-        return res.status(200).json({ studentId : req.session.user.id, proposalId : req.params.thesisId, applied : true });
+        return res.status(200).json({
+          studentId: req.session.user.id,
+          proposalId: req.params.thesisId,
+          applied: true,
+        });
     });
   } catch (error) {
     console.error(error.message);
     return res.status(500).json({ msg: "An unknown error occurred." });
   }
 };
-
 
 // TODO: Only STUDENTS
 /*
@@ -238,5 +253,5 @@ module.exports = {
   createApplication,
   updateApplication,
   getReceivedApplications,
-  getReceivedApplicationsByThesisId
+  getReceivedApplicationsByThesisId,
 };

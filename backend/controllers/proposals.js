@@ -161,7 +161,9 @@ const createProposal = async (req, res) => {
 const getProposals = async (req, res) => {
   try {
     const results = await pool
-      .query("SELECT * FROM thesis_proposal")
+      .query("SELECT * FROM thesis_proposal WHERE created_at < $1", [
+        req.session.clock.time,
+      ])
       .then((result) => {
         return res.status(200).json({ msg: "OK", data: result.rows });
       });
@@ -172,10 +174,9 @@ const getProposals = async (req, res) => {
 };
 
 const getProposalbyId = async (req, res) => {
-
   const query = {
-    text: "SELECT thesis_proposal.id,teacher.name as sName, teacher.surname as sSurname, title,type,groups.name as groupName,description,required_knowledge,notes,level,programme,deadline,status,cod_degree,title_degree FROM thesis_proposal JOIN groups ON thesis_proposal.cod_group=groups.cod_group JOIN degree ON thesis_proposal.programme=degree.cod_degree JOIN teacher ON thesis_proposal.supervisor_id=teacher.id WHERE thesis_proposal.id=$1",
-    values: [req.params.proposalId],
+    text: "SELECT thesis_proposal.id,teacher.name as sName, teacher.surname as sSurname, title,type,groups.name as groupName,description,required_knowledge,notes,level,programme,deadline,status,cod_degree,title_degree FROM thesis_proposal JOIN groups ON thesis_proposal.cod_group=groups.cod_group JOIN degree ON thesis_proposal.programme=degree.cod_degree JOIN teacher ON thesis_proposal.supervisor_id=teacher.id WHERE thesis_proposal.id=$1 AND thesis_proposal.created_at < $2",
+    values: [req.params.proposalId, req.session.clock.time],
   };
   try {
     const results = await pool.query(query).then(async (result) => {
@@ -210,8 +211,8 @@ const getProposalbyId = async (req, res) => {
 
 const getProposalsByTeacher = async (req, res) => {
   const query = {
-    text: "SELECT * FROM thesis_proposal WHERE supervisor_id=$1",
-    values: [req.session.user.id],
+    text: "SELECT * FROM thesis_proposal WHERE supervisor_id=$1 AND created_at = $2",
+    values: [req.session.user.id, req.session.clock.time],
   };
   try {
     const results = await pool.query(query).then((result) => {
@@ -279,12 +280,13 @@ const updateProposal = async (req, res) => {
     const query = `
       UPDATE thesis_proposal
       SET ${setClause}
-      WHERE id = $1
+      WHERE id = $1 AND created_at < $2
       RETURNING *;
     `;
 
     const values = [
       proposalId,
+      req.session.clock.time,
       ...Object.values(updateFields).filter((value) => value !== undefined),
     ];
 
@@ -336,9 +338,9 @@ const searchProposal = async (req, res) => {
     //console.log(title, type, description, required_knowledge, notes, level, programme)
     const query = `
       SELECT * FROM thesis_proposal
-      WHERE LOWER(title) LIKE '%${title}%' OR LOWER(type) LIKE '%${type}%' OR LOWER(description) LIKE '%${description}%' OR LOWER(required_knowledge) LIKE '%${required_knowledge}%' OR LOWER(notes) LIKE '%${notes}%' OR LOWER(programme) LIKE '%${programme}%';
+      WHERE  LOWER(title) LIKE '%${title}%' OR LOWER(type) LIKE '%${type}%' OR LOWER(description) LIKE '%${description}%' OR LOWER(required_knowledge) LIKE '%${required_knowledge}%' OR LOWER(notes) LIKE '%${notes}%' OR LOWER(programme) LIKE '%${programme}%';
     `;
-
+    // TODO apply virtual clock on this query, I could not understand the query 
     const results = await pool.query(query).then((result) => {
       if (result.rowCount != 0) {
         return res.status(200).json({ msg: "OK", data: result.rows });

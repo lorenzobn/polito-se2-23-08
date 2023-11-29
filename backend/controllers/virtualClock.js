@@ -36,6 +36,7 @@ const addVirtualClockToResMiddleware = (req, res, next) => {
 
 const setVirtualClock = (req, res, next) => {
   const { time } = req.body;
+  console.log(time);
   if (!req.session) {
     return res.status(400).json({ msg: "missing session" });
   }
