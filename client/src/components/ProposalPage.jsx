@@ -44,6 +44,7 @@ function ProposalPage() {
     // we need to define it separately and run it
     const handleEffect = async () => {
       const response = await store.getProposal(proposalId);
+      console.log(response)
       setProposal({
         title: response.data[0].title,
         description: response.data[0].description,
@@ -82,7 +83,7 @@ function ProposalPage() {
     };
     handleEffect();
     store.fetchSelf();
-    store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
+    //store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
     store.checkApplication(proposalId).then((res) => setApplied(res.applied));
   }, []);
 
@@ -94,7 +95,8 @@ function ProposalPage() {
 
   const handleApply = () => {
     const formData = new FormData();
-    formData.append("file", file);
+    if (!!file){    formData.append("file", file);
+  }
     formData.append("student_id", store.user.id);
     formData.append("thesis_id", parseInt(param.id));
     formData.append("thesis_status", "idle");
@@ -145,7 +147,7 @@ function ProposalPage() {
           </div>
           <div className="mb-3">
             <strong>Supervisor:</strong>{" "}
-            {proposal.name + " " + proposal.surname}
+            {proposal?.name + " " + proposal?.surname}
           </div>
           <div className="mb-3">
             <strong>Internal Co-Supervisors:</strong>{" "}
@@ -179,22 +181,22 @@ function ProposalPage() {
               <strong>Level:</strong> {proposal?.level}
             </div>
             <div className="col-md-3">
-              <strong>CdS:</strong> {proposal.program}
+              <strong>CdS:</strong> {proposal?.program}
             </div>
             <div className="col-md-3">
-              <strong>Group:</strong> {proposal.group}
+              <strong>Group:</strong> {proposal?.group}
             </div>
             <div className="col-md-3">
               <strong>Type:</strong> {proposal?.type}
             </div>
           </div>
           <div className="mb-3">
-            <strong>Required Knowledge:</strong> {proposal.knowledge}
+            <strong>Required Knowledge:</strong> {proposal?.knowledge}
           </div>
           <div className="mb-3">
             <strong>{proposal?.notes}</strong>
           </div>
-          {proposal.status !== "active" ? (
+          {proposal?.status !== "active" ? (
             <div className="row">
               <div className="col text-start">
                 {store.user.type === "student" ? (
