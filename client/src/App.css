@@ -165,3 +165,25 @@ a {
 .badge {
   background-color: #007ea8 !important;
 }
+
+.clock-toggle {
+  position: fixed;
+  top: 0;
+  left: 10px;
+  width: 3rem;
+  height: 2.9rem;
+  background-color: RGBA(252, 122, 8, 1);
+  border-bottom-right-radius: 0.5rem;
+  border-bottom-left-radius: 2rem;
+}
+
+.virtual-clock {
+  position: fixed;
+  top: 0;
+  left: 4rem;
+  height: 2.9rem;
+  background-color: #fff;
+  padding: 0.2rem;
+  border-bottom-right-radius: 2rem;
+  border-bottom-left-radius: 0.5rem;
+}

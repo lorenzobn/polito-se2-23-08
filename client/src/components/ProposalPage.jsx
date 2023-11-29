@@ -13,6 +13,7 @@ function ProposalPage() {
   const proposalId = param.id;
 
   const store = useContext(StoreContext);
+  const [applied, setApplied] = useState(false)
   const [proposal, setProposal] = useState({
     title: "",
     description: "",
@@ -25,6 +26,7 @@ function ProposalPage() {
     name: "",
     surname: "",
     group: "",
+    status: ""
   });
 
   const [incosupervisors, setInCosupervisors] = useState([]);
@@ -57,6 +59,7 @@ function ProposalPage() {
         group: response.data[0].groupname,
         name: response.data[0].sname,
         surname: response.data[0].ssurname,
+        status: response.data[0].status
       });
       keyw = [];
       
@@ -82,9 +85,13 @@ function ProposalPage() {
       setExCosupervisors(exco);
     };
     handleEffect();
+
+  
+
     store.fetchSelf();
     //store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
     store.checkApplication(proposalId).then((res) => setApplied(res.applied));
+
   }, []);
 
   useEffect(() => {
@@ -250,6 +257,7 @@ function ProposalPage() {
               </div>
             </div>
           )}
+
         </form>
       </div>
     </>

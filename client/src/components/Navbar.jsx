@@ -1,16 +1,43 @@
-import React, { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Container, Row, Nav, NavDropdown, Col } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 import { StoreContext } from "../core/store/Provider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faUser } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 
 function MyNavbar() {
   const store = useContext(StoreContext);
-
+  const [showVClock, setShowVClock] = useState(false);
   return (
     <Container className="nav-wrap" fluid>
+      <div
+        className="clock-toggle text-center"
+        onClick={() => {
+          setShowVClock((v) => !v);
+        }}
+      >
+        <FontAwesomeIcon
+          icon={faClockRotateLeft}
+          style={{ fontSize: "1.5rem", marginTop: "0.5rem" }}
+        />
+      </div>
+      {showVClock && (
+        <div className="virtual-clock">
+          <input
+            type="datetime-local"
+            name="datetime"
+            style={{ border: "none", margin: "0.3rem", marginBottom: "0.0rem" }}
+            onChange={(e) => {
+              store.setVirtualClock(e.target.value);
+            }}
+            value={store.time?.toISOString().slice(0, 16)}
+          />
+          <p style={{ fontSize: "10px", marginLeft: "0.5rem", color: "#555" }}>
+            Virtual Clock
+          </p>
+        </div>
+      )}
       <Row className="upper-nav ">
         <Col
           lg={{ span: 4, offset: 8 }}

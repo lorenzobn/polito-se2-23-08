@@ -6,7 +6,14 @@ const dotenv = require("dotenv");
 dotenv.config();
 const { json, urlencoded } = pkg;
 const crypto = require("crypto");
+
+const {
+  addVirtualClockMIddleware,
+  addVirtualClockToResMiddleware,
+} = require("./controllers/virtualClock.js");
+
 const fileUpload = require("express-fileupload");
+
 
 const app = express();
 app.use(cookieParser());
@@ -35,9 +42,11 @@ app.use(
 );
 
 const thesisRouter = require("./routes.js");
+app.use(addVirtualClockMIddleware);
+app.use(addVirtualClockToResMiddleware);
 
 app.use("/api/v1.0", thesisRouter);
-//registerRoutes(app);
+
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

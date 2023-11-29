@@ -19,15 +19,21 @@ import {
   getAllProgrammes as getAllProgrammesAPI,
   getExternalCoSupervisors as getExtCoSupervisorsAPI,
 } from "../API/proposals";
-import { 
+import {
+  checkApplied as checkAppliedAPI,
   createApplication as createApplicationAPI,
   getReceivedApplicationsByThesisId as getReceivedApplicationsByThesisIdAPI,
   putApplicationStatus as putApplicationStatusAPI,
   checkApplication as checkApplicationAPI,
 } from "../API/applications";
+import {
+  getVirtualClockValue as getVirtualClockValueAPI,
+  setVirtualClock as setVirtualClockAPI,
+} from "../API/general";
 import { toast } from "react-toastify";
 export class Store {
   constructor() {
+    this.time = new Date();
     this.user = {
       id: "",
       role: "",
@@ -35,11 +41,34 @@ export class Store {
     };
     this.loading = false;
     makeObservable(this, {
+      time: observable,
       user: observable,
       loading: observable,
       setLoading: action,
       login: action,
+      setVirtualClock: action,
+      getVirtualClockValue: action,
     });
+  }
+  async setVirtualClock(time) {
+    try {
+      const res = await setVirtualClockAPI(time);
+      this.getVirtualClockValue();
+    } catch (err) {
+      toast.error("Error on login");
+    }
+  }
+
+  async getVirtualClockValue() {
+    try {
+      const res = await getVirtualClockValueAPI();
+      if (res.status === 200) {
+        this.time = new Date(res.data.virtual_time);
+        console.log(this.time);
+      }
+    } catch (err) {
+      toast.error("Error on login");
+    }
   }
   async login() {
     try {
@@ -84,6 +113,7 @@ export class Store {
 
   async fetchSelf() {
     try {
+      this.getVirtualClockValue();
       const res = await fetchSelfAPI();
       if (res?.status === 200) {
         // still authenticated
@@ -187,7 +217,7 @@ export class Store {
         deadline,
         status,
         keywords,
-        coSupervisors,
+        coSupervisors
       );
       return res.data.data;
     } catch (err) {
@@ -244,6 +274,15 @@ export class Store {
     try {
       const res = await getAllProgrammesAPI();
       return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  async checkApplied(thesisId) {
+    try {
+      const res = await checkAppliedAPI(thesisId);
+      return res.data.applied;
     } catch (err) {
       return [];
     }

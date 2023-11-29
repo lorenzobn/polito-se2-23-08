@@ -41,3 +41,12 @@ export const checkApplication = async (thesisId) => {
     throw err;
   }
 };
+
+export const checkApplied = async (thesisId) => {
+  try {
+    const res = await client.get(`/check-application/${thesisId}`);
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};

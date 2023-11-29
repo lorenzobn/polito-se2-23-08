@@ -34,12 +34,15 @@ const {
 const express = require("express");
 
 const { fetchSelf } = require("./controllers/users.js");
+const { setVirtualClock } = require("./controllers/virtualClock.js");
 const router = express.Router();
 
 // api health check
 router.get("/", (req, res) => {
   res.status(200).json({ msg: "health check passed! API is alive." });
 });
+
+router.post("/set-clock", setVirtualClock);
 
 router.get("/self", authorize(userRoles.any), fetchSelf);
 
@@ -109,13 +112,10 @@ router.get(
 //TODO: authorize all these routes
 router.get("/ext-cosupervisors", getExtCoSupervisors);
 
-router.get(
-  "/cosupervisors",
-  getCoSupervisors
-)
-router.get("/programmes",getAllProgrammes)
-router.get("/cds", getAllCdS)
-router.get("/groups", getAllGroups)
+router.get("/cosupervisors", getCoSupervisors);
+router.get("/programmes", getAllProgrammes);
+router.get("/cds", getAllCdS);
+router.get("/groups", getAllGroups);
 
 router.get("/login", login);
 router.post("/sso/acs", assertion);
