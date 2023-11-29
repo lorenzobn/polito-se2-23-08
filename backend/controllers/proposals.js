@@ -161,9 +161,10 @@ const createProposal = async (req, res) => {
 const getProposals = async (req, res) => {
   try {
     const results = await pool
-      .query("SELECT * FROM thesis_proposal WHERE created_at < $1", [
-        req.session.clock.time,
-      ])
+      .query(
+        "SELECT * FROM thesis_proposal WHERE created_at < $1 AND deadline > $1",
+        [req.session.clock.time]
+      )
       .then((result) => {
         return res.status(200).json({ msg: "OK", data: result.rows });
       });
@@ -320,15 +321,8 @@ const searchProposal = async (req, res) => {
     });
 
     const { error, value } = proposalSchema.validate(req.query);
-    let {
-      title,
-      type,
-      description,
-      required_knowledge,
-      notes,
-      level,
-      programme,
-    } = req.query;
+    let { title, type, description, required_knowledge, notes, programme } =
+      req.query;
     title = title.toLowerCase();
     type = type.toLowerCase();
     description = description.toLowerCase();
@@ -340,7 +334,7 @@ const searchProposal = async (req, res) => {
       SELECT * FROM thesis_proposal
       WHERE  LOWER(title) LIKE '%${title}%' OR LOWER(type) LIKE '%${type}%' OR LOWER(description) LIKE '%${description}%' OR LOWER(required_knowledge) LIKE '%${required_knowledge}%' OR LOWER(notes) LIKE '%${notes}%' OR LOWER(programme) LIKE '%${programme}%';
     `;
-    // TODO apply virtual clock on this query, I could not understand the query 
+    // TODO apply virtual clock on this query, I could not understand the query
     const results = await pool.query(query).then((result) => {
       if (result.rowCount != 0) {
         return res.status(200).json({ msg: "OK", data: result.rows });
