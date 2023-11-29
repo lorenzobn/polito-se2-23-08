@@ -2,11 +2,10 @@ import { client } from "./api";
 
 export const createApplication = async (application) => {
   try {
-    const res = await client.post("/my-applications", {
-      student_id: application.student_id,
-      thesis_id: application.thesis_id,
-      thesis_status: application.thesis_status,
-      cv_uri: application.cv_uri,
+    const res = await client.post("/my-applications", application, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
     });
     return res;
   } catch (err) {
@@ -23,13 +22,20 @@ export const getReceivedApplicationsByThesisId = async (proposalId) => {
   }
 };
 
-export const putApplicationStatus = async (proposalId, status, student_id) => {
+export const putApplicationStatus = async (proposalId, status) => {
   try {
     const res = await client.put(`/received-applications/${proposalId}` , {
       status: status,
-      //student_id: student_id,
     });
-    console.log("res app:" , res);
+    return res;
+  } catch(err){
+    return err;
+  }
+}
+
+export const checkApplication = async (thesisId) => {
+  try {
+    const res = await client.get(`/check-application/${thesisId}`);
     return res;
   } catch (err) {
     throw err;

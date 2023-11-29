@@ -107,10 +107,7 @@ router.get(
 );
 
 //TODO: authorize all these routes
-router.get(
-  "/ext-cosupervisors",
-  getExtCoSupervisors
-)
+router.get("/ext-cosupervisors", getExtCoSupervisors);
 
 router.get(
   "/cosupervisors",
