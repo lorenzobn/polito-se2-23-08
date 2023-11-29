@@ -12,6 +12,7 @@ function ProposalPage() {
   const proposalId = param.id;
 
   const store = useContext(StoreContext);
+  const [applied, setApplied] = useState(false)
   const [proposal, setProposal] = useState({
     title: "",
     description: "",
@@ -24,6 +25,7 @@ function ProposalPage() {
     name: "",
     surname: "",
     group: "",
+    status: ""
   });
 
   const [incosupervisors, setInCosupervisors] = useState([]);
@@ -52,6 +54,7 @@ function ProposalPage() {
         group: response.data[0].groupname,
         name: response.data[0].sname,
         surname: response.data[0].ssurname,
+        status: response.data[0].status
       });
       keyw = [];
       
@@ -77,6 +80,7 @@ function ProposalPage() {
       setExCosupervisors(exco);
     };
     handleEffect();
+    store.checkApplied(proposalId).then((res) => setApplied(res))
   }, []);
 
   const handleApply = () => {
@@ -153,56 +157,34 @@ function ProposalPage() {
           <div className="mb-3">
             <strong>{proposal.notes}</strong>
           </div>
-          {proposal.status !== "active" ? (
-            <div className="row">
-              <div className="col text-start">
-                {store.user.type === "student" ? (
-                  <BadButton
-                    icon={faArrowLeft}
-                    text={"BACK"}
-                    onClick={() => {
-                      navigate("/");
-                    }}
-                  ></BadButton>
-                ) : (
-                  <BadButton
-                    icon={faArrowLeft}
-                    text={"BACK"}
-                    onClick={() => {
-                      navigate("/thesis-proposals");
-                    }}
-                  ></BadButton>
-                )}
-              </div>
-              <div className="col text-end">
-                {store.user.type === "student" ? (
-                  <Button
-                    icon={faCheck}
-                    text={"APPLY"}
-                    onClick={handleApply}
-                  ></Button>
-                ) : (
-                  <></>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="row">
-              <div className="col text-center">
-                {store.user.type === "student" ? (
-                  <h2 style={{ color: "green" }}>APPLIED</h2>
-                ) : (
-                  <BadButton
-                    icon={faArrowLeft}
-                    text={"BACK"}
-                    onClick={() => {
-                      navigate("/thesis-proposals");
-                    }}
-                  ></BadButton>
-                )}
-              </div>
-            </div>
-          )}
+            {store.user.type === "student" ? 
+              applied?
+                (<div className="row mt-5">
+                  <div className="col text-start">
+                    <BadButton icon={faArrowLeft} text={"BACK"} onClick={() => {navigate("/")}}></BadButton>
+                  </div>
+                  <div className="col text-center">
+                    <h2 style={{ color: "green" }}>APPLIED</h2>
+                  </div>
+                </div> ) :
+                ( <div className="row mt-5">
+                  <div className="col text-start">
+                  <BadButton icon={faArrowLeft} text={"BACK"} onClick={() => {navigate("/")}}></BadButton>
+                  </div>
+                  <div className="col text-end">
+                    <Button icon={faCheck} text={"APPLY"} onClick={handleApply}></Button>
+                  </div>
+                </div>)
+             : 
+              ( <div className="row mt-5">
+                  <div className="col text-start">
+                  <BadButton icon={faArrowLeft} text={"BACK"} onClick={() => {navigate("/thesis-proposals")}}></BadButton>
+                  </div>
+                  <div className="col text-end">
+                    <Button icon={faCheck} text={"APPLY"} onClick={handleApply}></Button>
+                  </div>
+              </div> )
+            }
         </form>
       </div>
     </>

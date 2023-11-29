@@ -20,6 +20,7 @@ import {
   getExternalCoSupervisors as getExtCoSupervisorsAPI,
 } from "../API/proposals";
 import {
+  checkApplied as checkAppliedAPI,
   createApplication as createApplicationAPI,
   getReceivedApplicationsByThesisId as getReceivedApplicationsByThesisIdAPI,
   putApplicationStatus as putApplicationStatusAPI,
@@ -272,6 +273,15 @@ export class Store {
     try {
       const res = await getAllProgrammesAPI();
       return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
+  async checkApplied(thesisId) {
+    try {
+      const res = await checkAppliedAPI(thesisId);
+      return res.data.applied;
     } catch (err) {
       return [];
     }

@@ -204,7 +204,7 @@ const getReceivedApplicationsByThesisId = async (req, res) => {
 
 const didStudentApply = async (req, res) => {
   const query = {
-    text: "SELECT * FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE student_id=$1 AND thesis_id=$2 AND created_at < $3",
+    text: "SELECT * FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE student_id=$1 AND thesis_id=$2 AND thesis_application.created_at < $3",
     values: [req.session.user.id, req.params.thesisId, req.session.clock.time],
   };
   try {

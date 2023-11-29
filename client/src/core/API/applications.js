@@ -35,3 +35,12 @@ export const putApplicationStatus = async (proposalId, status, student_id) => {
     throw err;
   }
 };
+
+export const checkApplied = async (thesisId) => {
+  try {
+    const res = await client.get(`/check-application/${thesisId}`);
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
