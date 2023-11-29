@@ -58,7 +58,7 @@ const createProposal = async (req, res) => {
       coSupervisors: Joi.array(),
       type: Joi.string().required(),
       description: Joi.string().required(),
-      requiredKnowledge: Joi.string().required(),
+      requiredKnowledge: Joi.string(),
       notes: Joi.string().allow(""),
       level: Joi.string().required().valid("BSc", "MSc"),
       programme: Joi.string().required(),
