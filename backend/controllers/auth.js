@@ -61,7 +61,7 @@ const assertion = async (req, res) => {
       expiresIn: "2m",
     });
     appLoginSessions.push(token);
-    res.redirect(`http://localhost:5173/sso-callback?token=${token}`);
+    res.redirect(`http://localhost:5174/sso-callback?token=${token}`);
   } catch (error) {
     console.log("Error parsing SAML response:", error);
     res.status(500).send("Internal Server Error");
