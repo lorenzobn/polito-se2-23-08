@@ -2,7 +2,13 @@ const pool = require("../db/connection");
 const Joi = require("@hapi/joi");
 const { userRoles } = require("./auth");
 
+
+
+const fs = require("fs");
+const path = require("path");
 // TODO: Only STUDENTS
+
+const uploadPath = "uploads/";
 const createApplication = async (req, res) => {
   try {
     const applicationSchema = Joi.object({
@@ -16,7 +22,17 @@ const createApplication = async (req, res) => {
 
     const { error, value } = applicationSchema.validate(req.body);
     if (error) {
+      console.log(error);
       return res.status(400).json({ msg: error.details[0].message });
+    }
+    const file = req.files && req.files.file;
+
+    if (file) {
+      await fs.mkdirSync(uploadPath, { recursive: true });
+      const uniqueFilename = `${Date.now()}-${file.name}`;
+      const filePath = path.join(uploadPath, uniqueFilename);
+      value.cv_uri = filePath;
+      await file.mv(filePath);
     }
     const query = `
       INSERT INTO thesis_application (student_id, thesis_id, status, cv_uri)
@@ -29,15 +45,14 @@ const createApplication = async (req, res) => {
       value.thesis_id,
       value.thesis_status,
       value.cv_uri,
-    ];
-    console.log(values);
+ 
     const result = await pool.query(query, values);
 
     return res
       .status(201)
       .json({ msg: "Application created successfully", data: result.rows[0] });
   } catch (error) {
-    console.error(error.message);
+    console.error(error);
     return res.status(500).json({ msg: "An unknown error occurred." });
   }
 };

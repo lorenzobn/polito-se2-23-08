@@ -6,10 +6,14 @@ const dotenv = require("dotenv");
 dotenv.config();
 const { json, urlencoded } = pkg;
 const crypto = require("crypto");
+
 const {
   addVirtualClockMIddleware,
   addVirtualClockToResMiddleware,
 } = require("./controllers/virtualClock.js");
+
+const fileUpload = require("express-fileupload");
+
 
 const app = express();
 app.use(cookieParser());
@@ -26,6 +30,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions));
 const randomSecret = crypto.randomBytes(32).toString("hex");
+app.use(fileUpload());
 
 app.use(
   session({

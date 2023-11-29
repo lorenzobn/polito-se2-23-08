@@ -31,9 +31,13 @@ function App() {
           <Route path="/sso-callback" element={<SSOCallback />}></Route>
 
           <Route path="/portal" element={<Portal></Portal>}></Route>
+          {/* <Route
+            path="/insertProposal"
+            element={store.user.type === 'teacher'? <InsertProposal></InsertProposal>:<Navigate replace to='/'></Navigate>}
+          ></Route> */}
           <Route
             path="/insertProposal"
-            element={store.user.type !== 'student'? <InsertProposal></InsertProposal>:<Navigate replace to='/'></Navigate>}
+            element={<InsertProposal></InsertProposal>}
           ></Route>
           <Route
             path="/proposalpage/:id"

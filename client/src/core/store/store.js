@@ -24,6 +24,7 @@ import {
   createApplication as createApplicationAPI,
   getReceivedApplicationsByThesisId as getReceivedApplicationsByThesisIdAPI,
   putApplicationStatus as putApplicationStatusAPI,
+  checkApplication as checkApplicationAPI,
 } from "../API/applications";
 import {
   getVirtualClockValue as getVirtualClockValueAPI,
@@ -296,10 +297,22 @@ export class Store {
     }
   }
 
-  async applicationDecision(proposalId, status, student_id) {
+  async applicationDecision(proposalId, status) {
     try {
-      const res = await putApplicationStatusAPI(proposalId, status, student_id);
+      const res = await putApplicationStatusAPI(proposalId, status);
       return res.data.data;
+    }
+    catch(err){
+      console.log(err);
+      return [];
+    }
+  }
+
+
+  async checkApplication(thesisId) {
+    try {
+      const res = await checkApplicationAPI(thesisId);
+      return res.data;
     } catch (err) {
       return [];
     }
