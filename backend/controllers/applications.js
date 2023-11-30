@@ -160,14 +160,14 @@ const updateApplication = async (req, res) => {
       const query = `
         UPDATE thesis_application
         SET ${setClause}
-        WHERE id = $1 AND created_at < $2
+        WHERE id = $1 AND created_at < $3
         RETURNING *;
       `;
 
       const values = [
         applicationId,
-        req.session.clock.time,
         ...Object.values(updateFields).filter((value) => value !== undefined),
+        req.session.clock.time,
       ];
 
       const result = await pool.query(query, values);
