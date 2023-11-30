@@ -33,6 +33,7 @@ import {
 import { toast } from "react-toastify";
 export class Store {
   constructor() {
+    this.theme = 'light'
     this.time = new Date();
     this.user = {
       id: "",
@@ -41,6 +42,7 @@ export class Store {
     };
     this.loading = false;
     makeObservable(this, {
+      theme: observable,
       time: observable,
       user: observable,
       loading: observable,
@@ -48,8 +50,14 @@ export class Store {
       login: action,
       setVirtualClock: action,
       getVirtualClockValue: action,
+      toggleTheme: action,
     });
   }
+
+  toggleTheme = () => {
+    this.theme === 'dark'? (localStorage.setItem('theme', 'light') ,this.theme = 'light') : (this.theme = 'dark', localStorage.setItem('theme', 'dark'))
+  }
+
   async setVirtualClock(time) {
     try {
       const res = await setVirtualClockAPI(time);
