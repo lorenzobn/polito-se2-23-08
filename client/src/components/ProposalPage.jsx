@@ -37,7 +37,6 @@ function ProposalPage() {
   let keyw = [];
   let inco = [];
   let exco = [];
-  const [applied, setApplied] = useState(false);
   const [showApplyModal, setShowApplyModal] = useState(false);
   const [file, setFile] = useState(null);
 

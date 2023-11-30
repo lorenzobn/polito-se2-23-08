@@ -2,7 +2,11 @@ const pool = require("../db/connection");
 
 const fetchSelf = async (req, res) => {
   try {
-    const id = req.session.user.id;
+    if (!req.session.user) {
+      return res.status(401).json({ msg: "Unauthorized" });
+
+    }
+    const id = req.session?.user?.id;
 
     const student = await pool.query(
       "SELECT * FROM student WHERE id = $1 AND created_at < $2",

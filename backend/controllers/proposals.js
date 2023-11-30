@@ -99,8 +99,8 @@ const createProposal = async (req, res) => {
     let activeStatus = "active";
 
     const query = `
-      INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, COD_GROUP, description, required_knowledge, notes, level, programme, deadline, status)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
+      INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, COD_GROUP, description, required_knowledge, notes, level, programme, deadline, status, created_at)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
       RETURNING *;
     `;
 
@@ -116,6 +116,7 @@ const createProposal = async (req, res) => {
       programme,
       deadline,
       activeStatus,
+      req.session.clock.time,
     ];
 
     const result = await pool.query(query, values);
@@ -160,10 +161,17 @@ const createProposal = async (req, res) => {
 
 const getProposals = async (req, res) => {
   try {
+      let q = "SELECT * FROM thesis_proposal WHERE created_at < $1 AND deadline > $1"
+      let args = [req.session.clock.time]
+    if (req.session.user?.role === "student") 
+    {
+      q = "SELECT * FROM thesis_proposal WHERE created_at < $1 AND deadline > $1 AND programme = (SELECT COD_DEGREE FROM student WHERE id = $2 )";
+      args.push(req.session.user.id);
+    }
     const results = await pool
       .query(
-        "SELECT * FROM thesis_proposal WHERE created_at < $1 AND deadline > $1",
-        [req.session.clock.time]
+       q,
+       args,
       )
       .then((result) => {
         return res.status(200).json({ msg: "OK", data: result.rows });
@@ -212,7 +220,7 @@ const getProposalbyId = async (req, res) => {
 
 const getProposalsByTeacher = async (req, res) => {
   const query = {
-    text: "SELECT * FROM thesis_proposal WHERE supervisor_id=$1 AND created_at = $2",
+    text: "SELECT * FROM thesis_proposal WHERE supervisor_id=$1 AND created_at < $2",
     values: [req.session.user.id, req.session.clock.time],
   };
   try {

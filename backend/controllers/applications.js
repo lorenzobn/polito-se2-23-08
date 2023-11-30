@@ -35,8 +35,8 @@ const createApplication = async (req, res) => {
       await file.mv(filePath);
     }
     const query = `
-      INSERT INTO thesis_application (student_id, thesis_id, status, cv_uri)
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO thesis_application (student_id, thesis_id, status, cv_uri, created_at)
+      VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
     `;
 
@@ -45,6 +45,7 @@ const createApplication = async (req, res) => {
       value.thesis_id,
       value.thesis_status,
       value.cv_uri,
+      req.session.clock.time]
  
     const result = await pool.query(query, values);
 
