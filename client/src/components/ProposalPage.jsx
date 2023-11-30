@@ -84,9 +84,6 @@ function ProposalPage() {
       setExCosupervisors(exco);
     };
     handleEffect();
-
-  
-
     store.fetchSelf();
     //store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
     store.checkApplication(proposalId).then((res) => setApplied(res.applied));
@@ -202,61 +199,34 @@ function ProposalPage() {
           <div className="mb-3">
             <strong>{proposal?.notes}</strong>
           </div>
-          {proposal?.status !== "active" ? (
-            <div className="row">
-              <div className="col text-start">
-                {store.user.type === "student" ? (
-                  <BadButton
-                    icon={faArrowLeft}
-                    text={"BACK"}
-                    onClick={() => {
-                      navigate("/");
-                    }}
-                  ></BadButton>
-                ) : (
-                  <BadButton
-                    icon={faArrowLeft}
-                    text={"BACK"}
-                    onClick={() => {
-                      navigate("/thesis-proposals");
-                    }}
-                  ></BadButton>
-                )}
-              </div>
-              <div className="col text-end">
-                {store.user.type === "student" && !applied ? (
-                  <Button
-                    icon={faCheck}
-                    text={"APPLY"}
-                    onClick={() => {
-                      setShowApplyModal(true);
-                    }}
-                  ></Button>
-                ) : (
+          {store.user.type === "student" ? 
+              applied?
+                (<div className="row mt-5">
+                  <div className="col text-start">
+                    <BadButton icon={faArrowLeft} text={"BACK"} onClick={() => {navigate("/")}}></BadButton>
+                  </div>
                   <div className="col text-center">
                     <h2 style={{ color: "green" }}>APPLIED</h2>
                   </div>
-                )}
-              </div>
-            </div>
-          ) : (
-            <div className="row">
-              <div className="col text-center">
-                {store.user.type === "student" && applied ? (
-                  <h2 style={{ color: "green" }}>APPLIED</h2>
-                ) : (
-                  <BadButton
-                    icon={faArrowLeft}
-                    text={"BACK"}
-                    onClick={() => {
-                      navigate("/thesis-proposals");
-                    }}
-                  ></BadButton>
-                )}
-              </div>
-            </div>
-          )}
-
+                </div> ) :
+                ( <div className="row mt-5">
+                  <div className="col text-start">
+                  <BadButton icon={faArrowLeft} text={"BACK"} onClick={() => {navigate("/")}}></BadButton>
+                  </div>
+                  <div className="col text-end">
+                    <Button icon={faCheck} text={"APPLY"} onClick={handleApply}></Button>
+                  </div>
+                </div>)
+             : 
+              ( <div className="row mt-5">
+                  <div className="col text-start">
+                  <BadButton icon={faArrowLeft} text={"BACK"} onClick={() => {navigate("/thesis-proposals")}}></BadButton>
+                  </div>
+                  <div className="col text-end">
+                    <Button icon={faCheck} text={"APPLY"} onClick={handleApply}></Button>
+                  </div>
+              </div> )
+            }
         </form>
       </div>
     </>
