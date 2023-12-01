@@ -15,6 +15,7 @@ import {
 import Button from "./Button";
 import { faBackward, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 import { StoreContext } from "../core/store/Provider";
+import { stagger, useAnimate, usePresence } from "framer-motion"
 
 function ThesisList(props) {
   const store = useContext(StoreContext);
@@ -28,16 +29,20 @@ function ThesisList(props) {
   const [programmes, setProgrammes] = useState([])
   const [search, setSearch] = useState(false)
   const [filterTags, setFilterTags] = useState([])
+  const [isPresent, safeToRemove] = usePresence()
+  const [scope, animate] = useAnimate()
 
-  let counter = 0;
+  
+
   useEffect(() => {
-    // since the handler function of useEffect can't be async directly
-    // we need to define it separately and run it
     const handleEffect = async () => {
       const proposals = await store.getProposals();
       setProposals(proposals);
     };
-    handleEffect();
+    const enterAnimation = async () => {
+      await animate(".thesis-section", {opacity: [0,1]}, {duration: 0.4, delay: stagger(0.4)})
+    }
+    handleEffect().then(enterAnimation)
   }, []);
 
   useEffect(() => {
@@ -158,7 +163,7 @@ function ThesisList(props) {
         </Row>
         {search === true && <Row style={{marginBottom:'1.5rem'}} className="justify-content-center">
           <Stack className="d-inline-flex justify-content-center" direction="horizontal" gap={2}>
-            {filterTags.map(el => <Badge key={counter++} pill style={{fontSize:'90%', backgroundColor:'RGBA(252, 122, 8, 1) !important'}}>{el.name}</Badge>)}
+            {filterTags.map((el, index) => <Badge key={index} pill style={{fontSize:'90%', backgroundColor:'RGBA(252, 122, 8, 1) !important'}}>{el.name}</Badge>)}
           </Stack>  
         </Row>}
         <Row className="border-thesis-div">
@@ -221,7 +226,7 @@ function ThesisList(props) {
               </Nav.Item>
             </Nav>
           </Col>
-          <Col lg={8}>
+          <Col lg={8} ref={scope}>
             {proposals.length == 0?<header style={{textAlign:'center'}}>
                   <h2 className="border-thesis-title">
                     No Matches Found
@@ -230,7 +235,7 @@ function ThesisList(props) {
             {degree === 'All' ? proposals.map((e) => (
               <div key={e.id} className="thesis-section">
                 <header>
-                  <h2 className="border-thesis-title">
+                  <h2 id={'ciao'} className="border-thesis-title">
                     <Nav.Link href={`/proposalpage/${e.id}`}>{e.title}</Nav.Link>
                   </h2>
                 </header>

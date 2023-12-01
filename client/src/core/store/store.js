@@ -32,8 +32,9 @@ import {
 } from "../API/general";
 import { toast } from "react-toastify";
 export class Store {
+  
   constructor() {
-    this.theme = 'light'
+    this.theme = localStorage.getItem('theme')
     this.time = new Date();
     this.user = {
       id: "",

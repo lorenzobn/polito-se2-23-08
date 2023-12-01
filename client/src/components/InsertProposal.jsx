@@ -3,7 +3,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { TagsInput } from "react-tag-input-component";
-import "../App.css";
 import Button from "./Button";
 import { StoreContext } from "../core/store/Provider";
 import { ToastContainer, toast } from "react-toastify";

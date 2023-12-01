@@ -10,8 +10,8 @@ import ReactSwitch from "react-switch";
 function MyNavbar() {
   const store = useContext(StoreContext);
   const [showVClock, setShowVClock] = useState(false);
-  const moon = <FontAwesomeIcon style={{color: '#fc7a08'}} viewBox="-200 300 33 400" icon={faMoon}></FontAwesomeIcon>
-  const sun =  <FontAwesomeIcon style={{color: '#00284b'}} viewBox="-200 300 33 400" icon={faSun}></FontAwesomeIcon>
+  const moon = <FontAwesomeIcon style={{color: '#ffffff'}} viewBox="-200 300 33 400" icon={faMoon}></FontAwesomeIcon>
+  const sun =  <FontAwesomeIcon style={{color: 'ffffff'}} viewBox="-200 300 33 400" icon={faSun}></FontAwesomeIcon>
 
   return (
     <Container className="nav-wrap" fluid>
@@ -50,9 +50,8 @@ function MyNavbar() {
           <ReactSwitch className="switch"
             onChange={store.toggleTheme} 
             checked={store.theme === 'dark'}
-            onColor="#3b2c5c"
+            onColor="#00284b"
             offColor="#fc7a08"
-            onHandleColor="#9A74AB"
             checkedIcon={moon}
             uncheckedIcon={sun}
             handleDiameter={20}

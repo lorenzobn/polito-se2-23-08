@@ -17,18 +17,22 @@ import SSOCallback from "./components/SSOCallback";
 import { observer } from "mobx-react-lite";
 
 function App() {
+
   const store = useContext(StoreContext);
-  // this will run in every page refresh, so we don't lose track of auth state of refreshes
+
   useEffect(() => {
     const theme = localStorage.getItem('theme')
     if(theme) {
       store.theme = theme
     }
     store.fetchSelf();
+    
   }, []);
   return (
-    <div className="app" data-theme={store.theme}>
-      <ToastContainer />
+    <div 
+      className="app" data-theme={store.theme}
+      >
+      
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ThesisList></ThesisList>}></Route>
