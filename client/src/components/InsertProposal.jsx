@@ -217,7 +217,7 @@ function InsertProposal() {
       <div className="py-2 px-4 mx-auto max-md">
         <p className="mb-4 font-light text-center text-gray-500 fs-5"></p>
         <form
-          className="container mt-5 p-4 bg-light rounded shadow mt-10"
+          className="container mt-5 p-4 form-proposal rounded shadow mt-10"
           method="post"
           onSubmit={handleSubmit}
         >

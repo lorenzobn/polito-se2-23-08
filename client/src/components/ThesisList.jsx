@@ -166,7 +166,7 @@ function ThesisList(props) {
             lg={2}
             className="d-flex border-thesis-filter"
           >
-            <Offcanvas show={show} onHide={handleClose}>
+            <Offcanvas show={show} onHide={handleClose} data-theme={store.theme}>
               <Offcanvas.Header className="justify-content-between" closeButton>
                 <Offcanvas.Title as='h2'>{filter}</Offcanvas.Title>
               </Offcanvas.Header>

@@ -140,7 +140,7 @@ function ProposalPage() {
       </Modal>
       <div className="container mt-5">
         <form
-          className="mx-auto p-4 bg-light rounded shadow"
+          className="mx-auto p-4 form-proposal rounded shadow"
           style={{ marginTop: "5px" }}
         >
           <div className="mb-3 mt-1 text-center">
@@ -221,9 +221,6 @@ function ProposalPage() {
               ( <div className="row mt-5">
                   <div className="col text-start">
                   <BadButton icon={faArrowLeft} text={"BACK"} onClick={() => {navigate("/thesis-proposals")}}></BadButton>
-                  </div>
-                  <div className="col text-end">
-                    <Button icon={faCheck} text={"APPLY"} onClick={handleApply}></Button>
                   </div>
               </div> )
             }

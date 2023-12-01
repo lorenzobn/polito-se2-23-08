@@ -71,7 +71,7 @@ export default function AcceptApplications() {
       <div>
         {proposal.map((student, index) => (
           <form
-            className="container mt-3 p-4 bg-light rounded shadow mt-10"
+            className="container form-proposal mt-3 p-4 rounded shadow mt-10"
             style={{ marginTop: "1px" }}
             key={index}
           >

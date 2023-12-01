@@ -3,13 +3,16 @@ import { Container, Row, Nav, NavDropdown, Col } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 import { StoreContext } from "../core/store/Provider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faUser, faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 import ReactSwitch from "react-switch";
 
 function MyNavbar() {
   const store = useContext(StoreContext);
   const [showVClock, setShowVClock] = useState(false);
+  const moon = <FontAwesomeIcon style={{color: '#fc7a08'}} viewBox="-200 300 33 400" icon={faMoon}></FontAwesomeIcon>
+  const sun =  <FontAwesomeIcon style={{color: '#00284b'}} viewBox="-200 300 33 400" icon={faSun}></FontAwesomeIcon>
+
   return (
     <Container className="nav-wrap" fluid>
       <div
@@ -47,9 +50,12 @@ function MyNavbar() {
           <ReactSwitch className="switch"
             onChange={store.toggleTheme} 
             checked={store.theme === 'dark'}
-            onColor="#37416D"
+            onColor="#3b2c5c"
             offColor="#fc7a08"
             onHandleColor="#9A74AB"
+            checkedIcon={moon}
+            uncheckedIcon={sun}
+            handleDiameter={20}
           >
           </ReactSwitch>
           {!store.user.authenticated && (
@@ -104,7 +110,7 @@ function MyNavbar() {
           <a style={{ marginLeft: "5%" }} href="/">
             <img
               className="my-2"
-              width={"35%"}
+              width={"20%"}
               src="../../images/logo_blu.png"
             />
           </a>
@@ -112,14 +118,14 @@ function MyNavbar() {
           <a style={{ marginLeft: "5%" }} href="/">
             <img
               className="my-2"
-              width={"35%"}
+              width={"20%"}
               src="../../images/logo_bianco.png"
             />
           </a>}
         </Col>
         <Col>
           <div className="d-flex justify-content-center mt-4 pr-5  mr-5">
-            <h1 style={{ fontSize: "350%" }}>THESIS@POLITO</h1>
+            <h1 style={{ fontSize: "300%" }}>THESIS@POLITO</h1>
           </div>
         </Col>
       </Row>

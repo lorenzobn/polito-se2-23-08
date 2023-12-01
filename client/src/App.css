@@ -9,10 +9,8 @@
   --border-thesis-title: #fc7a08;
   --nav-mid: white;
   --view: #00284b;
-}
-
-* {
-  transition: all .3s ease-in-out;
+  --offcanvas: white;
+  --form-bg: white;
 }
 
 [data-theme='dark'] {
@@ -20,14 +18,14 @@
   --text-primary: white;
   --text-secondary: #fc7a08;
   --form-bg: #008290;
-  --nav-thin: #005378;
+  --nav-thin: #0053787f;
   --nav-center: #00284b;
   --border-thesis-div: RGBA(255, 255, 255, 0.1);
   --nav-mid: #00284b;
   --view: white;
+  --offcanvas: #003750;
+  --form-bg: #0b5070;
 }
-
-
 
 body {
   font-family: "Poppins", sans-serif;
@@ -35,15 +33,29 @@ body {
 
 .app {
   background-color: var(--background);
-  height: 100vh;
+  position: absolute;
+  min-height: 100%;
+  /* transition: background-color .3s ease-in-out; */
 }
 
 a {
   text-decoration: none;
 }
 
+.nav-underline .nav-link.active, .nav-underline .show > .nav-link {
+  color: var(--text-secondary);
+}
+
 p, h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
+  transition: color .3s ease-in-out;
+}
+
+.form-proposal {
+  background-color: var(--form-bg);
+  color: var(--text-primary);
+  transition: background-color .3s ease-in-out;
+  transition: color .3s ease-in-out;
 }
 
 .border-thesis-div {
@@ -135,15 +147,11 @@ p, h1, h2, h3, h4, h5, h6 {
   min-height: 3rem;
 }
 
-.mid-nav {
-  line-height: 50px;
-  background-color: var(--nav-mid);
-}
-
 .lower-nav {
   background-color: var(--nav-thin);
   text-align: center;
   line-height: 50px;
+  min-height: 3rem;
 }
 
 .nav-wrap {
@@ -153,7 +161,10 @@ p, h1, h2, h3, h4, h5, h6 {
   width: 100%;
   z-index: 10;
   border-color: #00284b;
-  background: #ffffff8c;
+}
+
+.mid-nav {
+  line-height: 50px;
   backdrop-filter: blur(10px);
 }
 
@@ -220,4 +231,24 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .switch {
   padding-right: 1.5rem;
+}
+
+.offcanvas {
+  background-color: var(--offcanvas);
+  color: var(--text-primary);
+}
+
+.dropdown-menu.show {
+  background-color: var(--form-bg);
+  color: var(--text-primary);
+  opacity: 1;
+}
+
+a.dropdown-item {
+  color: var(--text-primary);
+}
+
+a.dropdown-item:hover {
+  background-color: var(--form-bg);
+  color: var(--text-secondary);
 }
