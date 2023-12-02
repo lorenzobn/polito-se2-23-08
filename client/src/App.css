@@ -11,6 +11,9 @@
   --view: #00284b;
   --offcanvas: white;
   --form-bg: white;
+  --box-color: #fc7a08;
+  --btn-primary: #007ea8;
+  --border-drop: #00284b;
 }
 
 
@@ -26,6 +29,8 @@
   --view: white;
   --offcanvas: #003750;
   --form-bg: #0b5070;
+  --box-color: #fc7a08;
+  --border-drop: white;
 }
 
 html {
@@ -39,15 +44,10 @@ body {
   padding: 0;
 }
 
-* {
-  box-sizing: border-box;
-}
-
 .app {
   background-color: var(--background);
   transition: background-color .4s ease-in-out; 
   min-height: 100vh;
-  min-width: 100vw;
 }
 
 a {
@@ -92,7 +92,7 @@ p, h1, h2, h3, h4, h5, h6 {
 }
 
 .filter-decoration {
-  color: #00284b  ;
+  color: var(--text-primary)  ;
   font-weight: 600 ;
 }
 
@@ -127,7 +127,7 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .custom-btn {
   all: unset;
-  background-color: #007ea8;
+  background-color: var(--btn-primary);
   border-radius: 4px;
   box-sizing: border-box;
   position: relative;
@@ -152,6 +152,13 @@ p, h1, h2, h3, h4, h5, h6 {
   cursor: pointer;
 }
 
+.dropdown-toggle.btn.btn-primary:focus, .dropdown-toggle.btn.btn-primary:hover {
+  background-color: var(--bg-form);
+  color: var(--text-primary);
+  border-color: var(--nav-thin);
+  box-shadow: 0 0 0 .1rem var(--box-color); 
+  transition: border-color 0s;
+}
 .upper-nav {
   background-color: var(--nav-thin);
   text-align: center;
@@ -209,6 +216,25 @@ p, h1, h2, h3, h4, h5, h6 {
   height: 600px;
   background-color: #f7f7f7;
 }
+
+.form-control {
+  color: var(--text-primary);
+  background-color: var(--bg-form);
+}
+
+.form-control::placeholder {
+  color: var(--text-primary);
+  opacity: 0.7;
+}
+
+.form-control:focus, .form-control:hover {
+  background-color: var(--bg-form);
+  color: var(--text-primary);
+  border-color: var(--background);
+  box-shadow: 0 0 0 .1rem var(--box-color); 
+  transition: border-color 0s;
+}
+
 /* hide arrow-bottom of the dropdown, cause it's nasty */
 .dropdown-toggle::after {
   display: none;
@@ -262,4 +288,22 @@ a.dropdown-item {
 a.dropdown-item:hover {
   background-color: var(--form-bg);
   color: var(--text-secondary);
+}
+
+.angle-degree {
+  padding-left: 15px;
+  padding-top: 2px;
+}
+
+.wrap-degree {
+  color: var(--text-primary);
+  font-weight: 600 ;
+}
+
+.wrap-degree:hover {
+  color: var(--text-secondary);
+}
+
+.search-icons {
+  color: var(--text-primary);
 }

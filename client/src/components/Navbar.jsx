@@ -103,11 +103,11 @@ function MyNavbar() {
           )}
         </Col>
       </Row>
-      <Row className="mid-nav align-items-around">
-        <Col>
+      <Row className="mid-nav">
+        <Col className="d-flex align-items-center justify-content-start">
           {store.theme === 'light'?
           <a style={{ marginLeft: "5%" }} href="/">
-            <img
+            <img style={{minWidth:'20%'}}
               className="my-2"
               width={"20%"}
               src="../../images/logo_blu.png"
@@ -115,16 +115,17 @@ function MyNavbar() {
           </a>
           :
           <a style={{ marginLeft: "5%" }} href="/">
-            <img
-              className="my-2"
+            <img style={{minWidth:'20%'}}
+            className="my-2"
               width={"20%"}
               src="../../images/logo_bianco.png"
             />
-          </a>}
+          </a>
+          }
         </Col>
-        <Col>
-          <div className="d-flex justify-content-center mt-4 pr-5  mr-5">
-            <h1 style={{ fontSize: "300%" }}>THESIS@POLITO</h1>
+        <Col className="d-flex align-items-center justify-content-center">
+          <div>
+            <h1 style={{ fontSize: "250%", margin:'0' }}>THESIS@POLITO</h1>
           </div>
         </Col>
       </Row>

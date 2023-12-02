@@ -10,12 +10,15 @@ import {
   DropdownButton,
   Form,
   Offcanvas,
-  Badge
+  Badge, 
+  Accordion,
 } from "react-bootstrap";
 import Button from "./Button";
-import { faBackward, faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown, faBackward, faMagnifyingGlass, faSearch } from "@fortawesome/free-solid-svg-icons";
 import { StoreContext } from "../core/store/Provider";
-import { stagger, useAnimate, usePresence } from "framer-motion"
+import { stagger, useAnimate, usePresence, motion } from "framer-motion"
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useFetcher } from "react-router-dom";
 
 function ThesisList(props) {
   const store = useContext(StoreContext);
@@ -31,8 +34,10 @@ function ThesisList(props) {
   const [filterTags, setFilterTags] = useState([])
   const [isPresent, safeToRemove] = usePresence()
   const [scope, animate] = useAnimate()
-
-  
+  const [scopeDegree, animateDegree] = useAnimate()
+  const [isOpen, setIsOpen] = useState(false)
+  const [isOpen2, setIsOpen2] = useState(false)
+  const [isOpen3, setIsOpen3] = useState(false)
 
   useEffect(() => {
     const handleEffect = async () => {
@@ -90,7 +95,12 @@ function ThesisList(props) {
 
   const handleReset = () => {
     setFilterTags([])
+    setKeyword('')
     setSearch(false)
+    setIsOpen(false)
+    setIsOpen2(false)
+    setIsOpen3(false)
+    setDegree('All')
     store.getProposals().then(res => setProposals(res));
   }
 
@@ -124,48 +134,23 @@ function ThesisList(props) {
     }
   }
 
+  useEffect(() => {
+    animateDegree('#arrow', {rotate: isOpen? 180 : 0}, {duration: 0.2})
+    animateDegree('#arrow2', {rotate: isOpen2? 180 : 0}, {duration: 0.2})
+    animateDegree('#arrow3', {rotate: isOpen3? 180 : 0}, {duration: 0.2})
+  }, [isOpen, isOpen2, isOpen3])
+
   return (
     <>
       <MyNavbar></MyNavbar>
       <Container fluid>
-        <Row className="justify-content-between thesis-form-section">
-          <Col
-            className="d-flex justify-content-around"
-            lg={{ span: 8, offset: 2 }}
-          >
-            <DropdownButton
-              variant="light"
-              id="dropdown-item-button"
-              title={`Degree Level: ${degree}`}
-            >
-              <Dropdown.Item as="button" onClick={() => setDegree('All')}>All</Dropdown.Item>
-              <Dropdown.Item as="button" onClick={() => setDegree('BSc')}>Bachelor</Dropdown.Item>
-              <Dropdown.Item as="button" onClick={() => setDegree('MSc')}>Master</Dropdown.Item>
-            </DropdownButton>
-            <Form inline="true">
-              <Row>
-                <Col xs="auto">
-                  <Form.Control
-                    type="text"
-                    placeholder='Search'
-                    className=" mr-sm-2"
-                    onChange={ev => { setKeyword(ev.target.value) }}
-                    onKeyDown={handleKeyDown}
-                  />
-                </Col>
-                <Col className="d-flex justify-content-center">
-                  <Button text={"Search"} icon={faMagnifyingGlass} onClick={handleSearch}></Button>&nbsp;&nbsp;
-                  {search === true? <Button text={"Reset"} icon={faBackward} onClick={handleReset}></Button>:<></>}
-                </Col>
-              </Row>
-            </Form>
-          </Col>
-        </Row>
-        {search === true && <Row style={{marginBottom:'1.5rem'}} className="justify-content-center">
-          <Stack className="d-inline-flex justify-content-center" direction="horizontal" gap={2}>
+        <Row style={{maxHeight:'2rem'}} className="justify-content-between align-content-center thesis-form-section my-2">
+        {search === true && 
+          <Stack className=" d-flex justify-content-center" direction="horizontal" gap={2}>
             {filterTags.map((el, index) => <Badge key={index} pill style={{fontSize:'90%', backgroundColor:'RGBA(252, 122, 8, 1) !important'}}>{el.name}</Badge>)}
           </Stack>  
-        </Row>}
+        }
+        </Row>
         <Row className="border-thesis-div">
           <Col
             lg={2}
@@ -199,32 +184,126 @@ function ThesisList(props) {
                 </Nav>
               </Offcanvas.Body>
             </Offcanvas>
-            <Nav
-              variant="underline"
-              className="flex-column m-5"
-              onSelect={handleShow}
-            >
-              <Nav.Item className="d-inline-flex">
-                <Nav.Link className="filter-decoration" eventKey="Research Group">
-                  By Research Group
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item className="d-inline-flex">
-                <Nav.Link className="filter-decoration" eventKey="Supervisor">
-                  By Supervisor
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item className="d-inline-flex">
-                <Nav.Link className="filter-decoration" eventKey="Programme">
-                  By Programme
-                </Nav.Link>
-              </Nav.Item>
-              <Nav.Item className="d-inline-flex">
-                <Nav.Link className="filter-decoration" eventKey="Status">
-                  By Status
-                </Nav.Link>
-              </Nav.Item>
-            </Nav>
+            <Stack >
+            <Form className="flex-column mx-5 mt-5"   >
+              <Form.Control
+                type="text"
+                placeholder='Search'
+                className="mr-sm-2"
+                onChange={ev => { setKeyword(ev.target.value) }}
+                onKeyDown={handleKeyDown}
+                value={keyword}
+              /> 
+              <div className="d-flex justify-content-between search-icons">
+                <div className="mt-3" onClick={handleSearch}>
+                  <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>
+                </div>
+                {search? 
+                <div className="mt-3" onClick={handleReset}>
+                  <FontAwesomeIcon icon={faBackward}></FontAwesomeIcon>
+                </div>:<></>}
+              </div>
+              
+            </Form>
+              <Nav ref={scopeDegree}
+                variant="underline"
+                className="flex-column m-5"
+                onSelect={handleShow}
+              >
+                <Nav.Item className="d-flex">
+                  <Nav.Link className="wrap-degree" onClick={() => setIsOpen(!isOpen)}>
+                    Degree Level
+                    <div className="angle-degree">
+                      <FontAwesomeIcon id='arrow' icon={faAngleDown}></FontAwesomeIcon>
+                    </div>
+                  </Nav.Link>
+                </Nav.Item>
+                {isOpen && 
+                <motion.div
+                  style={{paddingLeft:'1.5rem'}}
+                  animate={{opacity: 1}}
+                  initial={{opacity: 0}}
+                  transition={{duration:0.2, delay: 0.2}}
+                  exit={{opacity: 0}}
+                >
+                  <Nav.Item className="d-flex">
+                    <Nav.Link className="filter-decoration" onClick={() => setDegree('All')} active={degree === 'All'}>
+                      All
+                    </Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item className="d-flex">
+                    <Nav.Link className="filter-decoration" onClick={() => setDegree('BSc')} active={degree === 'BSc'}>
+                      Bachelor
+                    </Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item className="d-flex">
+                    <Nav.Link className="filter-decoration" onClick={() => setDegree('MSc')} active={degree === 'MSc'}>
+                      Master
+                    </Nav.Link>
+                  </Nav.Item>
+                </motion.div>
+                }
+                <Nav.Item className="d-flex">
+                  <Nav.Link className="filter-decoration" onClick={() => {setIsOpen2(!isOpen2); setFilter('Status')}}>
+                    Status
+                    <div className="angle-degree">
+                      <FontAwesomeIcon id='arrow2' icon={faAngleDown}></FontAwesomeIcon>
+                    </div>
+                  </Nav.Link>
+                </Nav.Item>
+                {isOpen2 && 
+                <motion.div
+                  style={{paddingLeft:'1.5rem'}}
+                  animate={{opacity: 1}}
+                  initial={{opacity: 0}}
+                  transition={{duration:0.2, delay: 0.2}}
+                  exit={{opacity: 0}}
+                >
+                  <Nav.Item className="d-flex">
+                    <Nav.Link className="filter-decoration" onClick={() => handleFilter(JSON.stringify('active'))}>
+                      Active
+                    </Nav.Link>
+                  </Nav.Item>
+                  <Nav.Item className="d-flex">
+                    <Nav.Link className="filter-decoration" onClick={() => handleFilter(JSON.stringify('archived'))}>
+                      Archived
+                    </Nav.Link>
+                  </Nav.Item>
+                </motion.div>}
+                <Nav.Item className="d-flex">
+                  <Nav.Link className="wrap-degree" onClick={() => setIsOpen3(!isOpen3)}>
+                    Filter By
+                    <div className="angle-degree">
+                      <FontAwesomeIcon id='arrow3' icon={faAngleDown}></FontAwesomeIcon>
+                    </div>
+                  </Nav.Link>
+                </Nav.Item>
+              { isOpen3 && 
+              <motion.div
+                style={{paddingLeft:'1.5rem'}}
+                animate={{opacity: 1}}
+                initial={{opacity: 0}}
+                transition={{duration:0.2, delay: 0.2}}
+                exit={{opacity: 0}}
+              >
+                <Nav.Item className="d-flex">
+                  <Nav.Link className="filter-decoration" eventKey="Research Group">
+                    Research Group
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item className="d-flex">
+                  <Nav.Link className="filter-decoration" eventKey="Supervisor">
+                    Supervisor
+                  </Nav.Link>
+                </Nav.Item>
+                <Nav.Item className="d-flex">
+                  <Nav.Link className="filter-decoration" eventKey="Programme">
+                    Programme
+                  </Nav.Link>
+                </Nav.Item>
+              </motion.div>}
+              </Nav>
+            </Stack>
           </Col>
           <Col lg={8} ref={scope}>
             {proposals.length == 0?<header style={{textAlign:'center'}}>

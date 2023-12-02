@@ -18,6 +18,7 @@
     "axios": "^1.6.2",
     "bootstrap": "^5.3.2",
     "framer-motion": "^10.16.12",
+    "lottie-react": "^2.4.0",
     "mobx": "^6.10.2",
     "mobx-react": "^9.0.2",
     "react": "^18.2.0",
