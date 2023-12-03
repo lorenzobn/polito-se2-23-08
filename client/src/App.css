@@ -1,32 +1,85 @@
-* {
-  font-family: "Poppins", sans-serif !important;
+:root {
+  --background: white;
+  --text-primary: #00284b;
+  --text-secondary: #fc7a08;
+  --form-bg: #f8f9fa;
+  --nav-thin: #00284b;
+  --nav-center: white;
+  --border-thesis-div: RGBA(0, 0, 0, 0.1);
+  --border-thesis-title: #fc7a08;
+  --nav-mid: white;
+  --view: #00284b;
+  --offcanvas: white;
+  --form-bg: white;
+  --box-color: #fc7a08;
+  --btn-primary: #007ea8;
+  --border-drop: #00284b;
+}
+
+
+[data-theme='dark'] {
+  --background: #00284b;
+  --text-primary: white;
+  --text-secondary: #fc7a08;
+  --form-bg: #008290;
+  --nav-thin: #005378;
+  --nav-center: #00284b;
+  --border-thesis-div: RGBA(255, 255, 255, 0.1);
+  --nav-mid: #00284b;
+  --view: white;
+  --offcanvas: #003750;
+  --form-bg: #0b5070;
+  --box-color: #fc7a08;
+  --border-drop: white;
+}
+
+html {
+  margin: 0;
+  padding: 0; 
 }
 
 body {
-  font-weight: 400 !important;
-  color: #00284b;
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  height: 100dvh;
 }
-p h1 h2 h3 h4 h5 h6 {
-  color: #00284b;
+
+.app {
+  background-color: var(--background);
+  transition: background-color .4s ease-in-out; 
+  height: 100dvh;;
 }
-.secondary-menu {
-  /*background-color: #003576;*/
-  background-color: #00284b;
+
+a {
+  text-decoration: none;
+}
+
+.nav-underline .nav-link.active, .nav-underline .show > .nav-link {
+  color: var(--text-secondary);
+}
+
+p, h1, h2, h3, h4, h5, h6 {
+  color: var(--text-primary);
+  transition: color .3s ease-in-out;
+}
+
+.form-proposal {
+  background-color: var(--form-bg);
+  color: var(--text-primary);
+  transition: background-color .3s ease-in-out;
+  transition: color .3s ease-in-out;
 }
 
 .border-thesis-div {
-  border-top: 1px solid RGBA(0, 0, 0, 0.1);
+  border-top: 1px solid var(--border-thesis-div);
   display: inline block;
 }
 
 .border-thesis-title {
-  border-top: 3px solid RGBA(252, 122, 8, 1);
+  border-top: 3px solid var(--border-thesis-title);
   display: inline-block;
   padding-top: 30px;
-}
-
-.border-thesis-filter {
-  border-right: 1px solid RGBA(0, 0, 0, 0.1);
 }
 
 .thesis-section {
@@ -40,18 +93,12 @@ p h1 h2 h3 h4 h5 h6 {
 }
 
 .filter-decoration {
-  color: #00284b !important;
-  font-weight: 600 !important;
-}
-
-.nav-link:focus,
-.nav-link:hover {
-  color: RGBA(252, 122, 8, 1) !important;
+  color: var(--text-primary)  ;
+  font-weight: 600 ;
 }
 
 .border-thesis-view {
-  color: inherit;
-  color: RGBA(0, 0, 0, 1);
+  color: var(--view);
   background: transparent;
   border-radius: 4px;
   padding-top: 15px;
@@ -73,11 +120,6 @@ p h1 h2 h3 h4 h5 h6 {
   color: RGBA(255, 255, 255, 1) !important;
 }
 
-a {
-  text-decoration: none !important;
-  color: inherit;
-}
-
 .card {
   /*border-color: #005fcc !important;*/
   box-shadow: 0 0 0 0.2rem rgba(0, 95, 204, 0.1) !important;
@@ -86,7 +128,7 @@ a {
 
 .custom-btn {
   all: unset;
-  background-color: #007ea8;
+  background-color: var(--btn-primary);
   border-radius: 4px;
   box-sizing: border-box;
   position: relative;
@@ -111,21 +153,25 @@ a {
   cursor: pointer;
 }
 
+.dropdown-toggle.btn.btn-primary:focus, .dropdown-toggle.btn.btn-primary:hover {
+  background-color: var(--bg-form);
+  color: var(--text-primary);
+  border-color: var(--nav-thin);
+  box-shadow: 0 0 0 .1rem var(--box-color); 
+  transition: border-color 0s;
+}
 .upper-nav {
-  background-color: #00284b;
+  background-color: var(--nav-thin);
   text-align: center;
   line-height: 50px;
   min-height: 3rem;
 }
 
-.mid-nav {
-  line-height: 50px;
-}
-
 .lower-nav {
-  background-color: #00284b;
+  background-color: var(--nav-thin);
   text-align: center;
   line-height: 50px;
+  min-height: 3rem;
 }
 
 .nav-wrap {
@@ -135,7 +181,9 @@ a {
   width: 100%;
   z-index: 10;
   border-color: #00284b;
-  background: #ffffff8c;
+}
+
+.mid-nav {
   backdrop-filter: blur(10px);
 }
 
@@ -143,13 +191,25 @@ a {
   display: flex;
   padding: var(--bs-nav-link-padding-y) var(--bs-nav-link-padding-x);
   font-size: var(--bs-nav-link-font-size);
-  font-weight: var(--bs-nav-link-font-weight);
-  color: var(--bs-nav-link-color);
+  color: var(--text-primary);
   text-decoration: none;
   background: none;
   border: 0;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
-    border-color 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+
+.border-thesis-filter {
+  border-right: 1px solid var(--border-thesis-div);
+  min-height: 100vh;
+}
+
+.nav-link:focus,
+.nav-link:hover {
+  color: var(--text-secondary);
+}
+
+.nav-white-link {
+  color: white;
 }
 
 .login-form {
@@ -157,6 +217,25 @@ a {
   height: 600px;
   background-color: #f7f7f7;
 }
+
+.form-control {
+  color: var(--text-primary);
+  background-color: var(--bg-form);
+}
+
+.form-control::placeholder {
+  color: var(--text-primary);
+  opacity: 0.7;
+}
+
+.form-control:focus, .form-control:hover {
+  background-color: var(--bg-form);
+  color: var(--text-primary);
+  border-color: var(--background);
+  box-shadow: 0 0 0 .1rem var(--box-color); 
+  transition: border-color 0s;
+}
+
 /* hide arrow-bottom of the dropdown, cause it's nasty */
 .dropdown-toggle::after {
   display: none;
@@ -186,4 +265,54 @@ a {
   padding: 0.2rem;
   border-bottom-right-radius: 2rem;
   border-bottom-left-radius: 0.5rem;
+}
+
+.switch {
+  padding-right: 1.5rem;
+}
+
+.offcanvas {
+  background-color: var(--offcanvas);
+  color: var(--text-primary);
+}
+
+.dropdown-menu.show {
+  background-color: var(--form-bg);
+  color: var(--text-primary);
+  opacity: 1;
+  position: absolute;
+  inset: 0px 0px auto auto;
+  transform: translate(6px, 35px);
+}
+
+a.dropdown-item {
+  color: var(--text-primary);
+}
+
+a.dropdown-item:hover {
+  background-color: var(--form-bg);
+  color: var(--text-secondary);
+}
+
+.angle-degree {
+  padding-left: 15px;
+  padding-top: 2px;
+}
+
+.wrap-degree {
+  color: var(--text-primary);
+  font-weight: 600 ;
+}
+
+.wrap-degree:hover {
+  color: var(--text-secondary);
+}
+
+.search-icons {
+  color: var(--text-primary);
+}
+
+.modal-content {
+  background-color: var(--form-bg);
+  color: var(--text-primary);
 }

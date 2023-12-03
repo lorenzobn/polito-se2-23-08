@@ -3,12 +3,16 @@ import { Container, Row, Nav, NavDropdown, Col } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 import { StoreContext } from "../core/store/Provider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faUser } from "@fortawesome/free-solid-svg-icons";
+import { faClockRotateLeft, faUser, faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
+import ReactSwitch from "react-switch";
 
 function MyNavbar() {
   const store = useContext(StoreContext);
   const [showVClock, setShowVClock] = useState(false);
+  const moon = <FontAwesomeIcon style={{color: '#ffffff'}} viewBox="-200 300 33 400" icon={faMoon}></FontAwesomeIcon>
+  const sun =  <FontAwesomeIcon style={{color: 'ffffff'}} viewBox="-200 300 33 400" icon={faSun}></FontAwesomeIcon>
+
   return (
     <Container className="nav-wrap" fluid>
       <div
@@ -43,6 +47,16 @@ function MyNavbar() {
           lg={{ span: 4, offset: 8 }}
           className="d-flex justify-content-end align-items-center px-5"
         >
+          <ReactSwitch className="switch"
+            onChange={store.toggleTheme} 
+            checked={store.theme === 'dark'}
+            onColor="#00284b"
+            offColor="#fc7a08"
+            checkedIcon={moon}
+            uncheckedIcon={sun}
+            handleDiameter={20}
+          >
+          </ReactSwitch>
           {!store.user.authenticated && (
             <div>
               {" "}
@@ -75,7 +89,6 @@ function MyNavbar() {
                 className="mr-5"
               >
                 <NavDropdown.Item href="/portal">My Profile</NavDropdown.Item>
-                <NavDropdown.Divider />
                 <NavDropdown.Item href="/portal">Settings</NavDropdown.Item>
                 <NavDropdown.Item
                   onClick={() => {
@@ -89,38 +102,48 @@ function MyNavbar() {
           )}
         </Col>
       </Row>
-      <Row className="mid-nav align-items-around">
-        <Col>
+      <Row className="mid-nav">
+        <Col className="d-flex align-items-center justify-content-start">
+          {store.theme === 'light'?
           <a style={{ marginLeft: "5%" }} href="/">
-            <img
+            <img style={{minWidth:'20%'}}
               className="my-2"
-              width={"35%"}
-              src="../../images/polito_logo_2021_blu.jpg"
+              width={"20%"}
+              src="../../images/logo_blu.png"
             />
           </a>
+          :
+          <a style={{ marginLeft: "5%" }} href="/">
+            <img style={{minWidth:'20%'}}
+            className="my-2"
+              width={"20%"}
+              src="../../images/logo_bianco.png"
+            />
+          </a>
+          }
         </Col>
-        <Col>
-          <div className="d-flex justify-content-center mt-4 pr-5  mr-5">
-            <h1 style={{ fontSize: "350%" }}>THESIS@POLITO</h1>
+        <Col className="d-flex align-items-center justify-content-center">
+          <div>
+            <h1 style={{ fontSize: "250%", margin:'0' }}>THESIS@POLITO</h1>
           </div>
         </Col>
       </Row>
       <Row className="lower-nav align-items-center">
         <Col className="d-flex justify-content-around">
           <div style={{ lineHeight: "200%" }}>
-            <Nav variant="underline">
+            <Nav className="ps-4" variant="underline">
               {store.user.role === "" && <div>&nbsp;</div>}
               {store?.user?.type === "student" && (
-                <div className="d-flex ">
+                <div className="d-flex">
                   <Nav.Link
                     style={{ marginLeft: "30px" }}
-                    className="text-white mx-4"
+                    className=" mx-4 nav-white-link"
                     href="/my-applications"
                   >
                     MY APPLICATIONS
                   </Nav.Link>
 
-                  <Nav.Link className="d-inline-flex text-white" href="/">
+                  <Nav.Link className="d-inline-flex nav-white-link" href="/">
                     THESES
                   </Nav.Link>
                 </div>
@@ -129,13 +152,13 @@ function MyNavbar() {
                 <div className="d-flex ">
                   <Nav.Link
                     style={{ marginLeft: "30px" }}
-                    className="text-white  mx-4"
+                    className="nav-white-link  mx-4"
                     href="/thesis-proposals"
                   >
                     MY PROPOSALS
                   </Nav.Link>
                   <Nav.Link
-                    className="text-white"
+                    className="nav-white-link mx-4"
                     href="/received-applications"
                   >
                     APPLICATIONS

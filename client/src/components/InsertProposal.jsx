@@ -3,7 +3,6 @@ import React, { useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import Select from "react-select";
 import { TagsInput } from "react-tag-input-component";
-import "../App.css";
 import Button from "./Button";
 import { StoreContext } from "../core/store/Provider";
 import { ToastContainer, toast } from "react-toastify";
@@ -217,7 +216,7 @@ function InsertProposal() {
       <div className="py-2 px-4 mx-auto max-md">
         <p className="mb-4 font-light text-center text-gray-500 fs-5"></p>
         <form
-          className="container mt-5 p-4 bg-light rounded shadow mt-10"
+          className="container mt-5 p-4 form-proposal rounded shadow mt-10"
           method="post"
           onSubmit={handleSubmit}
         >

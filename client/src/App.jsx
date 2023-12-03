@@ -14,16 +14,26 @@ import { StoreContext } from "./core/store/Provider";
 import Login from "./components/Login";
 import "react-toastify/dist/ReactToastify.css";
 import SSOCallback from "./components/SSOCallback";
+import { observer } from "mobx-react-lite";
 
 function App() {
+
   const store = useContext(StoreContext);
-  // this will run in every page refresh, so we don't lose track of auth state of refreshes
+
   useEffect(() => {
+    const theme = localStorage.getItem('theme')
+    if(theme) {
+      store.theme = theme
+      theme === 'light'? document.body.style.backgroundColor = "white": document.body.style.backgroundColor = "#00284b"
+    }
     store.fetchSelf();
+    
   }, []);
   return (
-    <div>
-      <ToastContainer />
+    <div 
+      className="app" data-theme={store.theme}
+      >
+      
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ThesisList></ThesisList>}></Route>
@@ -69,4 +79,4 @@ function App() {
   );
 }
 
-export default App;
+export default observer(App);

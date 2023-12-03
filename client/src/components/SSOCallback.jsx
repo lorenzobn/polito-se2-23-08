@@ -2,6 +2,8 @@
 import React, { useEffect, useContext, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { StoreContext } from "../core/store/Provider";
+import Lottie from 'lottie-react'
+import animationData from '../assets/animation-sso.json'
 
 const SSOCallback = () => {
   const store = useContext(StoreContext);
@@ -13,7 +15,9 @@ const SSOCallback = () => {
     const handleEffect = async () => {
       const res = await store.loginVerification(token);
       if (res) {
-        window.location.href = "/";
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1500);
       } else {
       }
     };
@@ -21,14 +25,12 @@ const SSOCallback = () => {
   }, []);
 
   return (
-    <div>
+    <div className="d-flex min-vh-100 align-items-center justify-content-center">
       {status === "processing" && (
-        <div
-          className="w-100 d-flex justify-content-center align-items-center"
-          style={{ height: "100vh" }}
-        >
-          <h2>LOGGING IN ...</h2>
-        </div>
+          <div className="text-center">
+              <Lottie animationData={animationData}></Lottie>
+              <h2>LOGGING IN ...</h2>
+          </div>
       )}
     </div>
   );
