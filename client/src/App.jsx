@@ -24,6 +24,7 @@ function App() {
     const theme = localStorage.getItem('theme')
     if(theme) {
       store.theme = theme
+      theme === 'light'? document.body.style.backgroundColor = "white": document.body.style.backgroundColor = "#00284b"
     }
     store.fetchSelf();
     

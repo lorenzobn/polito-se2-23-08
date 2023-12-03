@@ -15,7 +15,9 @@ const SSOCallback = () => {
     const handleEffect = async () => {
       const res = await store.loginVerification(token);
       if (res) {
-        window.location.href = "/";
+        setTimeout(() => {
+          window.location.href = "/";
+        }, 1500);
       } else {
       }
     };
