@@ -214,7 +214,9 @@ function ProposalPage() {
                   <BadButton icon={faArrowLeft} text={"BACK"} onClick={() => {navigate("/")}}></BadButton>
                   </div>
                   <div className="col text-end">
-                    <Button icon={faCheck} text={"APPLY"} onClick={handleApply}></Button>
+                    <Button icon={faCheck} text={"APPLY"} onClick={() => {
+                      setShowApplyModal(true);
+                    }}></Button>
                   </div>
                 </div>)
              : 
@@ -223,7 +225,9 @@ function ProposalPage() {
                   <BadButton icon={faArrowLeft} text={"BACK"} onClick={() => {navigate("/thesis-proposals")}}></BadButton>
                   </div>
                   <div className="col text-end">
-                    <Button icon={faCheck} text={"APPLY"} onClick={handleApply}></Button>
+                    <Button icon={faCheck} text={"APPLY"} onClick={() => {
+                      setShowApplyModal(true);
+                    }}></Button>
                   </div>
               </div> )
             }
