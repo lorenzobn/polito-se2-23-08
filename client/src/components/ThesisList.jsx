@@ -271,11 +271,11 @@ function ThesisList(props) {
                   </Col>
                   <Col className="d-flex flex-column justify-content-center" lg={2}>
                     <div className="search-icons">
-                      <div onClick={handleSearch}>
+                      <div className="search-icon" onClick={handleSearch}>
                         <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>
                       </div>
                       {search ? (
-                        <div onClick={handleReset}>
+                        <div className="search-icon" onClick={handleReset}>
                           <FontAwesomeIcon icon={faBackward}></FontAwesomeIcon>
                         </div>
                       ) : (

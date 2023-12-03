@@ -312,6 +312,12 @@ a.dropdown-item:hover {
   color: var(--text-primary);
 }
 
+.search-icon:hover {
+  color: var(--text-secondary);
+  cursor: pointer;
+}
+
+
 .modal-content {
   background-color: var(--form-bg);
   color: var(--text-primary);
