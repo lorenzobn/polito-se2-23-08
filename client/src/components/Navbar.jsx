@@ -3,15 +3,33 @@ import { Container, Row, Nav, NavDropdown, Col } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 import { StoreContext } from "../core/store/Provider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faClockRotateLeft, faUser, faMoon, faSun } from "@fortawesome/free-solid-svg-icons";
+import {
+  faClockRotateLeft,
+  faUser,
+  faMoon,
+  faSun,
+} from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 import ReactSwitch from "react-switch";
+import { motion } from "framer-motion";
 
 function MyNavbar() {
   const store = useContext(StoreContext);
   const [showVClock, setShowVClock] = useState(false);
-  const moon = <FontAwesomeIcon style={{color: '#ffffff'}} viewBox="-200 300 33 400" icon={faMoon}></FontAwesomeIcon>
-  const sun =  <FontAwesomeIcon style={{color: 'ffffff'}} viewBox="-200 300 33 400" icon={faSun}></FontAwesomeIcon>
+  const moon = (
+    <FontAwesomeIcon
+      style={{ color: "#ffffff" }}
+      viewBox="-200 300 33 400"
+      icon={faMoon}
+    ></FontAwesomeIcon>
+  );
+  const sun = (
+    <FontAwesomeIcon
+      style={{ color: "ffffff" }}
+      viewBox="-200 300 33 400"
+      icon={faSun}
+    ></FontAwesomeIcon>
+  );
 
   return (
     <Container className="nav-wrap" fluid>
@@ -47,16 +65,16 @@ function MyNavbar() {
           lg={{ span: 4, offset: 8 }}
           className="d-flex justify-content-end align-items-center px-5"
         >
-          <ReactSwitch className="switch"
-            onChange={store.toggleTheme} 
-            checked={store.theme === 'dark'}
+          <ReactSwitch
+            className="switch"
+            onChange={store.toggleTheme}
+            checked={store.theme === "dark"}
             onColor="#00284b"
             offColor="#fc7a08"
             checkedIcon={moon}
             uncheckedIcon={sun}
             handleDiameter={20}
-          >
-          </ReactSwitch>
+          ></ReactSwitch>
           {!store.user.authenticated && (
             <div>
               {" "}
@@ -104,27 +122,35 @@ function MyNavbar() {
       </Row>
       <Row className="mid-nav">
         <Col className="d-flex align-items-center justify-content-start">
-          {store.theme === 'light'?
-          <a style={{ marginLeft: "5%" }} href="/">
-            <img style={{minWidth:'20%'}}
-              className="my-2"
-              width={"20%"}
-              src="../../images/logo_blu.png"
-            />
-          </a>
-          :
-          <a style={{ marginLeft: "5%" }} href="/">
-            <img style={{minWidth:'20%'}}
-            className="my-2"
-              width={"20%"}
-              src="../../images/logo_bianco.png"
-            />
-          </a>
-          }
+          {store.theme === "light" ? (
+            <a style={{ marginLeft: "5%" }} href="/">
+              <motion.img
+                style={{ minWidth: "20%" }}
+                className="my-2"
+                width={"20%"}
+                src="../../images/logo_blu.png"
+                animate={{ opacity: 1, y: 0}}
+                initial={{ opacity: 0, y: -100 }}
+                transition={{ duration: 0.8 }}
+              />
+            </a>
+          ) : (
+            <a style={{ marginLeft: "5%" }} href="/">
+              <motion.img
+                style={{ minWidth: "20%" }}
+                className="my-2"
+                width={"20%"}
+                src="../../images/logo_bianco.png"
+                animate={{ opacity: 1, y: 0}}
+                initial={{ opacity: 0, y: -100 }}
+                transition={{ duration: 0.8 }}
+              />
+            </a>
+          )}
         </Col>
         <Col className="d-flex align-items-center justify-content-center">
           <div>
-            <h1 style={{ fontSize: "250%", margin:'0' }}>THESIS@POLITO</h1>
+            <h1 style={{ fontSize: "250%", margin: "0" }}>THESIS@POLITO</h1>
           </div>
         </Col>
       </Row>
