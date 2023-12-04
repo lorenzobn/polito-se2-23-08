@@ -6,24 +6,19 @@ import {
   Stack,
   Nav,
   Container,
-  Dropdown,
-  DropdownButton,
   Form,
   Offcanvas,
   Badge,
-  Accordion,
 } from "react-bootstrap";
 import Button from "./Button";
 import {
   faAngleDown,
   faBackward,
-  faMagnifyingGlass,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import { StoreContext } from "../core/store/Provider";
-import { stagger, useAnimate, usePresence, motion } from "framer-motion";
+import { useAnimate, motion } from "framer-motion";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useFetcher } from "react-router-dom";
 
 function ThesisList(props) {
   const store = useContext(StoreContext);
@@ -37,8 +32,6 @@ function ThesisList(props) {
   const [programmes, setProgrammes] = useState([]);
   const [search, setSearch] = useState(false);
   const [filterTags, setFilterTags] = useState([]);
-  const [isPresent, safeToRemove] = usePresence();
-  const [scope, animate] = useAnimate();
   const [scopeDegree, animateDegree] = useAnimate();
   const [isOpen, setIsOpen] = useState(false);
   const [isOpen2, setIsOpen2] = useState(false);
@@ -49,14 +42,14 @@ function ThesisList(props) {
       const proposals = await store.getProposals();
       setProposals(proposals);
     };
-    const enterAnimation = async () => {
+    /* const enterAnimation = async () => {
       await animate(
         ".thesis-section",
         { opacity: [0, 1] },
         { duration: 0.4, delay: stagger(0.4) }
       );
-    };
-    handleEffect().then(enterAnimation);
+    }; */
+    handleEffect()
   }, []);
 
   useEffect(() => {
@@ -436,7 +429,7 @@ function ThesisList(props) {
               </Nav>
             </Stack>
           </Col>
-          <Col lg={8} ref={scope}>
+          <Col lg={8}>
             {proposals.length == 0 ? (
               <header style={{ textAlign: "center" }}>
                 <h2 className="border-thesis-title">No Matches Found</h2>
@@ -445,8 +438,12 @@ function ThesisList(props) {
               <></>
             )}
             {degree === "All"
-              ? proposals.map((e) => (
-                  <div key={e.id} className="thesis-section">
+              ? proposals.map((e, i) => (
+                  <motion.div key={e.id} className="thesis-section"
+                  animate={{ opacity: 1 }}
+                  initial={{ opacity: 0 }}
+                  transition={{ duration: 0.4, delay: i < 10? 0.4 * i: 0 }}
+                  >
                     <header>
                       <h2 className="border-thesis-title">
                         <Nav.Link href={`/proposalpage/${e.id}`}>
@@ -467,7 +464,7 @@ function ThesisList(props) {
                         </p>
                       </div>
                     </div>
-                  </div>
+                  </motion.div>
                 ))
               : proposals
                   .filter((e) => e.level === degree)
