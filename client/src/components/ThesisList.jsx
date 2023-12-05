@@ -49,7 +49,7 @@ function ThesisList(props) {
         { duration: 0.4, delay: stagger(0.4) }
       );
     }; */
-    handleEffect()
+    handleEffect();
   }, []);
 
   useEffect(() => {
@@ -177,7 +177,7 @@ function ThesisList(props) {
           )}
         </Row>
         <Row className="border-thesis-div">
-          <Col lg={2} className="d-flex border-thesis-filter">
+          <Col style={{ minWidth:'200px' }} xs={2} lg={2} className="d-flex border-thesis-filter">
             <Offcanvas
               show={show}
               onHide={handleClose}
@@ -249,34 +249,35 @@ function ThesisList(props) {
               </Offcanvas.Body>
             </Offcanvas>
             <Stack>
-              <Form className="mt-4">
-                <Row style={{height:'5.5rem'}}> 
-                  <Col style={{ paddingLeft:'10px' }} className="d-flex align-items-center ms-5" lg={8}>
-                    <Form.Control
-                      type="text"
-                      placeholder="Search"
-                      onChange={(ev) => {
-                        setKeyword(ev.target.value);
-                      }}
-                      onKeyDown={handleKeyDown}
-                      value={keyword}
-                    />
-                  </Col>
-                  <Col className="d-flex flex-column justify-content-center" lg={2}>
-                    <div className="search-icons">
-                      <div className="search-icon" onClick={handleSearch}>
-                        <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>
-                      </div>
-                      {search ? (
-                        <div className="search-icon" onClick={handleReset}>
-                          <FontAwesomeIcon icon={faBackward}></FontAwesomeIcon>
-                        </div>
-                      ) : (
-                        <></>
-                      )}
+              <Form
+                className="d-flex flex-row ms-5 me-5 mt-5"
+                style={{ height: "100px" }}
+              >
+                <div className="me-3 align-self-center">
+                  <Form.Control
+                    type="text"
+                    placeholder="Search"
+                    onChange={(ev) => {
+                      setKeyword(ev.target.value);
+                    }}
+                    onKeyDown={handleKeyDown}
+                    value={keyword}
+                  />
+                </div>
+                <div className="align-self-center">
+                  <div className="search-icons">
+                    <div className="search-icon" onClick={handleSearch}>
+                      <FontAwesomeIcon icon={faSearch}></FontAwesomeIcon>
                     </div>
-                  </Col>
-                </Row>
+                    {search ? (
+                      <div className="search-icon" onClick={handleReset}>
+                        <FontAwesomeIcon icon={faBackward}></FontAwesomeIcon>
+                      </div>
+                    ) : (
+                      <></>
+                    )}
+                  </div>
+                </div>
               </Form>
               <Nav
                 ref={scopeDegree}
@@ -429,7 +430,7 @@ function ThesisList(props) {
               </Nav>
             </Stack>
           </Col>
-          <Col lg={8}>
+          <Col xs={8} sm={8} lg={8}>
             {proposals.length == 0 ? (
               <header style={{ textAlign: "center" }}>
                 <h2 className="border-thesis-title">No Matches Found</h2>
@@ -439,10 +440,12 @@ function ThesisList(props) {
             )}
             {degree === "All"
               ? proposals.map((e, i) => (
-                  <motion.div key={e.id} className="thesis-section"
-                  animate={{ opacity: 1 }}
-                  initial={{ opacity: 0 }}
-                  transition={{ duration: 0.4, delay: i < 10? 0.4 * i: 0 }}
+                  <motion.div
+                    key={e.id}
+                    className="thesis-section"
+                    animate={{ opacity: 1 }}
+                    initial={{ opacity: 0 }}
+                    transition={{ duration: 0.4, delay: i < 10 ? 0.4 * i : 0 }}
                   >
                     <header>
                       <h2 className="border-thesis-title">
