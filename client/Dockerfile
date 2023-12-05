@@ -14,7 +14,7 @@ RUN npm install
 COPY . .
 
 # Expose port 5173
-EXPOSE 5173
+EXPOSE 5174
 
 # Start the application with the command "npm run dev"
 CMD ["npm", "run", "dev"]
