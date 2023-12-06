@@ -177,7 +177,7 @@ function ThesisList(props) {
           )}
         </Row>
         <Row className="border-thesis-div">
-          <Col style={{ minWidth:'200px' }} xs={2} lg={2} className="d-flex border-thesis-filter">
+          <Col style={{ minWidth:'200px' }} xs={12} lg={2} className="d-flex border-thesis-filter">
             <Offcanvas
               show={show}
               onHide={handleClose}

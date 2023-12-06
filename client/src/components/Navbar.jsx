@@ -12,6 +12,7 @@ import {
 import Button from "./Button";
 import ReactSwitch from "react-switch";
 import { motion } from "framer-motion";
+import Dropdown from "./Dropdown";
 
 function MyNavbar() {
   const store = useContext(StoreContext);
@@ -19,14 +20,14 @@ function MyNavbar() {
   const moon = (
     <FontAwesomeIcon
       style={{ color: "#ffffff" }}
-      viewBox="-200 300 33 400"
+      viewBox="-200 330 33 400"
       icon={faMoon}
     ></FontAwesomeIcon>
   );
   const sun = (
     <FontAwesomeIcon
       style={{ color: "ffffff" }}
-      viewBox="-200 300 33 400"
+      viewBox="-200 330 33 400"
       icon={faSun}
     ></FontAwesomeIcon>
   );
@@ -63,7 +64,7 @@ function MyNavbar() {
       <Row className="upper-nav ">
         <Col
           lg={{ span: 4, offset: 8 }}
-          className="d-flex justify-content-end align-items-center px-5"
+            className="d-flex justify-content-end align-items-center px-5"
         >
           <ReactSwitch
             className="switch"
@@ -97,25 +98,7 @@ function MyNavbar() {
                 {`${store.user.name} ${store.user.surname}`}
               </div>
               &nbsp;&nbsp;&nbsp;&nbsp;
-              <NavDropdown
-                title={
-                  <FontAwesomeIcon
-                    style={{ color: "white", fontSize: "24px" }}
-                    icon={faUser}
-                  />
-                }
-                className="mr-5"
-              >
-                <NavDropdown.Item href="/portal">My Profile</NavDropdown.Item>
-                <NavDropdown.Item href="/portal">Settings</NavDropdown.Item>
-                <NavDropdown.Item
-                  onClick={() => {
-                    store.logout();
-                  }}
-                >
-                  Logout
-                </NavDropdown.Item>
-              </NavDropdown>
+              <Dropdown></Dropdown>
             </>
           )}
         </Col>
