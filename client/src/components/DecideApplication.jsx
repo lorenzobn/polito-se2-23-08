@@ -29,6 +29,9 @@ export default function AcceptApplications() {
 
   const [status, setStatus] = useState("");
   const [proposal, setProposal] = useState([]);
+  const [proposalDetails, setProposalDetails] = useState([]);
+  const [proposalTitle, setProposalTitle] = useState("");
+
 
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
@@ -38,10 +41,12 @@ export default function AcceptApplications() {
         proposalId
       );
       setProposal(response);
-      //console.log("proposal:" , response);
+      const details = proposal.map(p => p.applicationstatus);
+      setProposalDetails(details);
+      setProposalTitle(response[0].title)
     };
     handleEffect();
-  }, [status]);
+  }, [proposalDetails]);
 
   const handleAccept = async (index) => {
     const selectedForm = proposal[index];
@@ -66,7 +71,7 @@ export default function AcceptApplications() {
     <>
       <MyNavbar />
       <strong>
-        <p className=" h2 text-center mt-5 ">{proposal.title}</p>
+        <p className=" h2 text-center mt-5 ">{proposalTitle}</p>
       </strong>
       <div>
         {proposal.map((student, index) => (
