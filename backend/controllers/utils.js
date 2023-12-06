@@ -58,7 +58,7 @@ const coSupervisorAdd = async (thesisId, name, surname, external) => {
     try {
       const results = await pool.query(query, values)
       return res
-        .status(201)
+        .status(200)
         .json({ data: results.rows });
     } catch (error) {
       return error;
@@ -66,14 +66,20 @@ const coSupervisorAdd = async (thesisId, name, surname, external) => {
   }
   
   const getCoSupervisors = async (req, res) => {
-    const query = `
+    let query = `
     SELECT id,name,surname FROM TEACHER;
     `;
-    const values = [];
+    let values = [];
     try {
+      if (req.session?.user?.role === 'teacher'){
+        query = `
+        SELECT id,name,surname FROM TEACHER WHERE id!=$1;
+        `;
+        values = [req.session.user.id];
+      }
       const results = await pool.query(query, values)
       return res
-        .status(201)
+        .status(200)
         .json({ data: results.rows });
     } catch (error) {
       return error;
