@@ -29,6 +29,7 @@ export default function AcceptApplications() {
 
   const [status, setStatus] = useState("");
   const [proposal, setProposal] = useState([]);
+  const [proposalDetails, setProposalDetails] = useState([]);
   const [proposalTitle, setProposalTitle] = useState("");
 
 
@@ -40,11 +41,12 @@ export default function AcceptApplications() {
         proposalId
       );
       setProposal(response);
+      const details = proposal.map(p => p.applicationstatus);
+      setProposalDetails(details);
       setProposalTitle(response[0].title)
-      //console.log("proposal:" , response);
     };
     handleEffect();
-  }, [status]);
+  }, [proposalDetails]);
 
   const handleAccept = async (index) => {
     const selectedForm = proposal[index];
