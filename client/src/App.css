@@ -91,8 +91,9 @@ p, h1, h2, h3, h4, h5, h6 {
 
 .border-thesis-title {
   border-top: 3px solid var(--border-thesis-title);
-  display: inline-block;
   padding-top: 30px;
+  display: flex;
+  align-items: center;
 }
 
 .page-title {
@@ -305,6 +306,12 @@ p, h1, h2, h3, h4, h5, h6 {
 
 a.dropdown-item {
   color: var(--text-primary);
+  border-bottom: 1px solid #6289ab;
+}
+
+a.dropdown-item:last-child {
+  color: var(--text-primary);
+  border-bottom: none;
 }
 
 a.dropdown-item:hover {
@@ -343,4 +350,10 @@ a.dropdown-item:hover {
 
 .badge.bg-primary {
   background-color: var(--badge-bg) !important;
+}
+.custom-dropdown-toggle {
+  background-color: white;
+  border-color: rgb(195, 194, 194);
+  color: grey;
+  margin-left: 15px;
 }

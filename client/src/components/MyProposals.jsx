@@ -45,7 +45,19 @@ export default function MyProposals() {
                             proposals.map((e) =>
                                 <div key={e.id} className="thesis-section">
                                     <header>
-                                        <h2 className="border-thesis-title"><Nav.Link href={`/proposalpage/${e.id}`}>{e.title}</Nav.Link></h2>
+                                        <h2 className="border-thesis-title">
+                                            <Nav.Link href={`/proposalpage/${e.id}`}>{e.title}</Nav.Link>
+                                        <Dropdown>
+                                            <Dropdown.Toggle className="custom-dropdown-toggle" id="dropdown-basic">
+                                                ⋮
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu>
+                                                <Dropdown.Item href="#/action-1">Update</Dropdown.Item>
+                                                <Dropdown.Item href="#/action-2">Copy</Dropdown.Item>
+                                                <Dropdown.Item href="#/action-3">Delete</Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                        </h2>
                                     </header>
                                     <div >
                                         <div >
