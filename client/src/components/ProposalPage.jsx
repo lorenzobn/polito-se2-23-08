@@ -13,7 +13,7 @@ function ProposalPage() {
   const proposalId = param.id;
 
   const store = useContext(StoreContext);
-  const [applied, setApplied] = useState(false)
+  const [applied, setApplied] = useState(false);
   const [proposal, setProposal] = useState({
     title: "",
     description: "",
@@ -26,7 +26,7 @@ function ProposalPage() {
     name: "",
     surname: "",
     group: "",
-    status: ""
+    status: "",
   });
 
   const [incosupervisors, setInCosupervisors] = useState([]);
@@ -45,7 +45,7 @@ function ProposalPage() {
     // we need to define it separately and run it
     const handleEffect = async () => {
       const response = await store.getProposal(proposalId);
-      console.log(response)
+      console.log(response);
       setProposal({
         title: response.data[0].title,
         description: response.data[0].description,
@@ -58,14 +58,14 @@ function ProposalPage() {
         group: response.data[0].groupname,
         name: response.data[0].sname,
         surname: response.data[0].ssurname,
-        status: response.data[0].status
+        status: response.data[0].status,
       });
       keyw = [];
-      
+
       for (let index = 0; index < response.keywords.length; index++) {
         keyw.push(response.keywords[index].keyword);
       }
-      
+
       setKeywords([keyw]);
       for (let index = 0; index < response.internal_co.length; index++) {
         inco[index] = {
@@ -87,7 +87,6 @@ function ProposalPage() {
     store.fetchSelf();
     //store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
     store.checkApplication(proposalId).then((res) => setApplied(res.applied));
-
   }, []);
 
   useEffect(() => {
@@ -98,8 +97,9 @@ function ProposalPage() {
 
   const handleApply = () => {
     const formData = new FormData();
-    if (!!file){    formData.append("file", file);
-  }
+    if (!!file) {
+      formData.append("file", file);
+    }
     formData.append("student_id", store.user.id);
     formData.append("thesis_id", parseInt(param.id));
     formData.append("thesis_status", "idle");
@@ -139,9 +139,18 @@ function ProposalPage() {
           </Button>
         </Modal.Footer>
       </Modal>
-      <div className="container mt-5">
+      <div className="container mt-3 mb-5">
+        <div className="col text-start">
+          <BadButton
+            icon={faArrowLeft}
+            text={"BACK"}
+            onClick={() => {
+              navigate(-1);
+            }}
+          ></BadButton>
+        </div>
         <form
-          className="mx-auto p-4 form-proposal rounded shadow"
+          className="mx-auto mt-3 p-4 form-proposal rounded shadow" 
           style={{ marginTop: "5px" }}
         >
           <div className="mb-3 mt-1 text-center">
@@ -200,33 +209,29 @@ function ProposalPage() {
           <div className="mb-3">
             <strong>{proposal?.notes}</strong>
           </div>
-          {store.user.type === "student" ? 
-              applied?
-                (<div className="row mt-5">
-                  <div className="col text-start">
-                    <BadButton icon={faArrowLeft} text={"BACK"} onClick={() => {navigate("/")}}></BadButton>
-                  </div>
-                  <div className="col text-center">
-                    <h2 style={{ color: "green" }}>APPLIED</h2>
-                  </div>
-                </div> ) :
-                ( <div className="row mt-5">
-                  <div className="col text-start">
-                  <BadButton icon={faArrowLeft} text={"BACK"} onClick={() => {navigate("/")}}></BadButton>
-                  </div>
-                  <div className="col text-end">
-                    <Button icon={faCheck} text={"APPLY"} onClick={() => {
+          {store.user.type === "student" ? (
+            applied ? (
+              <div className="row mt-5">
+                <div className="col text-center">
+                  <h2 style={{ color: "green" }}>APPLIED</h2>
+                </div>
+              </div>
+            ) : (
+              <div className="row mt-5">
+                <div className="col text-end">
+                  <Button
+                    icon={faCheck}
+                    text={"APPLY"}
+                    onClick={() => {
                       setShowApplyModal(true);
-                    }}></Button>
-                  </div>
-                </div>)
-             : 
-              ( <div className="row mt-5">
-                  <div className="col text-start">
-                  <BadButton icon={faArrowLeft} text={"BACK"} onClick={() => {navigate("/thesis-proposals")}}></BadButton>
-                  </div>
-              </div> )
-            }
+                    }}
+                  ></Button>
+                </div>
+              </div>
+            )
+          ) : (
+            <div></div>
+          )}
         </form>
       </div>
     </>
