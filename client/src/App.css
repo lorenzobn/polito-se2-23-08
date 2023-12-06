@@ -114,6 +114,7 @@ p, h1, h2, h3, h4, h5, h6 {
   padding-top: 30px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
 }
 
 .page-title {
@@ -322,7 +323,14 @@ p, h1, h2, h3, h4, h5, h6 {
   position: absolute;
   inset: 0px 0px auto auto;
   transform: translate(6px, 35px);
+  z-index: 1000; 
 }
+
+.dropdown-menu {
+  z-index: 1000; 
+}
+
+
 
 a.dropdown-item {
   color: var(--text-primary);
@@ -376,7 +384,7 @@ a.dropdown-item:hover {
   background-color: white;
   border-color: rgb(195, 194, 194);
   color: grey;
-  margin-left: 15px;
+ 
   
 }
 
@@ -409,4 +417,8 @@ a.dropdown-item:hover {
 
 .dropdown-icon {
   margin-left: 10px; 
+}
+.description-container {
+  width: 95%; 
+ 
 }

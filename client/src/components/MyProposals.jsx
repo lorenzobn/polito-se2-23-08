@@ -62,7 +62,7 @@ export default function MyProposals() {
                                         </h2>
                                     </header>
                                     <div >
-                                        <div >
+                                        <div className="description-container" >
                                             <p>{e.description}</p>
                                             <p><a className="border-thesis-view" href={`/proposalpage/${e.id}`}>VIEW PROPOSAL </a></p>
                                         </div>
