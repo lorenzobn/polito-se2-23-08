@@ -406,3 +406,7 @@ a.dropdown-item:hover {
   margin: 0;
   padding: 2px;
 }
+
+.dropdown-icon {
+  margin-left: 10px; 
+}

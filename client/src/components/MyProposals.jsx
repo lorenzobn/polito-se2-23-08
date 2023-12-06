@@ -2,7 +2,9 @@ import React , { useState, useContext, useEffect } from "react";
 import MyNavbar from "./Navbar";
 import {Row, Col, Nav, Container, Dropdown, DropdownButton, Form} from 'react-bootstrap'
 import Button from "./Button";
-import { faMagnifyingGlass, faPlus } from "@fortawesome/free-solid-svg-icons";
+import { faMagnifyingGlass, faPlus} from "@fortawesome/free-solid-svg-icons";
+import { FaEdit, FaTrashAlt, FaSyncAlt, FaCopy } from 'react-icons/fa';
+import { MdOutlineEdit, MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../core/store/Provider";
 
@@ -52,9 +54,9 @@ export default function MyProposals() {
                                                 ⋮
                                             </Dropdown.Toggle>
                                             <Dropdown.Menu>
-                                                <Dropdown.Item href="#/action-1">Update</Dropdown.Item>
-                                                <Dropdown.Item href="#/action-2">Copy</Dropdown.Item>
-                                                <Dropdown.Item href="#/action-3">Delete</Dropdown.Item>
+                                                <Dropdown.Item href="#/action-1" >Edit<MdOutlineEdit className="dropdown-icon" size={18}/></Dropdown.Item>
+                                                <Dropdown.Item href="#/action-2">Copy<FaCopy className="dropdown-icon" size={18}/></Dropdown.Item>
+                                                <Dropdown.Item href="#/action-3">Delete<MdDelete className="dropdown-icon" size={20}/></Dropdown.Item>
                                             </Dropdown.Menu>
                                         </Dropdown>
                                         </h2>
