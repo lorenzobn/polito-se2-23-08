@@ -172,7 +172,7 @@ function ProposalPage() {
             ))}
           </div>
           <div className="mb-3">
-            <strong>Deadline:</strong> {proposal?.deadline}
+            <strong>Deadline:</strong> {proposal?.deadline.slice(0, 10)}
           </div>
           <div className="mb-3">
             <strong>{proposal?.description}</strong>

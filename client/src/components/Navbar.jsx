@@ -129,8 +129,8 @@ function MyNavbar() {
                 className="my-2"
                 width={"20%"}
                 src="../../images/logo_blu.png"
-                animate={{ opacity: 1, y: 0}}
-                initial={{ opacity: 0, y: -100 }}
+                animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
                 transition={{ duration: 0.8 }}
               />
             </a>
@@ -141,8 +141,8 @@ function MyNavbar() {
                 className="my-2"
                 width={"20%"}
                 src="../../images/logo_bianco.png"
-                animate={{ opacity: 1, y: 0}}
-                initial={{ opacity: 0, y: -100 }}
+                animate={{ opacity: 1 }}
+                initial={{ opacity: 0 }}
                 transition={{ duration: 0.8 }}
               />
             </a>

@@ -14,6 +14,7 @@
   --box-color: #fc7a08;
   --btn-primary: #007ea8;
   --border-drop: #00284b;
+  --badge-bg: #007ea8;
 }
 
 
@@ -31,6 +32,18 @@
   --form-bg: #0b5070;
   --box-color: #fc7a08;
   --border-drop: white;
+}
+
+
+[badge-status='accepted'] {
+  --badge-bg: #007000;
+}
+
+[badge-status='idle'] {
+  --badge-bg: #ffbf00;
+}
+[badge-status='rejected'] {
+  --badge-bg: #d2222d;
 }
 
 html {
@@ -80,6 +93,11 @@ p, h1, h2, h3, h4, h5, h6 {
   border-top: 3px solid var(--border-thesis-title);
   display: inline-block;
   padding-top: 30px;
+}
+
+.page-title {
+  margin-left: 5%;
+  color: var(--text-secondary);
 }
 
 .thesis-section {
@@ -321,4 +339,8 @@ a.dropdown-item:hover {
 .modal-content {
   background-color: var(--form-bg);
   color: var(--text-primary);
+}
+
+.badge.bg-primary {
+  background-color: var(--badge-bg) !important;
 }
