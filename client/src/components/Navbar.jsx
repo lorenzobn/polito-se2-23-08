@@ -64,7 +64,7 @@ function MyNavbar() {
       <Row className="upper-nav ">
         <Col
           lg={{ span: 4, offset: 8 }}
-          className="d-flex justify-content-end align-items-center px-5"
+            className="d-flex justify-content-end align-items-center px-5"
         >
           <ReactSwitch
             className="switch"

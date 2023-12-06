@@ -58,10 +58,30 @@ body {
   height: 100dvh;
 }
 
+@media screen and (max-width: 768px) {
+  body {
+    font-size: 15px;
+  }
+  .upper-nav {
+    font-size: small;
+  }
+  .lower-nav {
+    font-size: 10px;
+  }
+  .mid-nav {
+    display: none;
+  }
+  .switch {
+    scale: 70%;
+  }
+  .clock-toggle {
+    scale: 70%;
+  }
+}
+
 .app {
   background-color: var(--background);
   transition: background-color .4s ease-in-out; 
-  height: 100dvh;;
 }
 
 a {
