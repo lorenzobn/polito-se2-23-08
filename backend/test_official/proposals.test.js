@@ -37,7 +37,8 @@ jest.mock('../db/connection', () => ({
 //createProposal
 describe('T1 -- createProposal', () => {
 
-  beforeEach(() => {
+  afterEach(() => {
+    // Interrompi le operazioni asincrone qui
     jest.clearAllMocks();
   });
 
@@ -200,7 +201,8 @@ describe('T1 -- createProposal', () => {
 //getProposals
 describe('T2 -- GET /thesis-proposals', () => {
 
-  beforeEach(() => {
+  afterEach(() => {
+    // Interrompi le operazioni asincrone qui
     jest.clearAllMocks();
   });
 
@@ -236,6 +238,12 @@ describe('T2 -- GET /thesis-proposals', () => {
 
 //getProposalbyId
 describe('T3 -- GET /thesis-proposals', () => {
+
+  afterEach(() => {
+    // Interrompi le operazioni asincrone qui
+    jest.clearAllMocks();
+  });
+
   // error 404, resource not found
   it('T3.1 - Error 404, resource not found', async () => {
     // Mocking the pool.query to simulate an error
@@ -311,6 +319,12 @@ describe('T3 -- GET /thesis-proposals', () => {
 
 //getProposalsByTeacher
 describe('T4 -- GET /my-thesis-proposals', () => {
+
+  afterEach(() => {
+    // Interrompi le operazioni asincrone qui
+    jest.clearAllMocks();
+  });
+
   // correct get proposals by teacher
   it('T4.1 - Correct get proposals by teacher', async () => {
     // Mocking the pool.query to simulate an error
@@ -376,6 +390,13 @@ describe('T4 -- GET /my-thesis-proposals', () => {
 
 //updateProposal
 describe('T5 -- PUT /thesis-proposals/:proposalId', () => {
+
+  afterEach(() => {
+    // Interrompi le operazioni asincrone qui
+    jest.clearAllMocks();
+  });
+
+
   // error 404, resource not found
   it('T5.1 - Error 404, Thesis proposal not found.', async () => {
     // Mocking the pool.query to simulate an error
@@ -428,6 +449,13 @@ describe('T5 -- PUT /thesis-proposals/:proposalId', () => {
 
 //searchProposal
 describe('T6 -- GET /thesis-proposals/search', () => {
+
+  afterEach(() => {
+    // Interrompi le operazioni asincrone qui
+    jest.clearAllMocks();
+  });
+
+  
   // correct search proposal
   it('T6.1 - Correct search proposal', async () => {
     // Mocking the pool.query to simulate an error
