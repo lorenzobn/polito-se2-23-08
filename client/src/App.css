@@ -422,3 +422,18 @@ a.dropdown-item:hover {
   width: 95%; 
  
 }
+.delete-text {
+  color: white;
+}
+
+
+.modal-footer {
+  display: flex;
+  justify-content: center;
+}
+
+
+
+.modal-button {
+  margin: 0 20px; 
+}

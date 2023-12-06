@@ -1,6 +1,6 @@
 import React , { useState, useContext, useEffect } from "react";
 import MyNavbar from "./Navbar";
-import {Row, Col, Nav, Container, Dropdown, DropdownButton, Form} from 'react-bootstrap'
+import {Row, Col, Nav, Container, Dropdown, DropdownButton, Form, Modal} from 'react-bootstrap'
 import Button from "./Button";
 import { faMagnifyingGlass, faPlus} from "@fortawesome/free-solid-svg-icons";
 import { FaEdit, FaTrashAlt, FaSyncAlt, FaCopy } from 'react-icons/fa';
@@ -13,6 +13,17 @@ export default function MyProposals() {
     const navigate = useNavigate()
     const store = useContext(StoreContext);
     const [proposals, setProposals] = useState([]);
+    
+    const [showModal, setShowModal] = useState(false);
+
+    const handleDelete = () => {
+        setShowModal(true);
+    };
+
+    const deleteProposal = () => {
+        // We will delete the proposal here
+        setShowModal(false);
+    };
 
     useEffect(() => {
         // since the handler function of useEffect can't be async directly
@@ -56,7 +67,21 @@ export default function MyProposals() {
                                             <Dropdown.Menu>
                                                 <Dropdown.Item href="#/action-1" >Edit<MdOutlineEdit className="dropdown-icon" size={18}/></Dropdown.Item>
                                                 <Dropdown.Item href="#/action-2">Copy<FaCopy className="dropdown-icon" size={18}/></Dropdown.Item>
-                                                <Dropdown.Item href="#/action-3">Delete<MdDelete className="dropdown-icon" size={20}/></Dropdown.Item>
+                                                <Dropdown.Item onClick={handleDelete}>Delete<MdDelete className="dropdown-icon" size={20}/></Dropdown.Item>
+
+                                                    <Modal show={showModal} onHide={() => setShowModal(false)}>
+                                                        <Modal.Header closeButton>
+                                                            <Modal.Title>Confirm Delete</Modal.Title>
+                                                        </Modal.Header>
+                                                        <Modal.Body>Are you sure you want to delete the proposal <strong>{e.title}</strong>?</Modal.Body>
+                                                        <Modal.Footer className="modal-footer">
+                                                            <Button variant="primary" className="modal-button" onClick={() => setShowModal(false)} text={"KEEP"}></Button>
+      
+                                                            <Button variant="primary" className="modal-button" onClick={deleteProposal} text={"DELETE"}></Button>
+                                                                
+                                                            
+                                                        </Modal.Footer>
+                                                    </Modal>
                                             </Dropdown.Menu>
                                         </Dropdown>
                                         </h2>
