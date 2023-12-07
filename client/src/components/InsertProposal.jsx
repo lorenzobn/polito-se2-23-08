@@ -77,6 +77,7 @@ function InsertProposal() {
       const co_supervisors = await store.getCoSupervisors();
       for (let index = 0; index < co_supervisors.length; index++) {
         internal_co_supervisors[index] = {
+          id: co_supervisors[index].id,
           name: co_supervisors[index].name,
           surname: co_supervisors[index].surname,
           value: co_supervisors[index].name,
@@ -149,10 +150,6 @@ function InsertProposal() {
         toast.error("Description shouldn't be empty!", {
           position: toast.POSITION.TOP_CENTER,
         });
-      /*} else if (formData.knowledge.trim() === "") {
-        toast.error("Required knowledge shouldn't be empty!", {
-          position: toast.POSITION.TOP_CENTER,
-        });*/
       } else if (formData.deadline.trim() === "") {
         toast.error("Deadline shouldn't be empty!", {
           position: toast.POSITION.TOP_CENTER,

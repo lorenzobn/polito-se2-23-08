@@ -89,11 +89,18 @@ const createProposal = async (req, res) => {
       coSupervisors,
     } = req.body;
 
+    for (var i = 0; i < coSupervisors.length; i++) {
+      console.log(coSupervisors[i])
+      if (coSupervisors[i].external != true && coSupervisors[i]?.id === req.session?.user?.id) {
+        return res.status(400).json({ msg: "The supervisor must not be also a cosupervisor." });
+      }
+    }
+
     const r = await pool.query("SELECT COD_GROUP FROM TEACHER WHERE id=$1", [
       SUPERVISOR_id,
     ]);
     if (!r || !r) {
-      return res.status(500).json({ msg: "Error with the cod_group." });
+      return res.status(400).json({ msg: "Error with the cod_group." });
     }
     const cod_group = r.rows[0].cod_group;
     let activeStatus = "active";
