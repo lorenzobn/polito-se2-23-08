@@ -1,6 +1,5 @@
 const request = require('supertest');
 const jwt = require('jsonwebtoken');
-const app = require('../app'); // Importa il tuo app
 const authorize = require('../controllers/auth');
 const { createProposal, getProposals, getProposalbyId, getProposalsByTeacher, updateProposal, searchProposal } = require('../controllers/proposals');
 const pool = require("../db/connection");
