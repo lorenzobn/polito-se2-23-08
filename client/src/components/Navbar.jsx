@@ -18,18 +18,20 @@ function MyNavbar() {
   const store = useContext(StoreContext);
   const [showVClock, setShowVClock] = useState(false);
   const moon = (
-    <FontAwesomeIcon
-      style={{ color: "#ffffff" }}
-      viewBox="-200 330 33 400"
-      icon={faMoon}
-    ></FontAwesomeIcon>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height:'28px', width:'33px', scale:'120%' }}>
+      <FontAwesomeIcon
+        style={{ color: "#ffffff" }}
+        icon={faMoon}
+      />
+    </div>
   );
   const sun = (
-    <FontAwesomeIcon
-      style={{ color: "ffffff" }}
-      viewBox="-200 330 33 400"
-      icon={faSun}
-    ></FontAwesomeIcon>
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',height:'28px', width:'33px', scale:'120%' }}>
+      <FontAwesomeIcon
+        style={{ color: "#ffffff" }}
+        icon={faSun}
+      />
+    </div>
   );
 
   return (

@@ -84,7 +84,6 @@ body {
 .app {
   background-color: var(--background);
   transition: background-color .4s ease-in-out; 
-  height: 100dvh;
 }
 
 a {
@@ -98,6 +97,10 @@ a {
 p, h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
   transition: color .3s ease-in-out;
+}
+
+p.h2 {
+  color: var(--text-primary);
 }
 
 .form-proposal {
