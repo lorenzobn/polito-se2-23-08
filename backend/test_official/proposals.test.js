@@ -33,7 +33,7 @@ jest.mock('../db/connection', () => ({
   query: jest.fn(),
 }));
 
-//createProposal
+//createProposal, 7 test cases, DONE
 describe('T1 -- createProposal', () => {
 
   afterEach(() => {
@@ -41,8 +41,8 @@ describe('T1 -- createProposal', () => {
     jest.clearAllMocks();
   });
 
-
-  it('should return 400 if validation fails', async () => {
+  //T1.1 - body is empty
+  it('T1.1 - should return 400 if validation fails', async () => {
     const req = {
       body: {
         // Provide invalid data here to trigger validation error
@@ -64,7 +64,42 @@ describe('T1 -- createProposal', () => {
     expect(res.json).toHaveBeenCalled();
   });
 
-  it('should return 400 if there is an error with cod_group', async () => {
+  //T1.2 - the supervisor must not be the same as the co-supervisor
+  it('T1.2 - should return 400 if the supervisor must not be the same as the co-supervisor', async () => {
+    const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+        title: 'Test Proposal 2',
+        type: 'Test Type',
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        notes: 'Test Notes',
+        level: 'BSc',
+        programme: 'LM-32',
+        deadline: new Date(),
+        status: 'Test Status',
+        keywords: [],
+        coSupervisors: [{id: "t123", external: false}]
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+      },
+    };
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await createProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'The supervisor must not be also a cosupervisor.' });
+  });
+
+  //T1.3 - error with cod_group
+  it('T1.3 - should return 400 if there is an error with cod_group', async () => {
     // Mocking the pool.query to simulate an error
     pool.query.mockResolvedValueOnce(false);
 
@@ -101,7 +136,8 @@ describe('T1 -- createProposal', () => {
     expect(res.json).toHaveBeenCalledWith({ msg: 'Error with the cod_group.' });
   });
 
-  it('should return 500 if there is an error inserting the proposal.', async () => {
+  //T1.4 - error with the insertion of the proposal into the database
+  it('T1.4 - should return 500 if there is an error inserting the proposal.', async () => {
     // Mocking the pool.query to simulate an error
     pool.query.mockResolvedValueOnce({
       rows: [{ cod_group: 'AAA1' }],
@@ -145,18 +181,109 @@ describe('T1 -- createProposal', () => {
     expect(res.status).toHaveBeenCalledWith(500);
     expect(res.json).toHaveBeenCalledWith({ msg: "Error inserting the proposal." });
   });
-  /*
-  // Example: test case for successful proposal creation
-  it('should return 201 for a successful proposal creation', async () => {
-    // Mocking the pool.query to simulate an error
-    pool.query.mockResolvedValueOnce({
-      rows: [{ cod_group: 'AAA1' }],
-    });
-    
-    pool.query.mockResolvedValueOnce({
-      rows: [{ id: 1 }],
-    });
 
+  //T1.5 - error with the insertion of the cosupervisors into the database
+  it('T1.5 - should return 500 if there is an error with the insertion of the cosupervisors into the database.', async () => {
+     
+      const req = {
+        body: {
+          // Crea un oggetto proposta di prova
+          title: 'Test Proposal 2',
+          type: 'Test Type',
+          description: 'Test Description',
+          requiredKnowledge: 'Test Knowledge',
+          notes: 'Test Notes',
+          level: 'BSc',
+          programme: 'LM-32',
+          deadline: new Date(),
+          status: 'Test Status',
+          keywords: [],
+          coSupervisors: [{id: "t124", external: false}, {id: "t125", external: true}]
+        },
+        session: {
+          user: {
+            id: 't123',
+          },
+          clock: {
+            time: new Date(),
+          },
+        },
+      };
+  
+      const res = {
+        status: jest.fn(() => res),
+        json: jest.fn(),
+      };
+
+      //mocking functions
+      pool.query.mockResolvedValueOnce({
+        rows: [{ cod_group: 'AAA1' }],
+      });
+      pool.query.mockResolvedValueOnce({
+        rows: [{ id: 'idProposal' }],
+      });
+      coSupervisorAdd.mockResolvedValueOnce(true);
+      coSupervisorAdd.mockResolvedValueOnce(false);
+  
+      await createProposal(req, res);
+  
+      //expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ msg: "Error inserting the cosupervisor into the database" });
+  });
+
+  //T1.6 - error with the insertion of the keywords into the database 
+  it('T1.6 - should return 500 if there is an error with the insertion of the keywords into the database.', async () => {
+     
+      const req = {
+        body: {
+          // Crea un oggetto proposta di prova
+          title: 'Test Proposal 2',
+          type: 'Test Type',
+          description: 'Test Description',
+          requiredKnowledge: 'Test Knowledge',
+          notes: 'Test Notes',
+          level: 'BSc',
+          programme: 'LM-32',
+          deadline: new Date(),
+          status: 'Test Status',
+          keywords: ["kword1"],
+          coSupervisors: [{id: "t124", external: false}, {id: "t125", external: true}]
+        },
+        session: {
+          user: {
+            id: 't123',
+          },
+          clock: {
+            time: new Date(),
+          },
+        },
+      };
+  
+      const res = {
+        status: jest.fn(() => res),
+        json: jest.fn(),
+      };
+
+      //mocking functions
+      pool.query.mockResolvedValueOnce({
+        rows: [{ cod_group: 'AAA1' }],
+      });
+      pool.query.mockResolvedValueOnce({
+        rows: [{ id: 'idProposal' }],
+      });
+      coSupervisorAdd.mockResolvedValueOnce(true);
+      coSupervisorAdd.mockResolvedValueOnce(true);
+      keywordsAdd.mockResolvedValueOnce(false);
+  
+      await createProposal(req, res);
+  
+      //expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ msg: "Error inserting the keywords into the database" });
+  });
+
+  //T1.7 - correct creation of the proposal
+  it('T1.7 - should return 201, correct creation of the proposal', async () => {
+     
     const req = {
       body: {
         // Crea un oggetto proposta di prova
@@ -169,29 +296,41 @@ describe('T1 -- createProposal', () => {
         programme: 'LM-32',
         deadline: new Date(),
         status: 'Test Status',
-        keywords: [],
-        coSupervisors: []
+        keywords: ["kword1", "kword2"],
+        coSupervisors: [{id: "t124", external: false}, {id: "t125", external: true}]
       },
       session: {
         user: {
-          id: 'supervisorId',
+          id: 't123',
+        },
+        clock: {
+          time: new Date(),
         },
       },
     };
+
     const res = {
       status: jest.fn(() => res),
       json: jest.fn(),
     };
 
+    //mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [{ cod_group: 'AAA1' }],
+    });
+    pool.query.mockResolvedValueOnce({
+      rows: [{ id: 'idProposal' }],
+    });
+    coSupervisorAdd.mockResolvedValueOnce(true);
+    coSupervisorAdd.mockResolvedValueOnce(true);
+    keywordsAdd.mockResolvedValueOnce(true);
+    keywordsAdd.mockResolvedValueOnce(true);
+
     await createProposal(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith({
-      msg: 'Proposal created successfully',
-      data: { id: 1 },
-    });
-  });
-  */
+    //expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({data: {id: 'idProposal' }, msg: "Proposal created successfully" });
+});
 });
 
 /*
