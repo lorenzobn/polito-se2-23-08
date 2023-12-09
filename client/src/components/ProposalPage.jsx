@@ -29,6 +29,7 @@ function ProposalPage() {
     status: "",
   });
 
+  const [status, setStatus] = useState([]);
   const [incosupervisors, setInCosupervisors] = useState([]);
 
   const [excosupervisors, setExCosupervisors] = useState([]);
@@ -87,6 +88,9 @@ function ProposalPage() {
     store.fetchSelf();
     //store.getProposal(proposalId).then((proposal) => setProposal(proposal[0]));
     store.checkApplication(proposalId).then((res) => setApplied(res.applied));
+    store
+      .checkApplication(proposalId)
+      .then((res) => setStatus(res.applicationStatus));
   }, []);
 
   useEffect(() => {
@@ -150,7 +154,7 @@ function ProposalPage() {
           ></BadButton>
         </div>
         <form
-          className="mx-auto mt-3 p-4 form-proposal rounded shadow" 
+          className="mx-auto mt-3 p-4 form-proposal rounded shadow"
           style={{ marginTop: "5px" }}
         >
           <div className="mb-3 mt-1 text-center">
@@ -213,7 +217,18 @@ function ProposalPage() {
             applied ? (
               <div className="row mt-5">
                 <div className="col text-center">
-                  <h2 style={{ color: "green" }}>APPLIED</h2>
+                  <h3
+                    style={{
+                      color:
+                        status === "accepted"
+                          ? "green"
+                          : status === "rejected"
+                          ? "red"
+                          : "yellow",
+                    }}
+                  >
+                    <strong>{status}</strong>
+                  </h3>
                 </div>
               </div>
             ) : (

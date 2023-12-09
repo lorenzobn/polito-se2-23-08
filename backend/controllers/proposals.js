@@ -159,7 +159,7 @@ const createProposal = async (req, res) => {
       .json({ msg: "Proposal created successfully", data: result.rows[0] });
   } catch (error) {
     console.error(error.message);
-    return res.status(500).json({ msg: "An unknown error occurred." });
+    return res.status(500).json({ msg: error.message });
   }
 };
 

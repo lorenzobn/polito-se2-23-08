@@ -15,6 +15,7 @@
   --btn-primary: #007ea8;
   --border-drop: #00284b;
   --badge-bg: #007ea8;
+  --dropdown-color: #00284b;
 }
 
 
@@ -32,6 +33,7 @@
   --form-bg: #0b5070;
   --box-color: #fc7a08;
   --border-drop: white;
+  --dropdown-color: white;
 }
 
 
@@ -95,6 +97,10 @@ a {
 p, h1, h2, h3, h4, h5, h6 {
   color: var(--text-primary);
   transition: color .3s ease-in-out;
+}
+
+p.h2 {
+  color: var(--text-primary);
 }
 
 .form-proposal {
@@ -381,12 +387,15 @@ a.dropdown-item:hover {
   background-color: var(--badge-bg) !important;
 }
 .custom-dropdown-toggle {
-  background-color: white;
+  background-color: var(--background);
   border-color: rgb(195, 194, 194);
-  color: grey;
- 
-  
+  color: var(--dropdown-color); 
 }
+
+.dropdown-item:hover {
+  background-color: var(--form-bg);
+  color: var(--dropdown-color);
+} 
 
 .log-ul {
   background-color: var(--form-bg);
@@ -400,6 +409,7 @@ a.dropdown-item:hover {
   flex-wrap: wrap;
   align-items: center;
   border: 1px solid rgba(0, 0, 0, 0.175);
+  border-radius: 10px;
 }
 
 .log-li {

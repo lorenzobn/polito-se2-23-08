@@ -134,7 +134,7 @@ export default function Applications() {
                     <Nav.Item className="d-flex">
                       <Nav.Link
                         className="filter-decoration"
-                        onClick={() => handleFilter(JSON.stringify("rejected"))}
+                        onClick={() => handleFilter("rejected")}
                       >
                         Rejected
                       </Nav.Link>
