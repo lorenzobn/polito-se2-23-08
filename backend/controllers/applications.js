@@ -1,7 +1,7 @@
 const pool = require("../db/connection");
 const Joi = require("@hapi/joi");
 const { userRoles } = require("./auth");
-
+const logger = require('../services/logger.js');
 
 
 const fs = require("fs");
@@ -53,8 +53,8 @@ const createApplication = async (req, res) => {
       .status(201)
       .json({ msg: "Application created successfully", data: result.rows[0] });
   } catch (error) {
-    console.error(error);
-    return res.status(500).json({ msg: "An unknown error occurred." });
+    logger.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
 
@@ -68,8 +68,8 @@ const getApplications = async (req, res) => {
       return res.status(200).json({ msg: "OK", data: result.rows });
     });
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ msg: "An unknown error occurred." });
+    logger.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
 
@@ -100,7 +100,7 @@ const getApplicationById = async (req, res) => {
         errorMsg = "Unknown error occurred.";
         break;
     }
-    console.log(error);
+    logger.error(error.message);
     return res.status(500).json({ msg: errorMsg });
   }
 };
@@ -116,7 +116,7 @@ function getSomePromise(applicationId) {
         resolve(result.rows[0]);
       });
     } catch (error) {
-      console.log(error);
+      logger.error(error.message);
       reject();
     }
   });
@@ -124,24 +124,35 @@ function getSomePromise(applicationId) {
 
 // TODO: Only TEACHERS, in particular the SUPERVISOR of a thesis
 const updateApplication = async (req, res) => {
-  // TODO: session-based id
-  const loggedProfessor = req.session.user.id;
   notAuthorized = true;
   try {
     const { applicationId } = req.params;
-    console.log(req.session.user);
+    logger.info(req.session.user);
     if (req.session.user.role != userRoles.teacher) {
       return res.status(401).json({ msg: "Unauthorized" });
     } else {
-      // ok, authorized
+      // ok, now check if the application has already been accepted/rejected
+      let query = {
+        text: "SELECT thesis_application.status FROM thesis_application WHERE id=$1 AND created_at < $2",
+        values: [req.params.applicationId, req.session.clock.time],
+      };
+      let result = await pool.query(query);
+      if (result.rowCount == 0){
+        return res.status(404).json({ msg: "Application not found." });
+      } else if(result.rows[0]?.status !== "idle"){
+        logger.info("400 - cannot update")
+        return res.status(400).json({ msg: "Cannot update this application because it has already been accepted/rejected." });
+      }
+
       const updateFields = req.body;
       const applicationSchema = Joi.object({
-        status: Joi.string().valid("accepted", "rejected", "idle").required(),
+        status: Joi.string().valid("accepted", "rejected").required(),
       });
 
       const { error } = applicationSchema.validate(updateFields, {
         allowUnknown: true,
       });
+
       if (error) {
         return res.status(400).json({ msg: error.details[0].message });
       }
@@ -157,7 +168,7 @@ const updateApplication = async (req, res) => {
           .json({ msg: "No valid fields provided for update." });
       }
 
-      const query = `
+      query = `
         UPDATE thesis_application
         SET ${setClause}
         WHERE id = $1 AND created_at < $3
@@ -170,8 +181,7 @@ const updateApplication = async (req, res) => {
         req.session.clock.time,
       ];
 
-      const result = await pool.query(query, values);
-
+      result = await pool.query(query, values);
       if (result.rows.length === 0) {
         return res.status(404).json({ msg: "Application not found." });
       }
@@ -182,12 +192,12 @@ const updateApplication = async (req, res) => {
       });
     }
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ msg: "An unknown error occurred." });
+    logger.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
 
-// TODO: Only TEACHERS
+
 const getReceivedApplications = async (req, res) => {
   const query = {
     text: "SELECT COUNT(*) AS num_applications, title, description, deadline, thesis_id FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 AND thesis_application.created_at < $2 GROUP BY thesis_id, title, description, deadline",
@@ -198,8 +208,8 @@ const getReceivedApplications = async (req, res) => {
       return res.status(200).json({ msg: "OK", data: result.rows });
     });
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ msg: "An unknown error occurred." });
+    logger.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
 
@@ -213,8 +223,8 @@ const getReceivedApplicationsByThesisId = async (req, res) => {
       return res.status(200).json({ msg: "OK", data: result.rows });
     });
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ msg: "An unknown error occurred." });
+    logger.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
 
@@ -240,28 +250,10 @@ const didStudentApply = async (req, res) => {
         });
     });
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ msg: "An unknown error occurred." });
+    logger.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
-
-// TODO: Only STUDENTS
-/*
-const getApplicationsDecisions = async (req, res) => {
-  const query = {
-    text: "SELECT title, thesis_application.status FROM THESIS_APPLICATION JOIN thesis_proposal ON thesis_application.thesis_id=propId WHERE student_id=$1",
-    values: ["s125"], //should be the logged-in student_id
-  };
-  try {
-    const results = await pool.query(query).then((result) => {
-      return res.status(200).json({ msg: "OK", data: result.rows });
-    });
-  } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ msg: "An unknown error occurred." });
-  }
-}
-*/
 
 module.exports = {
   getApplications,
