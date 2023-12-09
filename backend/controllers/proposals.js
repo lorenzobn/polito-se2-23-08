@@ -11,6 +11,19 @@ const {
   getECoSupThesis,
 } = require("./utils");
 
+const proposalSchema = Joi.object({
+  title: Joi.string().required(),
+  coSupervisors: Joi.array(),
+  type: Joi.string().required(),
+  description: Joi.string().required(),
+  requiredKnowledge: Joi.string().allow(""),
+  notes: Joi.string().allow(""),
+  level: Joi.string().required().valid("BSc", "MSc"),
+  programme: Joi.string().required(),
+  deadline: Joi.date().required(), //default format is MM/DD/YYYY
+  keywords: Joi.array(),
+});
+
 const getAllCdS = async (req, res) => {
   const query = `
   SELECT * FROM DEGREE;
@@ -52,20 +65,6 @@ const getAllGroups = async (req, res) => {
 
 const createProposal = async (req, res) => {
   try {
-    const proposalSchema = Joi.object({
-      title: Joi.string().required(),
-      //SUPERVISOR_id: Joi.string().required(), // TODO: should be taken from req.userId
-      coSupervisors: Joi.array(),
-      type: Joi.string().required(),
-      description: Joi.string().required(),
-      requiredKnowledge: Joi.string().allow(""),
-      notes: Joi.string().allow(""),
-      level: Joi.string().required().valid("BSc", "MSc"),
-      programme: Joi.string().required(),
-      deadline: Joi.date().required(), //default format is MM/DD/YYYY
-      status: Joi.string(),
-      keywords: Joi.array(),
-    });
 
     let SUPERVISOR_id = req.session.user.id;
     const { error, value } = proposalSchema.validate(req.body);
@@ -84,13 +83,11 @@ const createProposal = async (req, res) => {
       level,
       programme,
       deadline,
-      status,
       keywords,
       coSupervisors,
     } = req.body;
 
     for (var i = 0; i < coSupervisors.length; i++) {
-      console.log(coSupervisors[i])
       if (coSupervisors[i].external != true && coSupervisors[i]?.id === req.session?.user?.id) {
         return res.status(400).json({ msg: "The supervisor must not be also a cosupervisor." });
       }
@@ -255,23 +252,8 @@ const getProposalsByTeacher = async (req, res) => {
 
 const updateProposal = async (req, res) => {
   // TODO check if proposal is owned by the professor who makes the request
-  // TODO validation of submitted fields
+  // TODO Editing is disabled if there is one accepted application!
   try {
-    const proposalSchema = Joi.object({
-      title: Joi.string().required(),
-      //SUPERVISOR_id: Joi.string().required(), // TODO: should be taken from req.userId
-      coSupervisors: Joi.array(),
-      type: Joi.string().required(),
-      description: Joi.string().required(),
-      requiredKnowledge: Joi.string().required(),
-      notes: Joi.string().allow(""),
-      level: Joi.string().required().valid("BSc", "MSc"),
-      programme: Joi.string().required(),
-      deadline: Joi.date().required(), //default format is MM/DD/YYYY
-      status: Joi.string(),
-      keywords: Joi.array(),
-    });
-
     const { proposalId } = req.params;
     const updateFields = req.body;
 
@@ -281,6 +263,10 @@ const updateProposal = async (req, res) => {
     if (error) {
       return res.status(400).json({ msg: error.details[0].message });
     }
+
+    // 1. Get who is the supervisor of this proposal: assert(supervisor === req.user.session.id)
+
+
 
     const setClause = Object.entries(updateFields)
       .filter(([key, value]) => value !== undefined && value !== "")
@@ -343,8 +329,6 @@ const searchProposal = async (req, res) => {
     description = description.toLowerCase();
     required_knowledge = required_knowledge.toLowerCase();
     notes = notes.toLowerCase();
-    //programme = programme.toLowerCase() //not yet, becasue the programme is a CODE
-    //console.log(title, type, description, required_knowledge, notes, level, programme)
     const query = `
       SELECT * FROM thesis_proposal
       WHERE  LOWER(title) LIKE '%${title}%' OR LOWER(type) LIKE '%${type}%' OR LOWER(description) LIKE '%${description}%' OR LOWER(required_knowledge) LIKE '%${required_knowledge}%' OR LOWER(notes) LIKE '%${notes}%' OR LOWER(programme) LIKE '%${programme}%';
