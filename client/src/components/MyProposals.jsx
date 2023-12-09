@@ -7,14 +7,18 @@ import { FaEdit, FaTrashAlt, FaSyncAlt, FaCopy } from 'react-icons/fa';
 import { MdOutlineEdit, MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../core/store/Provider";
+import InsertProposal from './InsertProposal';
+import EditProposal from './EditProposal';
+
 
 export default function MyProposals() {
 
     const navigate = useNavigate()
     const store = useContext(StoreContext);
     const [proposals, setProposals] = useState([]);
-    
+    const [proposalData, setProposalData] = useState([]);
     const [showModal, setShowModal] = useState(false);
+   
 
     const handleDelete = () => {
         setShowModal(true);
@@ -23,6 +27,12 @@ export default function MyProposals() {
     const deleteProposal = () => {
         // We will delete the proposal here
         setShowModal(false);
+    };
+
+    const handleEdit = (e) => {
+        setProposalData(e);
+        navigate('/editProposal/');
+        
     };
 
     useEffect(() => {
@@ -65,7 +75,8 @@ export default function MyProposals() {
                                                 ⋮
                                             </Dropdown.Toggle>
                                             <Dropdown.Menu>
-                                                <Dropdown.Item href="#/action-1" >Edit<MdOutlineEdit className="dropdown-icon" size={18}/></Dropdown.Item>
+                                                <Dropdown.Item onClick={() => handleEdit(e)} >Edit<MdOutlineEdit className="dropdown-icon" size={18}/></Dropdown.Item>
+                                               
                                                 <Dropdown.Item href="#/action-2">Copy<FaCopy className="dropdown-icon" size={18}/></Dropdown.Item>
                                                 <Dropdown.Item onClick={handleDelete}>Delete<MdDelete className="dropdown-icon" size={20}/></Dropdown.Item>
 
@@ -94,10 +105,14 @@ export default function MyProposals() {
                                     </div>
                                 </div>
                             )
+
+                           
                         }
+                        
                     </Col>
                 </Row>
             </Container>
         </>
     )
+
 }

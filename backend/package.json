@@ -37,10 +37,10 @@
     "mongoose": "^8.0.1",
     "npx": "^10.2.2",
     "pg": "^8.11.3",
-    "samlify": "^2.8.10",
-    "validator": "^13.9.0",
     "pino": "^8.16.1",
-    "pino-pretty": "^10.2.2"
+    "pino-pretty": "^10.2.2",
+    "samlify": "^2.8.10",
+    "validator": "^13.9.0"
   },
   "devDependencies": {
     "@babel/core": "7.21.3",

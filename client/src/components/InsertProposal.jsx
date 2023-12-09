@@ -20,7 +20,7 @@ let cdss = [];
 let internal_co_supervisors = [];
 let external_co_supervisors = [];
 
-function InsertProposal() {
+function InsertProposal({proposalData}) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState("");
   const [selectedProgram, setSelectedProgram] = useState("");

@@ -15,6 +15,7 @@ import Login from "./components/Login";
 import "react-toastify/dist/ReactToastify.css";
 import SSOCallback from "./components/SSOCallback";
 import { observer } from "mobx-react-lite";
+import EditProposal from "./components/EditProposal";
 
 function App() {
 
@@ -71,6 +72,10 @@ function App() {
           <Route
             path="/thesis-proposals"
             element={store.user.type !== 'student'? <MyProposals></MyProposals>:<Navigate replace to='/'></Navigate>}
+          ></Route>
+          <Route
+            path="/editProposal/"
+            element={<EditProposal />}
           ></Route>
         </Routes>
       </BrowserRouter>
