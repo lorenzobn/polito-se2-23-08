@@ -77,7 +77,7 @@ describe('T1 -- createProposal', () => {
         level: 'BSc',
         programme: 'LM-32',
         deadline: new Date(),
-        status: 'Test Status',
+
         keywords: [],
         coSupervisors: [{id: "t123", external: false}]
       },
@@ -114,7 +114,6 @@ describe('T1 -- createProposal', () => {
         level: 'BSc',
         programme: 'LM-32',
         deadline: new Date(),
-        status: 'Test Status',
         keywords: [],
         coSupervisors: []
       },
@@ -157,7 +156,6 @@ describe('T1 -- createProposal', () => {
         level: 'BSc',
         programme: 'LM-32',
         deadline: new Date(),
-        status: 'Test Status',
         keywords: [],
         coSupervisors: []
       },
@@ -196,7 +194,6 @@ describe('T1 -- createProposal', () => {
           level: 'BSc',
           programme: 'LM-32',
           deadline: new Date(),
-          status: 'Test Status',
           keywords: [],
           coSupervisors: [{id: "t124", external: false}, {id: "t125", external: true}]
         },
@@ -245,7 +242,6 @@ describe('T1 -- createProposal', () => {
           level: 'BSc',
           programme: 'LM-32',
           deadline: new Date(),
-          status: 'Test Status',
           keywords: ["kword1"],
           coSupervisors: [{id: "t124", external: false}, {id: "t125", external: true}]
         },
@@ -295,7 +291,6 @@ describe('T1 -- createProposal', () => {
         level: 'BSc',
         programme: 'LM-32',
         deadline: new Date(),
-        status: 'Test Status',
         keywords: ["kword1", "kword2"],
         coSupervisors: [{id: "t124", external: false}, {id: "t125", external: true}]
       },
