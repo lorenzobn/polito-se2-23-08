@@ -37,7 +37,6 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<ThesisList></ThesisList>}></Route>
-          <Route path="/login" element={<Login />}></Route>
           <Route path="/sso-callback" element={<SSOCallback />}></Route>
 
           <Route path="/portal" element={<Portal></Portal>}></Route>

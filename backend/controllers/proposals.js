@@ -1,5 +1,6 @@
 // import models here
 const pool = require("../db/connection");
+const logger = require('../services/logger.js');
 const Joi = require("@hapi/joi");
 const {
   coSupervisorAdd,
@@ -33,7 +34,8 @@ const getAllCdS = async (req, res) => {
     const results = await pool.query(query, values);
     return res.status(201).json({ data: results.rows });
   } catch (error) {
-    return error;
+    logger.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
 
@@ -46,7 +48,8 @@ const getAllProgrammes = async (req, res) => {
     const results = await pool.query(query, values);
     return res.status(201).json({ data: results.rows });
   } catch (error) {
-    return error;
+    logger.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
 
@@ -59,7 +62,8 @@ const getAllGroups = async (req, res) => {
     const results = await pool.query(query, values);
     return res.status(201).json({ data: results.rows });
   } catch (error) {
-    return error;
+    logger.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
 
@@ -158,7 +162,7 @@ const createProposal = async (req, res) => {
       .status(201)
       .json({ msg: "Proposal created successfully", data: result.rows[0] });
   } catch (error) {
-    console.error(error.message);
+    logging.error(error.message);
     return res.status(500).json({ msg: error.message });
   }
 };
@@ -181,8 +185,8 @@ const getProposals = async (req, res) => {
         return res.status(200).json({ msg: "OK", data: result.rows });
       });
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ msg: "An unknown error occurred." });
+    logging.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
 
@@ -212,10 +216,10 @@ const getProposalbyId = async (req, res) => {
     errorMsg = "";
     switch (error.code) {
       case "22P02":
-        errorMsg = "Invalid data provided.";
+        errorMsg = "Invalid data provided";
         break;
       default:
-        errorMsg = "Unknown error occurred.";
+        errorMsg = "Unknown error occurred";
         break;
     }
     return res.status(500).json({ msg: errorMsg });
@@ -239,13 +243,13 @@ const getProposalsByTeacher = async (req, res) => {
     errorMsg = "";
     switch (error.code) {
       case "22P02":
-        errorMsg = "Invalid data provided.";
+        errorMsg = "Invalid data provided";
         break;
       default:
-        errorMsg = "Unknown error occurred.";
+        errorMsg = "Unknown error occurred";
         break;
     }
-    console.log(error);
+    logging.log(error);
     return res.status(500).json({ msg: errorMsg });
   }
 };
@@ -303,12 +307,11 @@ const updateProposal = async (req, res) => {
       data: result.rows[0],
     });
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ msg: "An unknown error occurred." });
+    logging.error(error);
+    return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
 
-// TODO: add groups
 const searchProposal = async (req, res) => {
   try {
     const proposalSchema = Joi.object({
@@ -342,8 +345,8 @@ const searchProposal = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error(error.message);
-    return res.status(500).json({ msg: "An unknown error occurred." });
+    logging.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
 

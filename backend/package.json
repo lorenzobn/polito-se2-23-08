@@ -38,7 +38,9 @@
     "npx": "^10.2.2",
     "pg": "^8.11.3",
     "samlify": "^2.8.10",
-    "validator": "^13.9.0"
+    "validator": "^13.9.0",
+    "pino": "^8.16.1",
+    "pino-pretty": "^10.2.2"
   },
   "devDependencies": {
     "@babel/core": "7.21.3",

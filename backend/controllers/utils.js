@@ -1,5 +1,6 @@
 // import models here
 const pool = require("../db/connection");
+const logger = require('../services/logger.js');
 
 const coSupervisorAdd = async (thesisId, name, surname, external) => {
     let query = "";
@@ -31,21 +32,13 @@ const coSupervisorAdd = async (thesisId, name, surname, external) => {
             const values2 = [thesisId, id, null, false];
             const result2 = await pool.query(query2, values2);
           }
+          return 0;
         } else {
           return -1;
         }
       });
     } catch (error) {
-      errorMsg = "";
-      switch (error.code) {
-        case "22P02":
-          errorMsg = "Invalid data provided.";
-          break;
-        default:
-          errorMsg = "Unknown error occurred.";
-          break;
-      }
-      console.log(error);
+      logger.error(error);
       return -1;
     }
   };
@@ -61,7 +54,10 @@ const coSupervisorAdd = async (thesisId, name, surname, external) => {
         .status(200)
         .json({ data: results.rows });
     } catch (error) {
-      return error;
+      logger.error(error);
+      return res
+        .status(500)
+        .json({ msg: "Unknown error occurred" });
     }
   }
   
@@ -82,7 +78,10 @@ const coSupervisorAdd = async (thesisId, name, surname, external) => {
         .status(200)
         .json({ data: results.rows });
     } catch (error) {
-      return error;
+      logger.error(error);
+      return res
+        .status(500)
+        .json({ msg: "Unknown error occurred" });
     }
   }
 
@@ -93,8 +92,10 @@ const coSupervisorAdd = async (thesisId, name, surname, external) => {
     const values = [thesisId, keyword];
     try {
       const results = await pool.query(query, values);
+      return 0;
     } catch (error) {
-      return error;
+      logger.error(error);
+      return -1;
     }
   }
   
@@ -109,7 +110,8 @@ const coSupervisorAdd = async (thesisId, name, surname, external) => {
       const results = await pool.query(query, values)
       return results.rows
     } catch (error) {
-      return error;
+      logger.error(error);
+      return [];
     }
   }
   
@@ -125,7 +127,8 @@ const coSupervisorAdd = async (thesisId, name, surname, external) => {
       const results = await pool.query(query, values)
       return results.rows
     } catch (error) {
-      return error;
+      logger.error(error);
+      return [];
     }
   }
   
@@ -141,7 +144,8 @@ const coSupervisorAdd = async (thesisId, name, surname, external) => {
       const results = await pool.query(query, values)
       return results.rows
     } catch (error) {
-      return error;
+      logger.error(error);
+      return [];
     }
   }
 

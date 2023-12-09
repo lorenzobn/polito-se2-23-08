@@ -22,7 +22,6 @@ const {
 } = require("./controllers/applications.js");
 
 const {
-  userLogin,
   authorize,
   userRoles,
   login,

@@ -3,6 +3,7 @@ const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const pkg = require("body-parser");
 const dotenv = require("dotenv");
+const logger = require('./services/logger.js');
 dotenv.config();
 const { json, urlencoded } = pkg;
 const crypto = require("crypto");
@@ -44,13 +45,12 @@ app.use(
 const thesisRouter = require("./routes.js");
 app.use(addVirtualClockMIddleware);
 app.use(addVirtualClockToResMiddleware);
-
 app.use("/api/v1.0", thesisRouter);
 
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  logger.info(`Server is running on port ${PORT}`);
 });
 
 module.exports = app;
