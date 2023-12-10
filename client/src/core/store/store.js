@@ -210,7 +210,6 @@ export class Store {
     level,
     programme,
     deadline,
-    status,
     keywords,
     coSupervisors
   ) {
@@ -224,10 +223,10 @@ export class Store {
         level,
         programme,
         deadline,
-        status,
         keywords,
         coSupervisors
       );
+      console.log(res);
       return res.data.data;
     } catch (err) {
       return [];

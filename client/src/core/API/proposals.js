@@ -64,7 +64,6 @@ export const postProposals = async (
   level,
   programme,
   deadline,
-  status,
   keywords,
   coSupervisors
 ) => {
@@ -78,7 +77,6 @@ export const postProposals = async (
       level,
       programme,
       deadline,
-      status,
       keywords,
       coSupervisors,
     });
