@@ -32,7 +32,6 @@ export default function AcceptApplications() {
   const [proposalDetails, setProposalDetails] = useState([]);
   const [proposalTitle, setProposalTitle] = useState("");
 
-
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
@@ -41,30 +40,57 @@ export default function AcceptApplications() {
         proposalId
       );
       setProposal(response);
-      const details = proposal.map(p => p.applicationstatus);
+      const details = proposal.map((p) => p.applicationstatus);
       setProposalDetails(details);
-      setProposalTitle(response[0].title)
+      setProposalTitle(response[0].title);
     };
     handleEffect();
-  }, [proposalDetails]);
+  }, []);
 
   const handleAccept = async (index) => {
     const selectedForm = proposal[index];
     //console.log("Accepted form at index", index, selectedForm.student_id);
     // console.log("test:" , selectedForm.applicationid);
-    store.applicationDecision(selectedForm.applicationid, "accepted");
-    toast.success(`You accepted ${selectedForm.student_id} application successfully!`, {
-      position: toast.POSITION.TOP_CENTER,
-    });
+    const response = await store.applicationDecision(
+      selectedForm.applicationid,
+      "accepted"
+    );
+    if (response.response.status) {
+      toast.error(
+        response.response.data.msg,
+        {
+          position: toast.POSITION.TOP_CENTER,
+        }
+      );
+    } else {
+      toast.success(
+        `You accepted ${selectedForm.student_id} application successfully!`,
+        {
+          position: toast.POSITION.TOP_CENTER,
+        }
+      );
+    }
   };
 
   const handleReject = async (index) => {
     const selectedForm = proposal[index];
     //console.log("Rejected form at index", index, selectedForm);
-    store.applicationDecision(selectedForm.applicationid, "rejected");
-    toast.warn(`You rejected ${selectedForm.student_id} application successfully!`, {
-      position: toast.POSITION.TOP_CENTER,
-    });
+    const response = await store.applicationDecision(selectedForm.applicationid, "rejected");
+    if (response.response.status) {
+      toast.error(
+        response.response.data.msg,
+        {
+          position: toast.POSITION.TOP_CENTER,
+        }
+      );
+    } else {
+      toast.success(
+        `You rejected ${selectedForm.student_id} application successfully!`,
+        {
+          position: toast.POSITION.TOP_CENTER,
+        }
+      );
+    }
   };
 
   return (
@@ -109,4 +135,3 @@ export default function AcceptApplications() {
     </>
   );
 }
-

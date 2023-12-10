@@ -307,7 +307,7 @@ export class Store {
   async applicationDecision(proposalId, status) {
     try {
       const res = await putApplicationStatusAPI(proposalId, status);
-      return res.data.data;
+      return res;
     }
     catch(err){
       console.log(err);
