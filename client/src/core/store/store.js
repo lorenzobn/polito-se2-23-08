@@ -56,7 +56,7 @@ export class Store {
   }
 
   toggleTheme = () => {
-    this.theme === 'dark'? (localStorage.setItem('theme', 'light') ,this.theme = 'light') : (this.theme = 'dark', localStorage.setItem('theme', 'dark'))
+    this.theme === 'dark'? (localStorage.setItem('theme', 'light') ,this.theme = 'light', document.body.style.backgroundColor = "white") : (this.theme = 'dark', localStorage.setItem('theme', 'dark'), document.body.style.backgroundColor = "#00284b")
   }
 
   async setVirtualClock(time) {
