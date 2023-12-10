@@ -122,7 +122,7 @@ VALUES(
 INSERT INTO GROUPS
 VALUES('AAA1', 'DAUIN', 'Gruppo di ML');
 INSERT INTO GROUPS
-VALUES('AAA2', 'DAUIN', 'Gruppo di Cybersecurity');
+VALUES('AAA2', 'DAUIN', 'Gruppo di Computer Vision');
 INSERT INTO GROUPS
 VALUES('AAA3', 'DAUIN', 'Gruppo di Cloud Computing');
 INSERT INTO GROUPS
@@ -652,13 +652,13 @@ INSERT INTO THESIS_CO_SUPERVISION (
     external_co_supervisor_id,
     is_external
   )
-VALUES(5, 't123', NULL, FALSE);
+VALUES(5, 't124', NULL, FALSE);
 
 INSERT INTO KEYWORDS
 VALUES(5, 'Biomedical');
 
 INSERT INTO KEYWORDS
-VALUES(5, 'Programming');
+VALUES(5, 'Computer Vision');
 
 INSERT INTO KEYWORDS
 VALUES(5, 'Machine Learning');
@@ -681,9 +681,9 @@ INSERT INTO THESIS_PROPOSAL(
   )
 VALUES (
     'Machine Learning based Hyperheuristic algorithm',
-    't124',
+    't123',
     'Research work',
-    'AAA2',
+    'AAA1',
     'Develop a Machine Learning based Hyper-heuristic algorithm to solve a pickup and delivery problem. A hyper-heuristic is a heuristics that choose heuristics automatically. Hyper-heuristic seeks to automate the process of selecting, combining, generating or adapting several simpler heuristics to efficiently solve computational search problems [Handbook of Metaheuristics]. There might be multiple heuristics for solving a problem. Heuristics have their own strength and weakness. In this project, we want to use machine-learning techniques to learn the strength and weakness of each heuristic while we are using them in an iterative search for finding high quality solutions and then use them intelligently for the rest of the search. Once a new information is gathered during the search the hyper-heuristic algorithm automatically adjusts the heuristics.',
     'None',
     '',
@@ -707,7 +707,7 @@ INSERT INTO THESIS_CO_SUPERVISION (
     external_co_supervisor_id,
     is_external
   )
-VALUES(6, 't123', NULL, FALSE);
+VALUES(6, 't124', NULL, FALSE);
 
 INSERT INTO KEYWORDS
 VALUES(6, 'Computer Engineering');
@@ -735,7 +735,7 @@ INSERT INTO THESIS_PROPOSAL(
     status
   )
 VALUES (
-    'Resource Allocation in 5G IoV Architecture Based on SDN and Fog-Cloud Computing',
+    'Resource Allocation in 5G IoV Architecture Based on SDN and Fog-Cloud Computing with AI',
     't123',
     'in-company project',
     'AAA1',
@@ -771,7 +771,10 @@ INSERT INTO KEYWORDS
 VALUES(7, 'Company Project');
 
 INSERT INTO KEYWORDS
-VALUES(7, 'Edge Computing');
+VALUES(7, 'Artifical Intelligence');
+
+INSERT INTO KEYWORDS
+VALUES(7, 'Machine Learning');
 
 /* Thesis #8 */
 /* Summary: 1 Internal Supervisor, 1 External Supervisor, 3 keywords */
