@@ -544,3 +544,289 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES (3, NULL, 'c126', TRUE);
+
+/* Thesis #4 */
+/* Summary: 2 Exertnal Supervisors, 1 Internal Supervisor, 3 keywords */
+
+INSERT INTO THESIS_PROPOSAL(
+    title,
+    SUPERVISOR_ID,
+    type,
+    COD_GROUP,
+    description,
+    required_knowledge,
+    notes,
+    level,
+    programme,
+    deadline,
+    status
+  )
+VALUES (
+    'Implementation of Vein Detection System using Digital Image Processing and NIR Imaging Techniques',
+    't124',
+    'In-practice work',
+    'AAA2',
+    'In this project, the process of obtaining intravenous (IV) access, Venipuncture, is an everyday invasive procedure in medical settings and there are more than one billion venipuncture related procedures like blood draws, peripheral catheter insertions, intravenous therapies, etc. Excessive venipunctures are both time and resource consuming events causing anxiety, pain and distress in patients, or can lead to severe harmful injuries . The major problem faced by the doctors today is difficulty in accessing veins for intra-venous drug delivery & other medical situations . There is a need to develop vein detection devices which can clearly show veins. This project deals with the design development of non-invasive subcutaneous vein detection system and is implemented based on near infrared imaging and interfaced to a laptop to make it portable. A customized CCD camera is used for capturing the vein images.',
+    'None',
+    '',
+    'MSc',
+    'LM-21',
+    '2024-02-01',
+    'active'
+  );
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES (4, NULL, 'c125', TRUE);
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES (4, NULL, 'c126', TRUE);
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES (4, 't123', NULL, FALSE);
+
+INSERT INTO KEYWORDS
+VALUES(4, 'Biomedical');
+
+INSERT INTO KEYWORDS
+VALUES(4, 'Python');
+
+INSERT INTO KEYWORDS
+VALUES(4, 'Digital Image Processing');
+
+/* Thesis #5 */
+/* Summary: 1 Exertnal Supervisors, 1 Internal Supervisor, 3 keywords */
+
+INSERT INTO THESIS_PROPOSAL(
+    title,
+    SUPERVISOR_ID,
+    type,
+    COD_GROUP,
+    description,
+    required_knowledge,
+    notes,
+    level,
+    programme,
+    deadline,
+    status
+  )
+VALUES (
+    'Development of a planning tool for robot-assisted partial nephrectomy surgery based on 3D reconstructions of kidneys',
+    't124',
+    'In-practice work',
+    'AAA2',
+    'Renal cell carcinoma, the prevalent type of kidney cancer, constitutes 2-3% of global cancer cases, with the highest incidence in Western Europe. Partial nephrectomy is the preferred treatment for small renal tumors, preserving kidney function and ensuring oncological success. Surgeons currently rely on experience and 3D insights from 2D CT data for pre-operative planning. This thesis aims to create a planning tool for partial nephrectomy, utilizing 3D reconstructions of renal parenchyma and arteries to form a perfusion map. This map aids in identifying ideal arterial segments for clamping, facilitating bloodless tumor resection.',
+    'None',
+    '',
+    'MSc',
+    'LM-21',
+    '2024-03-01',
+    'active'
+  );
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES (5, NULL, 'c126', TRUE);
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES(5, 't123', NULL, FALSE);
+
+INSERT INTO KEYWORDS
+VALUES(5, 'Biomedical');
+
+INSERT INTO KEYWORDS
+VALUES(5, 'Programming');
+
+INSERT INTO KEYWORDS
+VALUES(5, 'Machine Learning');
+
+/* Thesis #6 */
+/* Summary: 1 Internal Supervisor, 1 External Supervisor, 3 keywords */
+
+INSERT INTO THESIS_PROPOSAL(
+    title,
+    SUPERVISOR_ID,
+    type,
+    COD_GROUP,
+    description,
+    required_knowledge,
+    notes,
+    level,
+    programme,
+    deadline,
+    status
+  )
+VALUES (
+    'Machine Learning based Hyperheuristic algorithm',
+    't124',
+    'Research work',
+    'AAA2',
+    'Develop a Machine Learning based Hyper-heuristic algorithm to solve a pickup and delivery problem. A hyper-heuristic is a heuristics that choose heuristics automatically. Hyper-heuristic seeks to automate the process of selecting, combining, generating or adapting several simpler heuristics to efficiently solve computational search problems [Handbook of Metaheuristics]. There might be multiple heuristics for solving a problem. Heuristics have their own strength and weakness. In this project, we want to use machine-learning techniques to learn the strength and weakness of each heuristic while we are using them in an iterative search for finding high quality solutions and then use them intelligently for the rest of the search. Once a new information is gathered during the search the hyper-heuristic algorithm automatically adjusts the heuristics.',
+    'None',
+    '',
+    'MSc',
+    'LM-32',
+    '2024-05-01',
+    'active'
+  );
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES(6, NULL, 'c126', TRUE);
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES(6, 't123', NULL, FALSE);
+
+INSERT INTO KEYWORDS
+VALUES(6, 'Computer Engineering');
+
+INSERT INTO KEYWORDS
+VALUES(6, 'Research');
+
+INSERT INTO KEYWORDS
+VALUES(6, 'Machine Learning');
+
+/* Thesis #7 */
+/* Summary: 1 Internal Supervisor, 1 External Supervisor, 3 keywords */
+
+INSERT INTO THESIS_PROPOSAL(
+    title,
+    SUPERVISOR_ID,
+    type,
+    COD_GROUP,
+    description,
+    required_knowledge,
+    notes,
+    level,
+    programme,
+    deadline,
+    status
+  )
+VALUES (
+    'Resource Allocation in 5G IoV Architecture Based on SDN and Fog-Cloud Computing',
+    't123',
+    'in-company project',
+    'AAA1',
+    'Resource Allocation in 5G IoV (Internet of Vehicles) Architecture leverages SDN (Software-Defined Networking) and Fog-Cloud Computing for efficient management. This innovative approach optimizes the distribution of computing resources, ensuring seamless connectivity and low-latency communication in dynamic vehicular networks. By dynamically allocating resources based on real-time demands and traffic patterns, the system enhances performance, scalability, and reliability. SDN enables centralized control, while Fog-Cloud Computing ensures proximity-based processing, reducing latency. This strategic resource allocation not only addresses the unique challenges of IoV but also paves the way for advanced vehicular applications, intelligent traffic management, and enhanced overall network performance.',
+    'None',
+    '',
+    'MSc',
+    'LM-32',
+    '2024-05-01',
+    'active'
+  );
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES(7, NULL, 'c126', TRUE);
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES(7, 't124', NULL, FALSE);
+
+INSERT INTO KEYWORDS
+VALUES(7, 'Cloud Computing');
+
+INSERT INTO KEYWORDS
+VALUES(7, 'Company Project');
+
+INSERT INTO KEYWORDS
+VALUES(7, 'Edge Computing');
+
+/* Thesis #8 */
+/* Summary: 1 Internal Supervisor, 1 External Supervisor, 3 keywords */
+
+INSERT INTO THESIS_PROPOSAL(
+    title,
+    SUPERVISOR_ID,
+    type,
+    COD_GROUP,
+    description,
+    required_knowledge,
+    notes,
+    level,
+    programme,
+    deadline,
+    status
+  )
+VALUES (
+    'Empowering IoT Platforms with Advanced Automation and Rule-Based Intelligence',
+    't123',
+    'in-company project',
+    'AAA1',
+    'The IoT segment is rapidly expanding due to the widespread use of IoT evices, which have impacted various fields including healthcare, the industrial sector, home automation, environmental monitoring, and retail. The capture of data by IoT devices allows for separate analytics based on the collected data, making life easier across different sectors. However, my focus is on improving the ThingsBoard platform by incorporating a subset of rulesets in the form of Python data structures. This will be achieved by implementing KRule, which is a useful tool for automating actions and improving the functionality of the platform.',
+    'None',
+    '',
+    'MSc',
+    'LM-32',
+    '2024-05-01',
+    'active'
+  );
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES (8, NULL, 'c125', TRUE);
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES(8, 't124', NULL, FALSE);
+
+INSERT INTO KEYWORDS
+VALUES(8, 'IoT Solutions');
+
+INSERT INTO KEYWORDS
+VALUES(8, 'Company Project');
+
+INSERT INTO KEYWORDS
+VALUES(8, 'Infrastructure as Code');
+
+
+
