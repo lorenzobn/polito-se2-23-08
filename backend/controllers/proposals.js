@@ -13,14 +13,14 @@ const {
 } = require("./utils");
 
 const proposalSchema = Joi.object({
-  title: Joi.string().required(),
+  title: Joi.string().min(8).max(150).required(),
   coSupervisors: Joi.array(),
-  type: Joi.string().required(),
-  description: Joi.string().required(),
+  type: Joi.string().min(1).max(30).required(),
+  description: Joi.string().max(500).required(),
   requiredKnowledge: Joi.string().allow(""),
   notes: Joi.string().allow(""),
   level: Joi.string().required().valid("BSc", "MSc"),
-  programme: Joi.string().required(),
+  programme: Joi.string().max(10).required(),
   deadline: Joi.date().required(), //default format is MM/DD/YYYY
   keywords: Joi.array(),
 });
@@ -80,7 +80,6 @@ const createProposal = async (req, res) => {
     const {
       title,
       type,
-      groups,
       description,
       requiredKnowledge,
       notes,
@@ -97,14 +96,26 @@ const createProposal = async (req, res) => {
       }
     }
 
-    const r = await pool.query("SELECT COD_GROUP FROM TEACHER WHERE id=$1", [
+    let r = await pool.query("SELECT COD_DEGREE FROM DEGREE WHERE COD_DEGREE=$1", [
+      programme,
+    ]);
+    if (!r || !r) {
+      return res.status(400).json({ msg: "Invalid Programme/CdS provided." });
+    }
+
+    r = await pool.query("SELECT COD_GROUP FROM TEACHER WHERE id=$1", [
       SUPERVISOR_id,
     ]);
     if (!r || !r) {
-      return res.status(400).json({ msg: "Error with the cod_group." });
+      return res.status(400).json({ msg: "Invalid group provided." });
     }
+
     const cod_group = r.rows[0].cod_group;
     let activeStatus = "active";
+
+    //TODO: The deadline shoud be checked! assert(deadline > current_virtual_clock_time) === true
+    
+    await pool.query('BEGIN');
 
     const query = `
       INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, COD_GROUP, description, required_knowledge, notes, level, programme, deadline, status, created_at)
@@ -136,33 +147,46 @@ const createProposal = async (req, res) => {
     //adding co supervisors to the proposal
     //for each co supervisor, add a row in the THESIS_CO_SUPERVISION table
     for (var i = 0; i < coSupervisors.length; i++) {
+      let r = -1;
       if (coSupervisors[i].isExternal === true) {
-        let r = await coSupervisorAdd(
+        r = await coSupervisorAdd(
           newId,
           coSupervisors[i].name,
           coSupervisors[i].surname,
           true
         );
       } else {
-        let r = await coSupervisorAdd(
+        r = await coSupervisorAdd(
           newId,
           coSupervisors[i].name,
           coSupervisors[i].surname,
           false
         );
       }
+      if (r < 0){
+        // abort, error!
+        //logging.error(`Error inserting a cosupervisor for the thesis ${newId}`)
+        //return res.status(500).json({ msg: "Error during the insertion of the cosupervisors." });
+        throw {message: "Error during the insertion of the cosupervisors.", code: 500}
+      }
     }
 
-    //let's add keywords now
     for (var i = 0; i < keywords.length; i++) {
       let r = await keywordsAdd(newId, keywords[i]);
+      if (r < 0){
+        // abort, error!
+        //logging.error(`Error inserting a keyword for the thesis ${newId}`)
+        //return res.status(500).json({ msg: "Error during the insertion of the keywords." });
+        throw {message: "Error during the insertion of the keywords.", code: 500}
+      }
     }
-
+    await pool.query('COMMIT');
     return res
       .status(201)
       .json({ msg: "Proposal created successfully", data: result.rows[0] });
   } catch (error) {
-    logging.error(error.message);
+    logger.error(error.message);
+    await pool.query('ROLLBACK');
     return res.status(500).json({ msg: error.message });
   }
 };
@@ -185,7 +209,7 @@ const getProposals = async (req, res) => {
         return res.status(200).json({ msg: "OK", data: result.rows });
       });
   } catch (error) {
-    logging.error(error.message);
+    logger.error(error.message);
     return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
@@ -249,7 +273,7 @@ const getProposalsByTeacher = async (req, res) => {
         errorMsg = "Unknown error occurred";
         break;
     }
-    logging.log(error);
+    logger.log(error);
     return res.status(500).json({ msg: errorMsg });
   }
 };
@@ -307,7 +331,7 @@ const updateProposal = async (req, res) => {
       data: result.rows[0],
     });
   } catch (error) {
-    logging.error(error);
+    logger.error(error);
     return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
@@ -345,7 +369,7 @@ const searchProposal = async (req, res) => {
       }
     });
   } catch (error) {
-    logging.error(error.message);
+    logger.error(error.message);
     return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };

@@ -133,9 +133,6 @@ function InsertProposal({proposalData}) {
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    console.log("LOG:", combinedData);
-    console.log("TYPE:", userType);
-
     if (userType === "student") {
       toast.error("You are not authorized to create proposal.", {
         position: toast.POSITION.TOP_CENTER,
@@ -171,7 +168,6 @@ function InsertProposal({proposalData}) {
           position: toast.POSITION.TOP_CENTER,
         });
       } else {
-        const status = "active";
         const insertProposal = store.postProposals(
           formData.title,
           formData.type,
@@ -181,7 +177,6 @@ function InsertProposal({proposalData}) {
           combinedData.level,
           combinedData.program,
           formData.deadline,
-          status,
           combinedData.keywords,
           co_supervisor
         );
