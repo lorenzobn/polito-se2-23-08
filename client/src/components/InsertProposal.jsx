@@ -130,7 +130,7 @@ function InsertProposal({proposalData}) {
     handleEffect();
   }, [formData, selectedKeywords]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (userType === "student") {
@@ -168,7 +168,7 @@ function InsertProposal({proposalData}) {
           position: toast.POSITION.TOP_CENTER,
         });
       } else {
-        const insertProposal = store.postProposals(
+        const insertProposal = await store.postProposals(
           formData.title,
           formData.type,
           formData.description,
@@ -181,11 +181,16 @@ function InsertProposal({proposalData}) {
           co_supervisor
         );
         setInsertProposals(insertProposal);
-        if (insertProposal) {
+        console.log("test log:" , insertProposal);
+        if (insertProposal.msg === "Proposal created successfully") {
           toast.success("Your proposal submitted successfully!", {
             position: toast.POSITION.TOP_CENTER,
           });
-          navigate("/thesis-proposals");
+          //navigate("/thesis-proposals");
+        } else {
+          toast.error("Something went wrong", {
+            position: toast.POSITION.TOP_CENTER,
+          });
         }
       }
     }

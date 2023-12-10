@@ -226,8 +226,7 @@ export class Store {
         keywords,
         coSupervisors
       );
-      console.log(res);
-      return res.data.data;
+      return res.data;
     } catch (err) {
       return [];
     }
