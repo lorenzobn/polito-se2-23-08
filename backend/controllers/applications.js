@@ -1,8 +1,7 @@
 const pool = require("../db/connection");
 const Joi = require("@hapi/joi");
 const { userRoles } = require("./auth");
-const logger = require('../services/logger.js');
-
+const logger = require("../services/logger.js");
 
 const fs = require("fs");
 const path = require("path");
@@ -45,10 +44,18 @@ const createApplication = async (req, res) => {
       value.thesis_id,
       value.thesis_status,
       value.cv_uri,
-      req.session.clock.time]
- 
+      req.session.clock.time,
+    ];
+
     const result = await pool.query(query, values);
 
+    createNotification(
+      req.session.user.id,
+      userTypes.student,
+      "Application Sent!",
+      `Your application has been sent successfully!`,
+      true
+    );
     return res
       .status(201)
       .json({ msg: "Application created successfully", data: result.rows[0] });
@@ -137,11 +144,13 @@ const updateApplication = async (req, res) => {
         values: [req.params.applicationId, req.session.clock.time],
       };
       let result = await pool.query(query);
-      if (result.rowCount == 0){
+      if (result.rowCount == 0) {
         return res.status(404).json({ msg: "Application not found." });
-      } else if(result.rows[0]?.status !== "idle"){
-        logger.info("400 - cannot update")
-        return res.status(400).json({ msg: "Cannot update this application because it has already been accepted/rejected." });
+      } else if (result.rows[0]?.status !== "idle") {
+        logger.info("400 - cannot update");
+        return res.status(400).json({
+          msg: "Cannot update this application because it has already been accepted/rejected.",
+        });
       }
 
       const updateFields = req.body;
@@ -185,6 +194,13 @@ const updateApplication = async (req, res) => {
       if (result.rows.length === 0) {
         return res.status(404).json({ msg: "Application not found." });
       }
+      createNotification(
+        req.session.user.id,
+        userTypes.teacher,
+        "Application Updated",
+        `Your application' has been created successfully!`, //TODO: add title of the application in this text
+        true
+      );
 
       return res.status(200).json({
         msg: "Application updated successfully",
@@ -196,7 +212,6 @@ const updateApplication = async (req, res) => {
     return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
-
 
 const getReceivedApplications = async (req, res) => {
   const query = {
@@ -246,7 +261,7 @@ const didStudentApply = async (req, res) => {
           studentId: req.session.user.id,
           proposalId: req.params.thesisId,
           applied: true,
-          applicationStatus: result.rows[0].status
+          applicationStatus: result.rows[0].status,
         });
     });
   } catch (error) {

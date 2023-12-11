@@ -339,7 +339,13 @@ const updateProposal = async (req, res) => {
     if (result.rows.length === 0) {
       return res.status(404).json({ msg: "Thesis proposal not found." });
     }
-
+    createNotification(
+      req.session.user.id,
+      userTypes.teacher,
+      "Proposal Updated!",
+      `Your proposal '${result.rows.title}' has been updated successfully!`,
+      true
+    );
     return res.status(200).json({
       msg: "Thesis proposal updated successfully",
       data: result.rows[0],
