@@ -5,6 +5,7 @@ const { createProposal, getProposals, getProposalbyId, getProposalsByTeacher, up
 const pool = require("../db/connection");
 const { coSupervisorAdd, getExtCoSupervisors, getCoSupervisors, keywordsAdd, getKeywords, getCoSupThesis, getECoSupThesis } = require("../controllers/utils");
 const { get } = require('mongoose');
+const utils = require('../controllers/utils');
 
 jest.mock('../controllers/auth', () => ({
   ...jest.requireActual('../controllers/auth'),
@@ -629,3 +630,225 @@ describe('T6 -- GET /thesis-proposals/search', () => {
 
 });
 */
+
+//UpdateProposal//
+
+describe('T2 -- updateProposal', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  // T2.1 - Successfully update proposal
+  it('T2.1 - should return 200 and updated proposal', async () => {
+    const req = {
+      params: {
+        proposalId: 'someProposalId',
+      },
+      session: {
+        clock: {
+          time: new Date(),
+        },
+      },
+      body: {
+        // Provide valid fields to update
+        title: 'Updated Title',
+        type: 'Updated Type',
+        description: 'Updated Description',
+      },
+    };
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    // Mocking pool.query to simulate a successful update
+    pool.query.mockResolvedValueOnce({
+      rows: [{ /* Updated proposal data */ }],
+    });
+
+    await updateProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      msg: 'Thesis proposal updated successfully',
+      data: expect.any(Object),
+    });
+  });
+
+  // T2.2 - Proposal not found
+  it('T2.2 - should return 404 if proposal not found', async () => {
+    const req = {
+      params: {
+        proposalId: 'nonExistentProposalId',
+      },
+      session: {
+        clock: {
+          time: new Date(),
+        },
+      },
+      body: {
+        // Provide valid fields to update
+        title: 'Updated Title',
+      },
+    };
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    // Mocking pool.query to simulate proposal not found
+    pool.query.mockResolvedValueOnce({
+      rows: [],
+    });
+
+    await updateProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Thesis proposal not found.' });
+  });
+
+  // T2.3 - No valid fields provided for update
+  it('T2.3 - should return 400 if no valid fields provided for update', async () => {
+    const req = {
+      params: {
+        proposalId: 'someProposalId',
+      },
+      session: {
+        clock: {
+          time: new Date(),
+        },
+      },
+      body: {
+        // Do not provide any valid fields to update
+      },
+    };
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await updateProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'No valid fields provided for update.' });
+  });
+
+  // T2.4 - Unknown error occurred during update
+  it('T2.4 - should return 500 if unknown error occurred during update', async () => {
+    const req = {
+      params: {
+        proposalId: 'someProposalId',
+      },
+      session: {
+        clock: {
+          time: new Date(),
+        },
+      },
+      body: {
+        // Provide valid fields to update
+        title: 'Updated Title',
+      },
+    };
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    // Mocking pool.query to simulate an unknown error during update
+    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
+
+    await updateProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Unknown error occurred' });
+  });
+});
+
+
+// SearchProposal
+
+describe('T3 -- searchProposal', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  // T3.1 - Successfully find proposals
+  it('T3.1 - should return 200 and found proposals', async () => {
+    const req = {
+      query: {
+        // Provide search criteria
+        title: 'Test',
+        type: 'Type',
+      },
+    };
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    // Mocking pool.query to simulate finding proposals
+    pool.query.mockResolvedValueOnce({
+      rowCount: 2,
+      rows: [
+        { /* Proposal data 1 */ },
+        { /* Proposal data 2 */ },
+      ],
+    });
+
+    await searchProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      msg: 'OK',
+      data: expect.any(Array),
+    });
+  });
+
+  // T3.2 - Resource not found
+  it('T3.2 - should return 404 if no proposals found', async () => {
+    const req = {
+      query: {
+        // Provide search criteria
+        title: 'Nonexistent',
+      },
+    };
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    // Mocking pool.query to simulate no proposals found
+    pool.query.mockResolvedValueOnce({
+      rowCount: 0,
+      rows: [],
+    });
+
+    await searchProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Resource not found' });
+  });
+
+  // T3.3 - Unknown error occurred during search
+  it('T3.3 - should return 500 if unknown error occurred during search', async () => {
+    const req = {
+      query: {
+        // Provide search criteria
+        title: 'Test',
+      },
+    };
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    // Mocking pool.query to simulate an unknown error during search
+    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
+
+    await searchProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Unknown error occurred' });
+  });
+});
+
