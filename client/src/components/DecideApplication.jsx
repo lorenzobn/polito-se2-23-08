@@ -45,7 +45,7 @@ export default function AcceptApplications() {
       setProposalTitle(response[0].title);
     };
     handleEffect();
-  }, []);
+  }, [status]);
 
   const handleAccept = async (index) => {
     const selectedForm = proposal[index];
@@ -55,14 +55,13 @@ export default function AcceptApplications() {
       selectedForm.applicationid,
       "accepted"
     );
-    if (response.response.status) {
-      toast.error(
-        response.response.data.msg,
-        {
-          position: toast.POSITION.TOP_CENTER,
-        }
-      );
+    console.log(response);
+    if (response.status !== 200) {
+      toast.error(response.data.msg, {
+        position: toast.POSITION.TOP_CENTER,
+      });
     } else {
+      setStatus("accepted");
       toast.success(
         `You accepted ${selectedForm.student_id} application successfully!`,
         {
@@ -75,15 +74,16 @@ export default function AcceptApplications() {
   const handleReject = async (index) => {
     const selectedForm = proposal[index];
     //console.log("Rejected form at index", index, selectedForm);
-    const response = await store.applicationDecision(selectedForm.applicationid, "rejected");
-    if (response.response.status) {
-      toast.error(
-        response.response.data.msg,
-        {
-          position: toast.POSITION.TOP_CENTER,
-        }
-      );
+    const response = await store.applicationDecision(
+      selectedForm.applicationid,
+      "rejected"
+    );
+    if (response.status !== 200) {
+      toast.error(response.data.msg, {
+        position: toast.POSITION.TOP_CENTER,
+      });
     } else {
+      setStatus("rejected");
       toast.success(
         `You rejected ${selectedForm.student_id} application successfully!`,
         {
@@ -112,18 +112,26 @@ export default function AcceptApplications() {
                 <strong>Application Status:</strong> {student.applicationstatus}
                 <div className="row">
                   <div className="col text-start mt-4">
-                    <BadButton
-                      icon={faX}
-                      text={"REJECT"}
-                      onClick={() => handleReject(index)}
-                    ></BadButton>
+                    {student.applicationstatus === "idle" ? (
+                      <BadButton
+                        icon={faX}
+                        text={"REJECT"}
+                        onClick={() => handleReject(index)}
+                      ></BadButton>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                   <div className="col text-end mt-4">
-                    <Button
-                      icon={faCheck}
-                      text={"ACCEPT"}
-                      onClick={() => handleAccept(index)}
-                    ></Button>
+                    {student.applicationstatus === "idle" ? (
+                      <Button
+                        icon={faCheck}
+                        text={"ACCEPT"}
+                        onClick={() => handleAccept(index)}
+                      ></Button>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 </div>
               </li>
