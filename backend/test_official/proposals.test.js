@@ -35,7 +35,8 @@ jest.mock('../db/connection', () => ({
 }));
 
 //createProposal, 8 test cases, DONE
-//TO DO : test case to check the deadline
+//TO DO : 
+// • test case to check the deadline
 describe('T1 -- createProposal', () => {
 
   afterEach(() => {
@@ -507,6 +508,7 @@ describe('T2 -- getProposals', () => {
 // • test case to check the correct get of the keywords
 // • test case to check the correct get of the co-supervisors
 // • test case to check the correct get of the external co-supervisors
+// • test case for error.code = 22P02
 describe('T3 -- getProposalbyId', () => {
 
   afterEach(() => {
@@ -604,7 +606,9 @@ describe('T3 -- getProposalbyId', () => {
 });
 
 //getProposalsByTeacher
-describe('T4 -- GET /my-thesis-proposals', () => {
+//TO DO :
+// • test case for error.code = 22P02
+describe('T4 -- getProposalsByTeacher', () => {
 
   afterEach(() => {
     // Interrompi le operazioni asincrone qui
@@ -613,15 +617,14 @@ describe('T4 -- GET /my-thesis-proposals', () => {
 
   // correct get proposals by teacher
   it('T4.1 - Correct get proposals by teacher', async () => {
-    // Mocking the pool.query to simulate an error
-    pool.query.mockResolvedValueOnce({
-      rows: [{ correct: 'correct' }],
-    });
 
     const req = {
       session: {
         user: {
-          id: 'teacherId',
+          id: 't123',
+        },
+        clock: {
+          time: new Date(),
         },
       },
     };
@@ -630,6 +633,12 @@ describe('T4 -- GET /my-thesis-proposals', () => {
       status: jest.fn(() => res),
       json: jest.fn(),
     };
+
+    // Mocking the pool.query to simulate an error
+    pool.query.mockResolvedValueOnce({
+      rows: [{ correct: 'correct' }],
+      rowCount: 1,
+    });
 
     // Effettua una richiesta GET alla rotta /my-thesis-proposals
     await getProposalsByTeacher(req, res);
@@ -644,19 +653,23 @@ describe('T4 -- GET /my-thesis-proposals', () => {
 
   // error 404, resource not found
   it('T4.2 - Error 404, resource not found', async () => {
+
+    const req = {
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          time: new Date(),
+        },
+      },
+    };
+
     // Mocking the pool.query to simulate an error
     pool.query.mockResolvedValueOnce({
       rows: [],
       rowCount: 0,
     });
-
-    const req = {
-      session: {
-        user: {
-          id: 'teacherId',
-        },
-      },
-    };
 
     const res = {
       status: jest.fn(() => res),
