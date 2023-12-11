@@ -1,12 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-  Container,
-  Row,
-  Nav,
-  NavDropdown,
-  Col,
-  Dropdown as DD,
-} from "react-bootstrap";
+import { Container, Row, Nav, Col, Dropdown as DD } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 import { StoreContext } from "../core/store/Provider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -35,9 +28,7 @@ function MyNavbar() {
       y = y + 150;
       setMidHeaderHeight(`${y}rem`);
     };
-
     window.addEventListener("scroll", handleScroll);
-
     // Clean up the event listener on component unmount
     return () => {
       window.removeEventListener("scroll", handleScroll);
@@ -72,7 +63,6 @@ function MyNavbar() {
       <FontAwesomeIcon style={{ color: "#ffffff" }} icon={faSun} />
     </div>
   );
-
   return (
     <Container className="nav-wrap" fluid>
       {showNotifications && (
@@ -158,7 +148,11 @@ function MyNavbar() {
                       <FontAwesomeIcon
                         style={{ fontSize: "140%" }}
                         icon={faBell}
-                        className="bell-active"
+                        className={
+                          store.user?.notifications?.length > 0
+                            ? "bell-active"
+                            : "bell-passive"
+                        }
                         role="button"
                       />{" "}
                     </DD.Toggle>
@@ -167,10 +161,23 @@ function MyNavbar() {
                       style={{
                         width: "25rem",
                         marginLeft: "-200px",
-                        border: "1px solid #e5e5e5",
+                        border: "none",
                         zIndex: "100",
+                        backgroundColor: "#fbfbfb00",
                       }}
                     >
+                      {store.user?.notifications?.length == 0 && (
+                        <small
+                          className="mx-3"
+                          style={{
+                            backgroundColor: "#fefefe",
+                            padding: "1rem",
+                            paddingRight: "15rem",
+                          }}
+                        >
+                          No notifications
+                        </small>
+                      )}{" "}
                       {store.user?.notifications?.map((notif, id) => {
                         return (
                           <DD.Item
@@ -195,6 +202,7 @@ function MyNavbar() {
                                   margin: "0px",
                                   fontWeight: "800",
                                   color: "#555",
+                                  maxwidth: "22rem",
                                 }}
                               >
                                 {notif.title}
@@ -214,8 +222,13 @@ function MyNavbar() {
                               style={{
                                 paddingLeft: "1rem",
                                 paddingRight: "1rem",
-                                color: "#555",
+                                color: "#777",
                                 fontSize: "12px",
+                                maxWidth: "25rem",
+                                lineHeight: "1.5",
+                                whiteSpace: "wrap",
+                                marginTop: "8px",
+                                marginBottom: "8px",
                               }}
                             >
                               {notif.message}

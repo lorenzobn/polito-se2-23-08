@@ -17,6 +17,13 @@ const createNotification = async (
   if (userType === userTypes.teacher) {
     teacherId = userId;
   }
+  if (title.length > 200) {
+    title = title.substring(0, 200) + "...";
+  }
+  if (message.length > 200) {
+    message = message.substring(0, 200) + "...";
+  }
+
   const query = {
     text: `
         INSERT INTO Notification (teacher_id, student_id, user_type, title, message, emailed, seen)
