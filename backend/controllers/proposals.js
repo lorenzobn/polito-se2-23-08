@@ -113,7 +113,9 @@ const createProposal = async (req, res) => {
     const cod_group = r.rows[0].cod_group;
     let activeStatus = "active";
 
-    //TODO: The deadline shoud be checked! assert(deadline > current_virtual_clock_time) === true
+    if(new Date(deadline) < req.session.clock.time){
+      return res.status(400).json({ msg: "The deadline is passed already!" });
+    }
     
     await pool.query('BEGIN');
 
