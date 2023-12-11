@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Container, Row, Nav, NavDropdown, Col } from "react-bootstrap";
+import {
+  Container,
+  Row,
+  Nav,
+  NavDropdown,
+  Col,
+  Dropdown as DD,
+} from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 import { StoreContext } from "../core/store/Provider";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -9,6 +16,9 @@ import {
   faMoon,
   faSun,
   faBell,
+  faCross,
+  faClose,
+  faCircleXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 import ReactSwitch from "react-switch";
@@ -124,12 +134,72 @@ function MyNavbar() {
           {store.user.authenticated && (
             <>
               <div className="d-flex justify-content-between align-items-center">
-                <FontAwesomeIcon
-                  style={{ color: "#ffffff", fontSize: "140%" }}
-                  icon={faBell}
-                  className="mx-2"
-                  role="button"
-                />
+                <div className="mx-2 ">
+                  {" "}
+                  <DD>
+                    <DD.Toggle variant="" id="dropdown-basic">
+                      <FontAwesomeIcon
+                        style={{ fontSize: "140%" }}
+                        icon={faBell}
+                        className="bell-active"
+                        role="button"
+                      />{" "}
+                    </DD.Toggle>
+
+                    <DD.Menu
+                      style={{
+                        width: "25rem",
+                        marginLeft: "-200px",
+                        pointerEvents: "none",
+                        border: "1px solid #e5e5e5",
+                      }}
+                    >
+                      <DD.Item
+                        style={{
+                          padding: "0px",
+                          borderBottom: "2px solid #e5e5e5",
+                          backgroundColor: "#fbfbfb",
+                        }}
+                      >
+                        <div
+                          className="d-flex  justify-content-between align-items-center"
+                          style={{
+                            height: "30px",
+                            padding: "1rem",
+                            borderBottom: "1px solid #e5e5e5",
+                          }}
+                        >
+                          <div
+                            style={{
+                              margin: "0px",
+                              fontWeight: "800",
+                              color: "#555",
+                            }}
+                          >
+                            Title
+                          </div>
+                          <div>
+                            <FontAwesomeIcon
+                              icon={faCircleXmark}
+                              role="button"
+                            />
+                          </div>
+                        </div>
+
+                        <div
+                          style={{
+                            paddingLeft: "1rem",
+                            paddingRight: "1rem",
+                            color: "#555",
+                          }}
+                        >
+                          s
+                        </div>
+                      </DD.Item>
+                    </DD.Menu>
+                  </DD>
+                </div>
+
                 <div
                   style={{ color: "white", fontSize: "120%" }}
                   className="mx-2"

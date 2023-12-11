@@ -449,3 +449,23 @@ a.dropdown-item:hover {
 .modal-button {
   margin: 0 20px;
 }
+
+.bell-passive {
+  font-size: "140%";
+  color: #fff;
+}
+
+@keyframes scaleAnimation {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+}
+.bell-active {
+  font-size: "140%";
+  color: #fc7a08;
+  animation: scaleAnimation 2s infinite linear;
+}
