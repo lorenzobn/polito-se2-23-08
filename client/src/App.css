@@ -58,6 +58,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100dvh;
+  transition: background-color .4s ease-in-out;
 }
 
 @media screen and (max-width: 768px) {

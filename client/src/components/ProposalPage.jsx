@@ -221,10 +221,10 @@ function ProposalPage() {
                     style={{
                       color:
                         status === "accepted"
-                          ? "green"
+                          ? "#007000"
                           : status === "rejected"
-                          ? "red"
-                          : "yellow",
+                          ? "#d2222d"
+                          : "#ffbf00",
                     }}
                   >
                     <strong>{status}</strong>
