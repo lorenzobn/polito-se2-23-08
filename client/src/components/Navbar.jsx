@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Container, Row, Nav, NavDropdown, Col } from "react-bootstrap";
 import { observer } from "mobx-react-lite";
 import { StoreContext } from "../core/store/Provider";
@@ -8,6 +8,7 @@ import {
   faUser,
   faMoon,
   faSun,
+  faBell,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
 import ReactSwitch from "react-switch";
@@ -17,20 +18,50 @@ import Dropdown from "./Dropdown";
 function MyNavbar() {
   const store = useContext(StoreContext);
   const [showVClock, setShowVClock] = useState(false);
+  const [midHeaderHeight, setMidHeaderHeight] = useState("300rem");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      let y = 150 - window.scrollY;
+      if (y < 0) y = 0;
+      y = y + 150;
+      setMidHeaderHeight(`${y}rem`);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    // Clean up the event listener on component unmount
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   const moon = (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height:'28px', width:'33px', scale:'120%' }}>
-      <FontAwesomeIcon
-        style={{ color: "#ffffff" }}
-        icon={faMoon}
-      />
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "28px",
+        width: "33px",
+        scale: "120%",
+      }}
+    >
+      <FontAwesomeIcon style={{ color: "#ffffff" }} icon={faMoon} />
     </div>
   );
   const sun = (
-    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center',height:'28px', width:'33px', scale:'120%' }}>
-      <FontAwesomeIcon
-        style={{ color: "#ffffff" }}
-        icon={faSun}
-      />
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        height: "28px",
+        width: "33px",
+        scale: "120%",
+      }}
+    >
+      <FontAwesomeIcon style={{ color: "#ffffff" }} icon={faSun} />
     </div>
   );
 
@@ -66,7 +97,7 @@ function MyNavbar() {
       <Row className="upper-nav ">
         <Col
           lg={{ span: 4, offset: 8 }}
-            className="d-flex justify-content-end align-items-center px-5"
+          className="d-flex justify-content-end align-items-center px-5"
         >
           <ReactSwitch
             className="switch"
@@ -92,15 +123,31 @@ function MyNavbar() {
           )}{" "}
           {store.user.authenticated && (
             <>
-              <div style={{ color: "white", fontSize: "120%" }}>
-                {`${store.user.id}`}
+              <div className="d-flex justify-content-between align-items-center">
+                <FontAwesomeIcon
+                  style={{ color: "#ffffff", fontSize: "140%" }}
+                  icon={faBell}
+                  className="mx-2"
+                  role="button"
+                />
+                <div
+                  style={{ color: "white", fontSize: "120%" }}
+                  className="mx-2"
+                >
+                  {`${store.user.id}`}
+                </div>
+                <div
+                  className="mx-3"
+                  style={{
+                    color: "white",
+                    fontSize: "20px",
+                    fontWeight: "100",
+                  }}
+                >
+                  {`${store.user.name} ${store.user.surname}`}
+                </div>
+                <Dropdown className="mx-2"></Dropdown>
               </div>
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <div style={{ color: "white", fontSize: "120%" }}>
-                {`${store.user.name} ${store.user.surname}`}
-              </div>
-              &nbsp;&nbsp;&nbsp;&nbsp;
-              <Dropdown></Dropdown>
             </>
           )}
         </Col>
@@ -112,7 +159,7 @@ function MyNavbar() {
               <motion.img
                 style={{ minWidth: "20%" }}
                 className="my-2"
-                width={"20%"}
+                width={midHeaderHeight}
                 src="../../images/logo_blu.png"
                 animate={{ opacity: 1 }}
                 initial={{ opacity: 0 }}
@@ -124,7 +171,7 @@ function MyNavbar() {
               <motion.img
                 style={{ minWidth: "20%" }}
                 className="my-2"
-                width={"20%"}
+                width={midHeaderHeight}
                 src="../../images/logo_bianco.png"
                 animate={{ opacity: 1 }}
                 initial={{ opacity: 0 }}
