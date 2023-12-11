@@ -34,7 +34,8 @@ jest.mock('../db/connection', () => ({
   query: jest.fn(),
 }));
 
-//createProposal, 7 test cases, DONE
+//createProposal, 8 test cases, DONE
+//TO DO : test case to check the deadline
 describe('T1 -- createProposal', () => {
 
   afterEach(() => {
@@ -379,7 +380,6 @@ describe('T1 -- createProposal', () => {
 
 });
 
-/*
 //getProposals
 describe('T2 -- GET /thesis-proposals', () => {
 
@@ -388,23 +388,32 @@ describe('T2 -- GET /thesis-proposals', () => {
     jest.clearAllMocks();
   });
 
-  // correct get proposals
-  it('T1.1 - Correct get of proposals', async () => {
-    // Mocking the pool.query to simulate an error
-    pool.query.mockResolvedValueOnce({
-      rows: [{ cod_group: 'AAA1' }],
-    });
-
+  //correct get proposals called by Professor
+  it('T2.1 - Correct get of proposals from Professor', async () => {
+    
     const req = {
       body: {
         // Crea un oggetto proposta di prova
-      }
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          time: new Date(),
+        },
+      },
     };
 
     const res = {
       status: jest.fn(() => res),
       json: jest.fn(),
     };
+
+      // Mocking the pool.query to simulate an error
+    pool.query.mockResolvedValueOnce({
+      rows: [{ cod_group: 'AAA1' }],
+    });
 
     // Effettua una richiesta GET alla rotta /thesis-proposals
     await getProposals(req, res);
@@ -414,6 +423,80 @@ describe('T2 -- GET /thesis-proposals', () => {
     expect(res.json).toHaveBeenCalledWith({
       msg: 'OK',
       data: [{ cod_group: "AAA1" }],
+    });
+  });
+
+  // correct get proposals called by student
+  it('T2.2 - Correct get of proposals from Student', async () => {
+    
+    const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+      },
+      session: {
+        user: {
+          id: 't123',
+          role: 'student'
+        },
+        clock: {
+          time: new Date(),
+        },
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+      // Mocking the pool.query to simulate an error
+    pool.query.mockResolvedValueOnce({
+      rows: [{ cod_group: 'AAA1' }],
+    });
+
+    // Effettua una richiesta GET alla rotta /thesis-proposals
+    await getProposals(req, res);
+
+    // Verifica che la risposta contenga il messaggio di errore
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({
+      msg: 'OK',
+      data: [{ cod_group: "AAA1" }],
+    });
+  });
+
+  // correct get proposals
+  it('T2.3 - Correct get of proposals from Professor', async () => {
+    
+    const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          time: new Date(),
+        },
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    // Mocking the pool.query to simulate the throwing of an error
+    pool.query.mockRejectedValueOnce(new Error('Error'));
+
+    // Effettua una richiesta GET alla rotta /thesis-proposals
+    await getProposals(req, res);
+
+    // Verifica che la risposta contenga il messaggio di errore
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({
+      msg: 'Error',
     });
   });
 });
@@ -571,125 +654,13 @@ describe('T4 -- GET /my-thesis-proposals', () => {
 });
 
 //updateProposal
-describe('T5 -- PUT /thesis-proposals/:proposalId', () => {
-
-  afterEach(() => {
-    // Interrompi le operazioni asincrone qui
-    jest.clearAllMocks();
-  });
-
-
-  // error 404, resource not found
-  it('T5.1 - Error 404, Thesis proposal not found.', async () => {
-    // Mocking the pool.query to simulate an error
-    pool.query.mockResolvedValueOnce({
-      rows: [],
-      rowCount: 0,
-    });
-
-    const req = {
-      params: {
-        proposalId: 1
-      },
-      body: {
-        // Crea un oggetto proposta di prova
-        title: 'Test Proposal 2',
-        type: 'Test Type',
-        description: 'Test Description',
-        requiredKnowledge: 'Test Knowledge',
-        notes: 'Test Notes',
-        level: 'BSc',
-        programme: 'LM-32',
-        deadline: new Date(),
-        status: 'Test Status',
-        keywords: [],
-        coSupervisors: []
-      },
-      session: {
-        user: {
-          id: 't123',
-        },
-      },
-    };
-
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-    // Effettua una richiesta PUT alla rotta /thesis-proposals/:proposalId
-    await updateProposal(req, res);
-
-    // Verifica che la risposta contenga il messaggio di errore
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({
-      msg: "Thesis proposal not found.",
-    });
-  });
-
-});
-
-//searchProposal
-describe('T6 -- GET /thesis-proposals/search', () => {
-
-  afterEach(() => {
-    // Interrompi le operazioni asincrone qui
-    jest.clearAllMocks();
-  });
-
-  
-  // correct search proposal
-  it('T6.1 - Correct search proposal', async () => {
-    // Mocking the pool.query to simulate an error
-    pool.query.mockResolvedValueOnce({
-      rows: [{ correct: 'correct' }],
-    });
-
-    const req = {
-      query: {
-        // Crea un oggetto proposta di prova
-        title: 'Test Proposal 2',
-        type: 'Test Type',
-        description: 'Test Description',
-        required_knowledge: 'Test Knowledge',
-        notes: 'Test Notes',
-        level: 'BSc',
-        programme: 'LM-32',
-        deadline: new Date(),
-        status: 'Test Status',
-        keywords: [],
-        coSupervisors: []
-      }
-    };
-
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-    // Effettua una richiesta GET alla rotta /thesis-proposals/search
-    await searchProposal(req, res);
-
-    // Verifica che la risposta contenga il messaggio di errore
-    //expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({
-      msg: 'OK',
-      data: [{ correct: "correct" }],
-    });
-  });
-
-});
-*/
-
-//UpdateProposal//
-
-describe('T2 -- updateProposal', () => {
+describe('T5 -- updateProposal', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  // T2.1 - Successfully update proposal
-  it('T2.1 - should return 200 and updated proposal', async () => {
+  // T5.1 - Successfully update proposal
+  it('T5.1 - should return 200 and updated proposal', async () => {
     const req = {
       params: {
         proposalId: 'someProposalId',
@@ -725,8 +696,8 @@ describe('T2 -- updateProposal', () => {
     });
   });
 
-  // T2.2 - Proposal not found
-  it('T2.2 - should return 404 if proposal not found', async () => {
+  // T5.2 - Proposal not found
+  it('T5.2 - should return 404 if proposal not found', async () => {
     const req = {
       params: {
         proposalId: 'nonExistentProposalId',
@@ -757,8 +728,8 @@ describe('T2 -- updateProposal', () => {
     expect(res.json).toHaveBeenCalledWith({ msg: 'Thesis proposal not found.' });
   });
 
-  // T2.3 - No valid fields provided for update
-  it('T2.3 - should return 400 if no valid fields provided for update', async () => {
+  // T5.3 - No valid fields provided for update
+  it('T5.3 - should return 400 if no valid fields provided for update', async () => {
     const req = {
       params: {
         proposalId: 'someProposalId',
@@ -783,8 +754,8 @@ describe('T2 -- updateProposal', () => {
     expect(res.json).toHaveBeenCalledWith({ msg: 'No valid fields provided for update.' });
   });
 
-  // T2.4 - Unknown error occurred during update
-  it('T2.4 - should return 500 if unknown error occurred during update', async () => {
+  // T5.4 - Unknown error occurred during update
+  it('T5.4 - should return 500 if unknown error occurred during update', async () => {
     const req = {
       params: {
         proposalId: 'someProposalId',
@@ -814,16 +785,14 @@ describe('T2 -- updateProposal', () => {
   });
 });
 
-
 // SearchProposal
-
-describe('T3 -- searchProposal', () => {
+describe('T6 -- searchProposal', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });
 
-  // T3.1 - Successfully find proposals
-  it('T3.1 - should return 200 and found proposals', async () => {
+  // T6.1 - Successfully find proposals
+  it('T6.1 - should return 200 and found proposals', async () => {
     const req = {
       query: {
         // Provide search criteria
@@ -854,8 +823,8 @@ describe('T3 -- searchProposal', () => {
     });
   });
 
-  // T3.2 - Resource not found
-  it('T3.2 - should return 404 if no proposals found', async () => {
+  // T6.2 - Resource not found
+  it('T6.2 - should return 404 if no proposals found', async () => {
     const req = {
       query: {
         // Provide search criteria
@@ -879,8 +848,8 @@ describe('T3 -- searchProposal', () => {
     expect(res.json).toHaveBeenCalledWith({ msg: 'Resource not found' });
   });
 
-  // T3.3 - Unknown error occurred during search
-  it('T3.3 - should return 500 if unknown error occurred during search', async () => {
+  // T6.3 - Unknown error occurred during search
+  it('T6.3 - should return 500 if unknown error occurred during search', async () => {
     const req = {
       query: {
         // Provide search criteria
