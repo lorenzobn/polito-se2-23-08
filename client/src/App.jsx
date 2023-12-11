@@ -75,8 +75,8 @@ function App() {
             element={store.user.type !== 'student'? <MyProposals></MyProposals>:<Navigate replace to='/'></Navigate>}
           ></Route>
           <Route
-            path="/editProposal/"
-            element={<EditProposal />}
+            path="/editProposal/:id"
+            element={<EditProposal></EditProposal>}
           ></Route>
           <Route path="/error" element={<ErrorPage></ErrorPage>}></Route>
         </Routes>
