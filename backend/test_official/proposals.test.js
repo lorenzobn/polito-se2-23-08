@@ -381,7 +381,7 @@ describe('T1 -- createProposal', () => {
 });
 
 //getProposals
-describe('T2 -- GET /thesis-proposals', () => {
+describe('T2 -- getProposals', () => {
 
   afterEach(() => {
     // Interrompi le operazioni asincrone qui
@@ -502,7 +502,12 @@ describe('T2 -- GET /thesis-proposals', () => {
 });
 
 //getProposalbyId
-describe('T3 -- GET /thesis-proposals', () => {
+//TO DO : 
+// • (?) test case to check the deadline
+// • test case to check the correct get of the keywords
+// • test case to check the correct get of the co-supervisors
+// • test case to check the correct get of the external co-supervisors
+describe('T3 -- getProposalbyId', () => {
 
   afterEach(() => {
     // Interrompi le operazioni asincrone qui
@@ -511,22 +516,31 @@ describe('T3 -- GET /thesis-proposals', () => {
 
   // error 404, resource not found
   it('T3.1 - Error 404, resource not found', async () => {
-    // Mocking the pool.query to simulate an error
-    pool.query.mockResolvedValueOnce({
-      rows: [],
-      rowCount: 0,
-    });
 
     const req = {
       params: {
         proposalId: 1
-      }
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          time: new Date(),
+        },
+      },
     };
 
     const res = {
       status: jest.fn(() => res),
       json: jest.fn(),
     };
+
+    // Mocking the pool.query to simulate an error
+    pool.query.mockResolvedValueOnce({
+      rows: [],
+      rowCount: 0,
+    });
 
     // Effettua una richiesta GET alla rotta /thesis-proposals
     await getProposalbyId(req, res);
@@ -540,6 +554,26 @@ describe('T3 -- GET /thesis-proposals', () => {
 
   // correct get proposal by id
   it('T3.2 - Correct get proposal by id', async () => {
+
+    const req = {
+      params: {
+        proposalId: 1
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          time: new Date(),
+        },
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
     // Mocking the pool.query to simulate an error
     pool.query.mockResolvedValueOnce({
       rows: [{ cod_group: 'AAA1' }],
@@ -552,19 +586,6 @@ describe('T3 -- GET /thesis-proposals', () => {
     getKeywords.mockResolvedValueOnce(key);
     getCoSupThesis.mockResolvedValueOnce(CoSup);
     getECoSupThesis.mockResolvedValueOnce(ECoSup);
-
-
-
-    const req = {
-      params: {
-        proposalId: 1
-      }
-    };
-
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
 
     // Effettua una richiesta GET alla rotta /thesis-proposals
     await getProposalbyId(req, res);
