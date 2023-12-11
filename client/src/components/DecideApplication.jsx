@@ -55,7 +55,6 @@ export default function AcceptApplications() {
       selectedForm.applicationid,
       "accepted"
     );
-    console.log(response);
     if (response.status !== 200) {
       toast.error(response.data.msg, {
         position: toast.POSITION.TOP_CENTER,

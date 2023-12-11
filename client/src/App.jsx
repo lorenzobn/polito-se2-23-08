@@ -10,6 +10,7 @@ import ProposalPage from "./components/ProposalPage";
 import MyProposals from "./components/MyProposals";
 import Applications from "./components/Applications";
 import DecideApplication from "./components/DecideApplication";
+import ErrorPage from "./components/404";
 import { StoreContext } from "./core/store/Provider";
 import Login from "./components/Login";
 import "react-toastify/dist/ReactToastify.css";
@@ -77,6 +78,7 @@ function App() {
             path="/editProposal/"
             element={<EditProposal />}
           ></Route>
+          <Route path="/error" element={<ErrorPage></ErrorPage>}></Route>
         </Routes>
       </BrowserRouter>
     </div>
