@@ -1,10 +1,13 @@
 const pool = require("../db/connection");
 
+const userTypes = {
+  student: "student",
+  teacher: "teacher",
+};
 const fetchSelf = async (req, res) => {
   try {
     if (!req.session.user) {
       return res.status(401).json({ msg: "Unauthorized" });
-
     }
     const id = req.session?.user?.id;
 
@@ -38,4 +41,4 @@ const fetchSelf = async (req, res) => {
   }
 };
 
-module.exports = { fetchSelf };
+module.exports = { fetchSelf, userTypes };

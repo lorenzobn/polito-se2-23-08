@@ -19,6 +19,7 @@
     "@authenio/samlify-xsd-schema-validator": "^1.0.5",
     "@boxyhq/saml-jackson": "^1.15.0",
     "@hapi/joi": "^17.1.1",
+    "@sendgrid/mail": "^8.1.0",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cookie-parser": "^1.4.6",
