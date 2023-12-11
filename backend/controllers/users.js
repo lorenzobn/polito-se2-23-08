@@ -9,6 +9,7 @@ const fetchSelf = async (req, res) => {
     if (!req.session.user) {
       return res.status(401).json({ msg: "Unauthorized" });
     }
+
     const id = req.session?.user?.id;
 
     const student = await pool.query(

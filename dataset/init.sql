@@ -107,7 +107,7 @@ CREATE TABLE IF NOT EXISTS Notification (
   id serial PRIMARY KEY,
   teacher_id varchar(30),
   student_id varchar(30),
-  user_type varchar(1) NOT NULL,
+  user_type varchar(10) NOT NULL,
   title varchar(255) NOT NULL,
   message varchar(255) NOT NULL,
   emailed boolean NOT NULL,

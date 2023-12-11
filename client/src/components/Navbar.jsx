@@ -16,8 +16,6 @@ import {
   faMoon,
   faSun,
   faBell,
-  faCross,
-  faClose,
   faCircleXmark,
 } from "@fortawesome/free-solid-svg-icons";
 import Button from "./Button";
@@ -29,7 +27,7 @@ function MyNavbar() {
   const store = useContext(StoreContext);
   const [showVClock, setShowVClock] = useState(false);
   const [midHeaderHeight, setMidHeaderHeight] = useState("300rem");
-
+  const [showNotifications, setShowNotifications] = useState(false);
   useEffect(() => {
     const handleScroll = () => {
       let y = 150 - window.scrollY;
@@ -77,6 +75,22 @@ function MyNavbar() {
 
   return (
     <Container className="nav-wrap" fluid>
+      {showNotifications && (
+        <div
+          style={{
+            position: "fixed",
+            backgroundColor: "black",
+            height: "100%",
+            width: "100%",
+            zIndex: "10",
+            opacity: "0.3",
+            left: "0",
+          }}
+          onClick={() => {
+            setShowNotifications(false);
+          }}
+        ></div>
+      )}
       <div
         className="clock-toggle text-center"
         onClick={() => {
@@ -135,8 +149,11 @@ function MyNavbar() {
             <>
               <div className="d-flex justify-content-between align-items-center">
                 <div className="mx-2 ">
-                  {" "}
-                  <DD>
+                  <DD
+                    onClick={() => {
+                      setShowNotifications((state) => !state);
+                    }}
+                  >
                     <DD.Toggle variant="" id="dropdown-basic">
                       <FontAwesomeIcon
                         style={{ fontSize: "140%" }}
@@ -150,52 +167,62 @@ function MyNavbar() {
                       style={{
                         width: "25rem",
                         marginLeft: "-200px",
-                        pointerEvents: "none",
                         border: "1px solid #e5e5e5",
+                        zIndex: "100",
                       }}
                     >
-                      <DD.Item
-                        style={{
-                          padding: "0px",
-                          borderBottom: "2px solid #e5e5e5",
-                          backgroundColor: "#fbfbfb",
-                        }}
-                      >
-                        <div
-                          className="d-flex  justify-content-between align-items-center"
-                          style={{
-                            height: "30px",
-                            padding: "1rem",
-                            borderBottom: "1px solid #e5e5e5",
-                          }}
-                        >
-                          <div
+                      {store.user?.notifications?.map((notif, id) => {
+                        return (
+                          <DD.Item
+                            key={id}
                             style={{
-                              margin: "0px",
-                              fontWeight: "800",
-                              color: "#555",
+                              padding: "0px",
+                              borderBottom: "2px solid #e5e5e5",
+                              backgroundColor: "#fbfbfb",
                             }}
                           >
-                            Title
-                          </div>
-                          <div>
-                            <FontAwesomeIcon
-                              icon={faCircleXmark}
-                              role="button"
-                            />
-                          </div>
-                        </div>
+                            <div
+                              className="d-flex justify-content-between align-items-center"
+                              style={{
+                                height: "30px",
+                                padding: "1rem",
+                                borderBottom: "1px solid #e5e5e5",
+                                backgroundColor: "#f5f5f5",
+                              }}
+                            >
+                              <div
+                                style={{
+                                  margin: "0px",
+                                  fontWeight: "800",
+                                  color: "#555",
+                                }}
+                              >
+                                {notif.title}
+                              </div>
+                              <div>
+                                <FontAwesomeIcon
+                                  icon={faCircleXmark}
+                                  role="button"
+                                  onClick={() => {
+                                    store.markNotificationAsSeen(notif.id);
+                                  }}
+                                />
+                              </div>
+                            </div>
 
-                        <div
-                          style={{
-                            paddingLeft: "1rem",
-                            paddingRight: "1rem",
-                            color: "#555",
-                          }}
-                        >
-                          s
-                        </div>
-                      </DD.Item>
+                            <div
+                              style={{
+                                paddingLeft: "1rem",
+                                paddingRight: "1rem",
+                                color: "#555",
+                                fontSize: "12px",
+                              }}
+                            >
+                              {notif.message}
+                            </div>
+                          </DD.Item>
+                        );
+                      })}
                     </DD.Menu>
                   </DD>
                 </div>

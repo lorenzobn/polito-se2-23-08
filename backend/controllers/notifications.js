@@ -1,4 +1,5 @@
-import { userTypes } from "./users";
+const { userTypes } = require("./users");
+const pool = require("../db/connection");
 
 const createNotification = async (
   userId,
@@ -32,13 +33,13 @@ const createNotification = async (
       // handle sending email
     }
   } catch (error) {
-    logger.error(error.message);
     throw error;
   }
 };
 
-const listNotificationsByUserId = async (req, res) => {
-  const { userId, userType } = req.body;
+const getNotificationsByUserId = async (req, res) => {
+  const userId = req.session.user.id;
+  const userType = req.session.user.role;
   const columnName =
     userType === userTypes.teacher ? "teacher_id" : "student_id";
   const query = {
@@ -51,10 +52,9 @@ const listNotificationsByUserId = async (req, res) => {
 
   try {
     const result = await pool.query(query);
-    return result.rows;
+    return res.status(200).json({ data: result.rows });
   } catch (error) {
-    logger.error(error.message);
-    res.status(500).json({ error: "getting notifications" });
+    res.status(500).json({ error: "error on getting notifications" });
   }
 };
 const markNotificationAsSeen = async (req, res) => {
@@ -71,14 +71,13 @@ const markNotificationAsSeen = async (req, res) => {
 
   try {
     const result = await pool.query(query);
-    return result.rows[0];
+    return res.status(200).json({ msg: "done" });
   } catch (error) {
-    logger.error(error.message);
     throw error;
   }
 };
 module.exports = {
   markNotificationAsSeen,
-  listNotificationsByUserId,
+  getNotificationsByUserId,
   createNotification,
 };
