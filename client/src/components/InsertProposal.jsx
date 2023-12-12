@@ -124,7 +124,7 @@ function InsertProposal({proposalData}) {
       });
     };
     handleEffect();
-  }, [formData, selectedKeywords]);
+  }, [selectedKeywords]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
