@@ -18,6 +18,7 @@ import {
   getAllCds as getAllCdSAPI,
   getAllProgrammes as getAllProgrammesAPI,
   getExternalCoSupervisors as getExtCoSupervisorsAPI,
+  updateProposal as updateProposalAPI,
 } from "../API/proposals";
 import {
   checkApplied as checkAppliedAPI,
@@ -58,6 +59,8 @@ export class Store {
       toggleTheme: action,
       getNotifications: action,
       markNotificationAsSeen: action,
+      deleteProposal: action,
+      archiveProposal: action,
     });
   }
 
@@ -351,6 +354,25 @@ export class Store {
       return res.data;
     } catch (err) {
       return [];
+    }
+  }
+
+  async deleteProposal(id) {
+    try {
+      const res = await updateProposalAPI(id, { status: "deleted" });
+      window.location.reload();
+      return res.data;
+    } catch (err) {
+      toast.error("Unexpected error");
+    }
+  }
+  async archiveProposal(id) {
+    try {
+      const res = await updateProposalAPI(id, { status: "archived" });
+      window.location.reload();
+      return res.data;
+    } catch (err) {
+      toast.error("Unexpected error");
     }
   }
   setLoading(state) {}

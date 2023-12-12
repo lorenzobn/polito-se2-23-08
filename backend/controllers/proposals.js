@@ -27,6 +27,26 @@ const proposalSchema = Joi.object({
   keywords: Joi.array(),
 });
 
+const updateProposalSchema = Joi.object({
+  title: Joi.string().min(8).max(150),
+  coSupervisors: Joi.array(),
+  type: Joi.string().min(1).max(30),
+  description: Joi.string().max(500),
+  requiredKnowledge: Joi.string().allow(""),
+  notes: Joi.string().allow(""),
+  level: Joi.string().valid("BSc", "MSc"),
+  programme: Joi.string().max(10),
+  deadline: Joi.date(), //default format is MM/DD/YYYY
+  keywords: Joi.array(),
+  status: Joi.string().valid(
+    "active",
+    "disabled",
+    "pending",
+    "deleted",
+    "completed",
+    "archived"
+  ),
+});
 const getAllCdS = async (req, res) => {
   const query = `
   SELECT * FROM DEGREE;
@@ -120,11 +140,11 @@ const createProposal = async (req, res) => {
     const cod_group = r.rows[0].cod_group;
     let activeStatus = "active";
 
-    if(new Date(deadline) < req.session.clock.time){
+    if (new Date(deadline) < req.session.clock.time) {
       return res.status(400).json({ msg: "The deadline is passed already!" });
     }
-    
-    await pool.query('BEGIN');
+
+    await pool.query("BEGIN");
 
     const query = `
       INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, COD_GROUP, description, required_knowledge, notes, level, programme, deadline, status, created_at)
@@ -295,6 +315,44 @@ const getProposalsByTeacher = async (req, res) => {
     return res.status(500).json({ msg: errorMsg });
   }
 };
+const deleteProposal = async (req, res) => {
+  const query1 = {
+    text: "SELECT * FROM thesis_proposal WHERE id=$1 AND SUPERVISOR_id=$2 AND created_at < $3",
+    values: [
+      req.params.proposalId,
+      req.session.user.id,
+      req.session.clock.time,
+    ],
+  };
+  const query2 = {
+    text: "DELETE FROM thesis_proposal WHERE id=$1 AND created_at < $2",
+    values: [req.params.proposalId, req.session.clock.time],
+  };
+  try {
+    const result = await pool.query(query1);
+    if (result.rows.length === 0) {
+      return res
+        .status(401)
+        .json({ msg: "You don't have access to this resource!" });
+    }
+    await pool.query(query2);
+    return res
+      .status(200)
+      .json({ msg: "Proposal has been deleted successfully!" });
+  } catch (error) {
+    errorMsg = "";
+    switch (error.code) {
+      case "22P02":
+        errorMsg = "Invalid data provided";
+        break;
+      default:
+        errorMsg = "Unknown error occurred";
+        break;
+    }
+    console.log(error);
+    return res.status(500).json({ msg: errorMsg });
+  }
+};
 
 const updateProposal = async (req, res) => {
   // TODO check if proposal is owned by the professor who makes the request
@@ -303,20 +361,19 @@ const updateProposal = async (req, res) => {
     const { proposalId } = req.params;
     const updateFields = req.body;
 
-    const { error } = proposalSchema.validate(updateFields, {
+    const { error } = updateProposalSchema.validate(updateFields, {
       allowUnknown: true,
     });
     if (error) {
       return res.status(400).json({ msg: error.details[0].message });
     }
-
+    console.log(proposalId);
     // 1. Get who is the supervisor of this proposal: assert(supervisor === req.user.session.id)
 
     const setClause = Object.entries(updateFields)
       .filter(([key, value]) => value !== undefined && value !== "")
-      .map(([key, value], index) => `${key} = $${index + 2}`)
+      .map(([key, value], index) => `${key} = $${index + 3}`)
       .join(", ");
-
     if (!setClause) {
       return res
         .status(400)
@@ -335,7 +392,7 @@ const updateProposal = async (req, res) => {
       req.session.clock.time,
       ...Object.values(updateFields).filter((value) => value !== undefined),
     ];
-
+    console.log(query, updateFields);
     const result = await pool.query(query, values);
 
     if (result.rows.length === 0) {
@@ -353,7 +410,7 @@ const updateProposal = async (req, res) => {
       data: result.rows[0],
     });
   } catch (error) {
-    logger.error(error);
+    console.log(error);
     return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
@@ -408,4 +465,5 @@ module.exports = {
   getAllCdS,
   getAllGroups,
   getAllProgrammes,
+  deleteProposal,
 };

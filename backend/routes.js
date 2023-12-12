@@ -66,11 +66,13 @@ router.get(
   authorize(userRoles.any),
   getProposalbyId
 );
+
 router.put(
   "/thesis-proposals/:proposalId",
   authorize(userRoles.teacher),
   updateProposal
 );
+
 
 router.post(
   "/my-applications",
