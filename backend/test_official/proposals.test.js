@@ -1,11 +1,6 @@
-const request = require('supertest');
-const jwt = require('jsonwebtoken');
-const authorize = require('../controllers/auth');
-const { createProposal, getProposals, getProposalbyId, getProposalsByTeacher, updateProposal, searchProposal } = require('../controllers/proposals');
+const { createProposal, getProposals, getProposalbyId, getProposalsByTeacher, updateProposal, searchProposal, getAllCdS, getAllGroups, getAllProgrammes } = require('../controllers/proposals');
 const pool = require("../db/connection");
-const { coSupervisorAdd, getExtCoSupervisors, getCoSupervisors, keywordsAdd, getKeywords, getCoSupThesis, getECoSupThesis } = require("../controllers/utils");
-const { get } = require('mongoose');
-const utils = require('../controllers/utils');
+const { coSupervisorAdd, keywordsAdd, getKeywords, getCoSupThesis, getECoSupThesis} = require("../controllers/utils");
 
 jest.mock('../controllers/auth', () => ({
   ...jest.requireActual('../controllers/auth'),
@@ -1167,5 +1162,118 @@ describe('T6 -- searchProposal', () => {
     expect(res.json).toHaveBeenCalledWith({ msg: 'OK', data: [{example_data: "example data"}] });
   });
 
+});
+
+//getAllCds
+describe('T7 -- getAllCdS', () => {
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  // T7.1 - should return 500 and an error message when the query fails
+  it('T7.1 -- should return 201 and the results when the query is successful', async () => {
+    const mockRows = [{ /* dati del corso di laurea 1 */ }, { /* dati del corso di laurea 2 */ }];
+    pool.query.mockResolvedValueOnce({ rows: mockRows });
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await getAllCdS({}, res);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({ data: mockRows });
+  });
+
+  // T7.2 - should return 500 and an error message when the query fails
+  it('T7.2 -- should return 500 and an error message when the query fails', async () => {
+    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await getAllCdS({}, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ msg: "Unknown error occurred" });
+  });
+});
+
+//getAllProgrammes
+describe('T8 -- getAllProgrammes', () => {
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('T8.1 -- should return 201 and the results when the query is successful', async () => {
+    const mockRows = [{ /* dati del programma 1 */ }, { /* dati del programma 2 */ }];
+    pool.query.mockResolvedValueOnce({ rows: mockRows });
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await getAllProgrammes({}, res);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({ data: mockRows });
+  });
+
+  it('T8.2 -- should return 500 and an error message when the query fails', async () => {
+    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await getAllProgrammes({}, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ msg: "Unknown error occurred" });
+  });
+});
+
+//getAllGroups
+describe('T9 -- getAllGroups', () => {
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('T9.1 -- should return 201 and the results when the query is successful', async () => {
+    const mockRows = [{ /* dati del programma 1 */ }, { /* dati del programma 2 */ }];
+    pool.query.mockResolvedValueOnce({ rows: mockRows });
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await getAllGroups({}, res);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({ data: mockRows });
+  });
+
+  it('T9.2 -- should return 500 and an error message when the query fails', async () => {
+    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await getAllGroups({}, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ msg: "Unknown error occurred" });
+  });
 });
 
