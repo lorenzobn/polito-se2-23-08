@@ -1099,13 +1099,12 @@ describe('T6 -- searchProposal', () => {
     jest.clearAllMocks();
   });
 
-  // T6.1 - Successfully find proposals
-  it('T6.1 - should return 200 and found proposals', async () => {
+  // T6.1 - Resource not found
+  it('T6.1 - should return 400 if validation fails', async () => {
     const req = {
       query: {
         // Provide search criteria
-        title: 'Test',
-        type: 'Type',
+        title: 16,
       },
     };
     const res = {
@@ -1113,30 +1112,19 @@ describe('T6 -- searchProposal', () => {
       json: jest.fn(),
     };
 
-    // Mocking pool.query to simulate finding proposals
-    pool.query.mockResolvedValueOnce({
-      rowCount: 2,
-      rows: [
-        { /* Proposal data 1 */ },
-        { /* Proposal data 2 */ },
-      ],
-    });
 
     await searchProposal(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({
-      msg: 'OK',
-      data: expect.any(Array),
-    });
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: '"title" must be a string' });
   });
 
   // T6.2 - Resource not found
-  it('T6.2 - should return 404 if no proposals found', async () => {
+  it('T6.2 - should return 404 if resource is not found', async () => {
     const req = {
       query: {
         // Provide search criteria
-        title: 'Nonexistent',
+        title: "Test",
       },
     };
     const res = {
@@ -1144,10 +1132,9 @@ describe('T6 -- searchProposal', () => {
       json: jest.fn(),
     };
 
-    // Mocking pool.query to simulate no proposals found
     pool.query.mockResolvedValueOnce({
-      rowCount: 0,
       rows: [],
+      rowCount: 0,
     });
 
     await searchProposal(req, res);
@@ -1156,12 +1143,12 @@ describe('T6 -- searchProposal', () => {
     expect(res.json).toHaveBeenCalledWith({ msg: 'Resource not found' });
   });
 
-  // T6.3 - Unknown error occurred during search
-  it('T6.3 - should return 500 if unknown error occurred during search', async () => {
+  // T6.3 - Resource found correctly
+  it('T6.3 - should return 200 if if everything is fine', async () => {
     const req = {
       query: {
         // Provide search criteria
-        title: 'Test',
+        title: "Test",
       },
     };
     const res = {
@@ -1169,13 +1156,16 @@ describe('T6 -- searchProposal', () => {
       json: jest.fn(),
     };
 
-    // Mocking pool.query to simulate an unknown error during search
-    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
+    pool.query.mockResolvedValueOnce({
+      rows: [{example_data: "example data"}],
+      rowCount: 1,
+    });
 
     await searchProposal(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ msg: 'Unknown error occurred' });
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'OK', data: [{example_data: "example data"}] });
   });
+
 });
 
