@@ -2,11 +2,9 @@ const pool = require("../db/connection");
 const Joi = require("@hapi/joi");
 const { userRoles } = require("./auth");
 const logger = require('../services/logger.js');
-
-
 const fs = require("fs");
 const path = require("path");
-// TODO: Only STUDENTS
+
 
 const uploadPath = "uploads/";
 const createApplication = async (req, res) => {
@@ -20,9 +18,11 @@ const createApplication = async (req, res) => {
       cv_uri: Joi.string().allow(""),
     });
 
+    //TODO: is the thesis active? assert(thesis_id.status === active)
+
     const { error, value } = applicationSchema.validate(req.body);
     if (error) {
-      console.log(error);
+      logger.error(error);
       return res.status(400).json({ msg: error.details[0].message });
     }
     const file = req.files && req.files.file;
@@ -127,7 +127,6 @@ const updateApplication = async (req, res) => {
   notAuthorized = true;
   try {
     const { applicationId } = req.params;
-    logger.info(req.session.user);
     if (req.session.user.role != userRoles.teacher) {
       return res.status(401).json({ msg: "Unauthorized" });
     } else {

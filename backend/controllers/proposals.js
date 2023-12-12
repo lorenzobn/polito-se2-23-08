@@ -25,6 +25,20 @@ const proposalSchema = Joi.object({
   keywords: Joi.array(),
 });
 
+// In this schema nothing is required
+const proposalSchemaUpdate = Joi.object({
+  title: Joi.string().min(8).max(150),
+  coSupervisors: Joi.array(),
+  type: Joi.string().min(1).max(30),
+  description: Joi.string().max(500),
+  requiredKnowledge: Joi.string().allow(""),
+  notes: Joi.string().allow(""),
+  level: Joi.string().valid("BSc", "MSc"),
+  programme: Joi.string().max(10),
+  deadline: Joi.date(),
+  keywords: Joi.array(),
+});
+
 const getAllCdS = async (req, res) => {
   const query = `
   SELECT * FROM DEGREE;
@@ -107,7 +121,7 @@ const createProposal = async (req, res) => {
       SUPERVISOR_id,
     ]);
     if (!r || !r) {
-      return res.status(400).json({ msg: "Invalid group provided." });
+      return res.status(400).json({ msg: "Invalid supervisor provided." });
     }
 
     const cod_group = r.rows[0].cod_group;
@@ -281,26 +295,83 @@ const getProposalsByTeacher = async (req, res) => {
 };
 
 const updateProposal = async (req, res) => {
-  // TODO check if proposal is owned by the professor who makes the request
-  // TODO Editing is disabled if there is one accepted application!
+  // TODO: Editing is disabled if there is one accepted application!
+  // TODO: Handling update of keywords and co-supervisions
   try {
     const { proposalId } = req.params;
     const updateFields = req.body;
+    const {
+      title,
+      type,
+      description,
+      requiredKnowledge,
+      notes,
+      level,
+      programme,
+      deadline,
+      keywords,
+      coSupervisors,
+    } = req.body;
 
-    const { error } = proposalSchema.validate(updateFields, {
-      allowUnknown: true,
-    });
+    const { error } = proposalSchemaUpdate.validate(updateFields)
     if (error) {
       return res.status(400).json({ msg: error.details[0].message });
     }
 
-    // 1. Get who is the supervisor of this proposal: assert(supervisor === req.user.session.id)
+    let query = {
+      text: "SELECT supervisor_id FROM THESIS_PROPOSAL WHERE thesis_proposal.id=$1;",
+      values: [proposalId],
+    };   
+
+    let r = await pool.query(query);
+    if(r.rowCount == 0 || !r.rows[0].supervisor_id){
+      return res.status(400).json({ msg: "Invalid proposal id." });
+    }
+
+    logger.info(r);
+
+    if(r.rows[0].supervisor_id !== req.session.user.id){
+      return res.status(401).json({ msg: "Not authorized to update this proposal." });
+    }
+
+    //2. Check if there is already an accepted application for this thesis proposal: if yes, cannot edit!
 
 
+    //3. Is there a deadline?
+    if(deadline != undefined && new Date(deadline) < req.session.clock.time){
+      return res.status(400).json({ msg: "The deadline is passed already!" });
+    }
 
-    const setClause = Object.entries(updateFields)
-      .filter(([key, value]) => value !== undefined && value !== "")
-      .map(([key, value], index) => `${key} = $${index + 2}`)
+    //4. is there a programme?
+    if(programme != undefined){
+      r = await pool.query("SELECT COD_DEGREE FROM DEGREE WHERE COD_DEGREE=$1", [
+        programme,
+      ]);
+      if (!r || !r) {
+        return res.status(400).json({ msg: "Invalid Programme/CdS provided." });
+      }
+    }
+
+    //4. TODO: Check what needs to be updated: keywords? Supervision?
+    /* ... */
+
+    if(updateFields.requiredKnowledge){
+      updateFields.required_knowledge = updateFields.requiredKnowledge
+      delete updateFields.requiredKnowledge
+    }
+
+    const thesisRelation = Object.keys(updateFields).reduce(function(newObj, key) {
+      if (['title', 'type', 'description', 'required_knowledge', 'notes', 'level', 'programme', 'deadline'].indexOf(key) !== -1) {
+          newObj[key] = updateFields[key];
+      }
+      return newObj;
+    }, {});
+    
+    logger.info(thesisRelation);
+
+    const setClause = Object.entries(thesisRelation)
+      .filter(([key, value]) => value !== undefined)
+      .map(([key, value], index) => `${key} = $${index + 3}`)
       .join(", ");
 
     if (!setClause) {
@@ -309,7 +380,7 @@ const updateProposal = async (req, res) => {
         .json({ msg: "No valid fields provided for update." });
     }
 
-    const query = `
+    query = `
       UPDATE thesis_proposal
       SET ${setClause}
       WHERE id = $1 AND created_at < $2
@@ -319,7 +390,7 @@ const updateProposal = async (req, res) => {
     const values = [
       proposalId,
       req.session.clock.time,
-      ...Object.values(updateFields).filter((value) => value !== undefined),
+      ...Object.values(thesisRelation),
     ];
 
     const result = await pool.query(query, values);
