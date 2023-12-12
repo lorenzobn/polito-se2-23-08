@@ -299,6 +299,7 @@ const updateProposal = async (req, res) => {
   // TODO: Handling update of keywords and co-supervisions
   try {
     const { proposalId } = req.params;
+
     const updateFields = req.body;
     const {
       title,
@@ -395,7 +396,7 @@ const updateProposal = async (req, res) => {
 
     const result = await pool.query(query, values);
 
-    if (result.rows.length === 0) {
+    if (result.rowCount === 0) {
       return res.status(404).json({ msg: "Thesis proposal not found." });
     }
 
@@ -405,7 +406,7 @@ const updateProposal = async (req, res) => {
     });
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ msg: "Unknown error occurred" });
+    return res.status(500).json({ msg: error.message });
   }
 };
 

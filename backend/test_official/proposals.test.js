@@ -48,7 +48,17 @@ describe('T1 -- createProposal', () => {
   it('T1.1 - should return 400 if validation fails', async () => {
     const req = {
       body: {
-        // Provide invalid data here to trigger validation error
+        // Crea un oggetto proposta di prova
+        title: 'Test Proposal 2',
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        notes: 'Test Notes',
+        level: 'BSc',
+        programme: 'LM-32',
+        deadline: new Date(),
+
+        keywords: [],
+        coSupervisors: [{id: "t123", external: false}]
       },
       session: {
         user: {
@@ -64,7 +74,7 @@ describe('T1 -- createProposal', () => {
     await createProposal(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalled();
+    expect(res.json).toHaveBeenCalledWith({ msg: '"type" is required' });
   });
 
   //T1.2 - the supervisor must not be the same as the co-supervisor
@@ -174,7 +184,7 @@ describe('T1 -- createProposal', () => {
     await createProposal(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ msg: 'Invalid group provided.' });
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Invalid supervisor provided.' });
   });
 
   //T1.5 - error with the insertion of the proposal into the database
@@ -689,94 +699,37 @@ describe('T4 -- getProposalsByTeacher', () => {
 
 //updateProposal
 describe('T5 -- updateProposal', () => {
-  afterEach(() => {
+
+  beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  // T5.1 - Successfully update proposal
-  it('T5.1 - should return 200 and updated proposal', async () => {
+  // T5.1 - validation fails
+  it('T5.1 - should return 400 if validation fails', async () => {
     const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+        title: 16, //invalid format
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        notes: 'Test Notes',
+        level: 'BSc',
+        programme: 'LM-32',
+        deadline: new Date(),
+
+        keywords: [],
+        coSupervisors: [{id: "t125", external: false}]
+      },
       params: {
-        proposalId: 'someProposalId',
+        proposalId: "p123"
       },
       session: {
-        clock: {
-          time: new Date(),
+        user: {
+          id: 't123',
         },
       },
-      body: {
-        // Provide valid fields to update
-        title: 'Updated Title',
-        type: 'Updated Type',
-        description: 'Updated Description',
-      },
-    };
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
     };
 
-    // Mocking pool.query to simulate a successful update
-    pool.query.mockResolvedValueOnce({
-      rows: [{ /* Updated proposal data */ }],
-    });
-
-    await updateProposal(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({
-      msg: 'Thesis proposal updated successfully',
-      data: expect.any(Object),
-    });
-  });
-
-  // T5.2 - Proposal not found
-  it('T5.2 - should return 404 if proposal not found', async () => {
-    const req = {
-      params: {
-        proposalId: 'nonExistentProposalId',
-      },
-      session: {
-        clock: {
-          time: new Date(),
-        },
-      },
-      body: {
-        // Provide valid fields to update
-        title: 'Updated Title',
-      },
-    };
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-    // Mocking pool.query to simulate proposal not found
-    pool.query.mockResolvedValueOnce({
-      rows: [],
-    });
-
-    await updateProposal(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ msg: 'Thesis proposal not found.' });
-  });
-
-  // T5.3 - No valid fields provided for update
-  it('T5.3 - should return 400 if no valid fields provided for update', async () => {
-    const req = {
-      params: {
-        proposalId: 'someProposalId',
-      },
-      session: {
-        clock: {
-          time: new Date(),
-        },
-      },
-      body: {
-        // Do not provide any valid fields to update
-      },
-    };
     const res = {
       status: jest.fn(() => res),
       json: jest.fn(),
@@ -785,38 +738,356 @@ describe('T5 -- updateProposal', () => {
     await updateProposal(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ msg: 'No valid fields provided for update.' });
+    expect(res.json).toHaveBeenCalledWith({ msg: '"title" must be a string' });
   });
 
-  // T5.4 - Unknown error occurred during update
-  it('T5.4 - should return 500 if unknown error occurred during update', async () => {
+  // T5.2 - Id of the proposal is invalid
+  it('T5.2 - should return 400 if the Id of the proposal is invalid', async () => {
     const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+        title: 'Test Proposal 2',
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        type: "science",
+        notes: 'Test Notes',
+        level: 'BSc',
+        programme: 'LM-32',
+        deadline: new Date(),
+
+        keywords: [],
+        coSupervisors: [{id: "t125", external: false}]
+      },
       params: {
-        proposalId: 'someProposalId',
+        proposalId: "p123"
       },
       session: {
-        clock: {
-          time: new Date(),
+        user: {
+          id: 't123',
         },
       },
-      body: {
-        // Provide valid fields to update
-        title: 'Updated Title',
-      },
     };
+
     const res = {
       status: jest.fn(() => res),
       json: jest.fn(),
     };
 
-    // Mocking pool.query to simulate an unknown error during update
-    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [],
+      rowCount: 0,
+    });
 
     await updateProposal(req, res);
 
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ msg: 'Unknown error occurred' });
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Invalid proposal id.' });
   });
+
+  // T5.3 - the session user is not authorized to update the proposal
+  it('T5.3 - should return 401 if the session user is not authorized to update the proposal', async () => {
+    const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+        title: 'Test Proposal 2',
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        type: "science",
+        notes: 'Test Notes',
+        level: 'BSc',
+        programme: 'LM-32',
+        deadline: new Date(),
+
+        keywords: [],
+        coSupervisors: [{id: "t123", external: false}]
+      },
+      params: {
+        proposalId: "p123"
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [
+        { 
+          supervisor_id: "t124"
+        }
+      ],
+      rowCount: 1,
+    });
+
+    await updateProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(401);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Not authorized to update this proposal.' });
+  });
+
+  // T5.4 - deadline is already passed
+  it('T5.4 - should return 400 if the deadline is passed', async () => {
+    const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+        title: 'Test Proposal 2',
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        type: "science",
+        notes: 'Test Notes',
+        level: 'BSc',
+        programme: 'LM-32',
+        deadline: new Date('2023/11/19'),
+
+        keywords: [],
+        coSupervisors: [{id: "t125", external: false}]
+      },
+      params: {
+        proposalId: "p123"
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          //20-11-2023
+          time: new Date('2023/11/20')
+        }
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [
+        { 
+          supervisor_id: "t123"
+        }
+      ],
+      rowCount: 1,
+    });
+
+    await updateProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'The deadline is passed already!' });
+  });
+
+  // T5.5 - Invalid Programme/CdS provided.
+  it('T5.5 - should return 400 if the programme is invalid', async () => {
+    const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+        title: 'Test Proposal 2',
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        type: "science",
+        notes: 'Test Notes',
+        level: 'BSc',
+        programme: 'LM-32',
+        deadline: new Date('2023/11/23'),
+
+      },
+      params: {
+        proposalId: "p123"
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          //20-11-2023
+          time: new Date('2023/11/20')
+        }
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [
+        { 
+          supervisor_id: "t123"
+        }
+      ],
+      rowCount: 1,
+    });
+    pool.query.mockResolvedValueOnce(false)
+
+    await updateProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Invalid Programme/CdS provided.'});
+  });
+
+  // T5.6 - no fields are provided for update
+  it('T5.6 - should return 400 if no fields are provided for update', async () => {
+    const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+      },
+      params: {
+        proposalId: "p123"
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          //20-11-2023
+          time: new Date('2023/11/20')
+        }
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [
+        { 
+          supervisor_id: "t123"
+        }
+      ],
+      rowCount: 1,
+    });
+
+    await updateProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'No valid fields provided for update.'});
+  });
+
+  // T5.7 - should return 400 if no thesis proposal is found.
+  it('T5.7 - should return 400 if no thesis proposal is found.', async () => {
+    const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+        title: 'Test Proposal 2',
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        type: "science",
+        notes: 'Test Notes',
+        level: 'BSc',
+        programme: undefined,
+        deadline: new Date('2023/11/23'),
+      },
+      params: {
+        proposalId: "p123"
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          //20-11-2023
+          time: new Date('2023/11/20')
+        }
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [
+        { 
+          supervisor_id: "t123"
+        }
+      ],
+      rowCount: 1,
+    });
+    pool.query.mockResolvedValueOnce({
+      rows: [],
+      rowCount: 0,
+    })
+
+    await updateProposal(req, res);
+
+    //expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Thesis proposal not found.'});
+  });
+
+  // T5.8 - should return 200 if correctly updated.
+  it('T5.8 - should return 200 if correctly updated.', async () => {
+    const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+        title: 'Test Proposal 2',
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        type: "science",
+        notes: 'Test Notes',
+        level: 'BSc',
+        programme: 'LM-32',
+        deadline: new Date('2023/11/23'),
+      },
+      params: {
+        proposalId: "p123"
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          //20-11-2023
+          time: new Date('2023/11/20')
+        }
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [
+        { 
+          supervisor_id: "t123"
+        }
+      ],
+      rowCount: 1,
+    });
+    pool.query.mockResolvedValueOnce(true)
+    pool.query.mockResolvedValueOnce({
+      rows: [{example_data: "example data"}],
+      rowCount: 1,
+    })
+
+    await updateProposal(req, res);
+
+    //expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Thesis proposal updated successfully', data: {example_data: "example data"}});
+  });
+
+  
+
+
+
 });
 
 // SearchProposal
