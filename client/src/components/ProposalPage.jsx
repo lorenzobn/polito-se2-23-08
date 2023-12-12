@@ -46,7 +46,6 @@ function ProposalPage() {
     // we need to define it separately and run it
     const handleEffect = async () => {
       const response = await store.getProposal(proposalId);
-      console.log(response);
       setProposal({
         title: response.data[0].title,
         description: response.data[0].description,
