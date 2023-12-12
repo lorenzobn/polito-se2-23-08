@@ -698,6 +698,9 @@ describe('T4 -- getProposalsByTeacher', () => {
 });
 
 //updateProposal
+//TO DO:
+// • Check if there is already an accepted application for this thesis proposal: if yes, cannot edit!
+// • Check what needs to be updated: keywords? Supervision?
 describe('T5 -- updateProposal', () => {
 
   beforeEach(() => {
