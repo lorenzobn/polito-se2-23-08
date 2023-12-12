@@ -367,7 +367,6 @@ const updateProposal = async (req, res) => {
     if (error) {
       return res.status(400).json({ msg: error.details[0].message });
     }
-    console.log(proposalId);
     // 1. Get who is the supervisor of this proposal: assert(supervisor === req.user.session.id)
 
     const setClause = Object.entries(updateFields)
@@ -392,17 +391,17 @@ const updateProposal = async (req, res) => {
       req.session.clock.time,
       ...Object.values(updateFields).filter((value) => value !== undefined),
     ];
-    console.log(query, updateFields);
     const result = await pool.query(query, values);
 
     if (result.rows.length === 0) {
       return res.status(404).json({ msg: "Thesis proposal not found." });
     }
+    console.log(result.rows[0]);
     createNotification(
       req.session.user.id,
       userTypes.teacher,
       "Proposal Updated!",
-      `Your proposal '${result.rows.title}' has been updated successfully!`,
+      `Your proposal '${result.rows[0].title}' has been updated successfully!`,
       true
     );
     return res.status(200).json({
