@@ -29,7 +29,10 @@ const {
   assertion,
   tokenVerification,
 } = require("./controllers/auth.js");
-
+const {
+  getNotificationsByUserId,
+  markNotificationAsSeen,
+} = require("./controllers/notifications.js");
 const express = require("express");
 
 const { fetchSelf } = require("./controllers/users.js");
@@ -121,5 +124,16 @@ router.post("/sso/acs", assertion);
 router.post("/sso/verification", tokenVerification);
 
 router.post("/logout", logout);
+router.get(
+  "/notifications",
+  authorize(userRoles.any),
+  getNotificationsByUserId
+);
+
+router.put(
+  "/notifications/:id",
+  authorize(userRoles.any),
+  markNotificationAsSeen
+);
 
 module.exports = router;

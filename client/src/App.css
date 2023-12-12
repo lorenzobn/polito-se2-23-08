@@ -18,8 +18,7 @@
   --dropdown-color: #00284b;
 }
 
-
-[data-theme='dark'] {
+[data-theme="dark"] {
   --background: #00284b;
   --text-primary: white;
   --text-secondary: #fc7a08;
@@ -36,21 +35,20 @@
   --dropdown-color: white;
 }
 
-
-[badge-status='accepted'] {
+[badge-status="accepted"] {
   --badge-bg: #007000;
 }
 
-[badge-status='idle'] {
+[badge-status="idle"] {
   --badge-bg: #ffbf00;
 }
-[badge-status='rejected'] {
+[badge-status="rejected"] {
   --badge-bg: #d2222d;
 }
 
 html {
   margin: 0;
-  padding: 0; 
+  padding: 0;
 }
 
 body {
@@ -84,7 +82,7 @@ body {
 
 .app {
   background-color: var(--background);
-  transition: background-color .4s ease-in-out; 
+  transition: background-color 0.4s ease-in-out;
   height: 100dvh;
 }
 
@@ -92,13 +90,20 @@ a {
   text-decoration: none;
 }
 
-.nav-underline .nav-link.active, .nav-underline .show > .nav-link {
+.nav-underline .nav-link.active,
+.nav-underline .show > .nav-link {
   color: var(--text-secondary);
 }
 
-p, h1, h2, h3, h4, h5, h6 {
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   color: var(--text-primary);
-  transition: color .3s ease-in-out;
+  transition: color 0.3s ease-in-out;
 }
 
 p.h2 {
@@ -108,8 +113,8 @@ p.h2 {
 .form-proposal {
   background-color: var(--form-bg);
   color: var(--text-primary);
-  transition: background-color .3s ease-in-out;
-  transition: color .3s ease-in-out;
+  transition: background-color 0.3s ease-in-out;
+  transition: color 0.3s ease-in-out;
 }
 
 .border-thesis-div {
@@ -141,8 +146,8 @@ p.h2 {
 }
 
 .filter-decoration {
-  color: var(--text-primary)  ;
-  font-weight: 600 ;
+  color: var(--text-primary);
+  font-weight: 600;
 }
 
 .border-thesis-view {
@@ -201,11 +206,12 @@ p.h2 {
   cursor: pointer;
 }
 
-.dropdown-toggle.btn.btn-primary:focus, .dropdown-toggle.btn.btn-primary:hover {
+.dropdown-toggle.btn.btn-primary:focus,
+.dropdown-toggle.btn.btn-primary:hover {
   background-color: var(--bg-form);
   color: var(--text-primary);
   border-color: var(--nav-thin);
-  box-shadow: 0 0 0 .1rem var(--box-color); 
+  box-shadow: 0 0 0 0.1rem var(--box-color);
   transition: border-color 0s;
 }
 .upper-nav {
@@ -233,6 +239,7 @@ p.h2 {
 
 .mid-nav {
   backdrop-filter: blur(10px);
+  position: relative;
 }
 
 .nav-link {
@@ -243,7 +250,8 @@ p.h2 {
   text-decoration: none;
   background: none;
   border: 0;
-  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+  transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
+    border-color 0.15s ease-in-out;
 }
 
 .border-thesis-filter {
@@ -276,11 +284,12 @@ p.h2 {
   opacity: 0.7;
 }
 
-.form-control:focus, .form-control:hover {
+.form-control:focus,
+.form-control:hover {
   background-color: var(--bg-form);
   color: var(--text-primary);
   border-color: var(--background);
-  box-shadow: 0 0 0 .1rem var(--box-color); 
+  box-shadow: 0 0 0 0.1rem var(--box-color);
   transition: border-color 0s;
 }
 
@@ -331,14 +340,12 @@ p.h2 {
   position: absolute;
   inset: 0px 0px auto auto;
   transform: translate(6px, 35px);
-  z-index: 1000; 
+  z-index: 1000;
 }
 
 .dropdown-menu {
-  z-index: 1000; 
+  z-index: 1000;
 }
-
-
 
 a.dropdown-item {
   color: var(--text-primary);
@@ -355,7 +362,6 @@ a.dropdown-item:hover {
   cursor: pointer;
 }
 
-
 .angle-degree {
   padding-left: 15px;
   padding-top: 2px;
@@ -363,7 +369,7 @@ a.dropdown-item:hover {
 
 .wrap-degree {
   color: var(--text-primary);
-  font-weight: 600 ;
+  font-weight: 600;
 }
 
 .wrap-degree:hover {
@@ -379,7 +385,6 @@ a.dropdown-item:hover {
   cursor: pointer;
 }
 
-
 .modal-content {
   background-color: var(--form-bg);
   color: var(--text-primary);
@@ -391,13 +396,13 @@ a.dropdown-item:hover {
 .custom-dropdown-toggle {
   background-color: var(--background);
   border-color: rgb(195, 194, 194);
-  color: var(--dropdown-color); 
+  color: var(--dropdown-color);
 }
 
 .dropdown-item:hover {
   background-color: var(--form-bg);
   color: var(--dropdown-color);
-} 
+}
 
 .log-ul {
   background-color: var(--form-bg);
@@ -428,26 +433,22 @@ a.dropdown-item:hover {
 }
 
 .dropdown-icon {
-  margin-left: 10px; 
+  margin-left: 10px;
 }
 .description-container {
-  width: 95%; 
- 
+  width: 95%;
 }
 .delete-text {
   color: white;
 }
-
 
 .modal-footer {
   display: flex;
   justify-content: center;
 }
 
-
-
 .modal-button {
-  margin: 0 20px; 
+  margin: 0 20px;
 }
 
 .error-page {
@@ -455,4 +456,24 @@ a.dropdown-item:hover {
   justify-content: center;
   align-items: center;
   height: 100dvh;
+}
+
+.bell-passive {
+  font-size: "140%";
+  color: #fff;
+}
+
+@keyframes scaleAnimation {
+  0%,
+  100% {
+    transform: rotate(-5deg);
+  }
+  50% {
+    transform: rotate(5deg);
+  }
+}
+.bell-active {
+  font-size: "140%";
+  color: rgb(252, 122, 8);
+  animation: scaleAnimation 1s infinite linear;
 }

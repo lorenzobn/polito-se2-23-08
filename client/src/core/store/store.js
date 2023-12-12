@@ -30,16 +30,20 @@ import {
   getVirtualClockValue as getVirtualClockValueAPI,
   setVirtualClock as setVirtualClockAPI,
 } from "../API/general";
+import {
+  getNotifications as getNotificationsAPI,
+  markNotificationAsSeen as markNotificationAsSeenAPI,
+} from "../API/notifications";
 import { toast } from "react-toastify";
 export class Store {
-  
   constructor() {
-    this.theme = localStorage.getItem('theme')
+    this.theme = localStorage.getItem("theme");
     this.time = new Date();
     this.user = {
       id: "",
       role: "",
       authenticated: false,
+      notifications: [],
     };
     this.loading = false;
     makeObservable(this, {
@@ -52,12 +56,20 @@ export class Store {
       setVirtualClock: action,
       getVirtualClockValue: action,
       toggleTheme: action,
+      getNotifications: action,
+      markNotificationAsSeen: action,
     });
   }
 
   toggleTheme = () => {
-    this.theme === 'dark'? (localStorage.setItem('theme', 'light') ,this.theme = 'light', document.body.style.backgroundColor = "white") : (this.theme = 'dark', localStorage.setItem('theme', 'dark'), document.body.style.backgroundColor = "#00284b")
-  }
+    this.theme === "dark"
+      ? (localStorage.setItem("theme", "light"),
+        (this.theme = "light"),
+        (document.body.style.backgroundColor = "white"))
+      : ((this.theme = "dark"),
+        localStorage.setItem("theme", "dark"),
+        (document.body.style.backgroundColor = "#00284b"));
+  };
 
   async setVirtualClock(time) {
     try {
@@ -132,6 +144,7 @@ export class Store {
       if (res?.status === 401) {
         this.logout();
       }
+      this.getNotifications();
     } catch (err) {
       return [];
     }
@@ -308,13 +321,11 @@ export class Store {
     try {
       const res = await putApplicationStatusAPI(proposalId, status);
       return res;
-    }
-    catch(err){
+    } catch (err) {
       console.log(err);
       return [];
     }
   }
-
 
   async checkApplication(thesisId) {
     try {
@@ -324,7 +335,24 @@ export class Store {
       return [];
     }
   }
-
+  async getNotifications() {
+    try {
+      const res = await getNotificationsAPI();
+      this.user.notifications = res.data.data;
+      return res.data;
+    } catch (err) {
+      return [];
+    }
+  }
+  async markNotificationAsSeen(id) {
+    try {
+      const res = await markNotificationAsSeenAPI(id);
+      this.getNotifications();
+      return res.data;
+    } catch (err) {
+      return [];
+    }
+  }
   setLoading(state) {}
 }
 export default new Store();

@@ -7,8 +7,6 @@ import { FaEdit, FaTrashAlt, FaSyncAlt, FaCopy } from 'react-icons/fa';
 import { MdOutlineEdit, MdDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../core/store/Provider";
-import InsertProposal from './InsertProposal';
-import EditProposal from './EditProposal';
 
 
 export default function MyProposals() {
