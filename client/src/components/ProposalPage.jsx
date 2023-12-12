@@ -45,7 +45,9 @@ function ProposalPage() {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
     const handleEffect = async () => {
-      const response = await store.getProposal(proposalId);
+      try {const response = await store.getProposal(proposalId);
+      
+     
       setProposal({
         title: response.data[0].title,
         description: response.data[0].description,
@@ -81,7 +83,11 @@ function ProposalPage() {
           surname: response.external_co[index].surname,
         };
       }
-      setExCosupervisors(exco);
+      setExCosupervisors(exco);}
+      catch(error) {
+        navigate('/404');
+      }
+      
     };
     handleEffect();
     store.fetchSelf();
