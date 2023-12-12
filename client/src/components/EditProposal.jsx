@@ -2,17 +2,79 @@ import React, { useState } from 'react';
 import Navbar from './Navbar';
 import Button from './Button';
 import { ToastContainer } from 'react-toastify';
+import { useLocation} from 'react-router-dom';
+import { useEffect } from 'react';
+import Select from 'react-select';
+import { StoreContext } from "../core/store/Provider";
+import { useContext } from "react";
 
-function EditProposal({ proposalData }) {
-   
-    const [formData, setFormData] = useState({
-        title: "",
-        description: "",
-        knowledge: "",
-        deadline: "",
-        notes: "",
-        type: "",
-      });
+const levels = [
+  { value: "BSc", label: "Bachelor" },
+  { value: "MSc", label: "Master" },
+];
+
+let cdss = [];
+let internal_co_supervisors = [];
+let external_co_supervisors = [];
+
+
+
+function EditProposal() {
+
+
+  
+const location = useLocation();
+const proposalData = location.state.proposalData;
+const [selectedKeywords, setSelectedKeywords] = useState(proposalData.keywords);
+const [selectedLevel, setSelectedLevel] = useState(proposalData.level);
+const [selectedProgram, setSelectedProgram] = useState(proposalData.program);
+const [modifiedInternal, setModifiedInternal] = useState(proposalData.internal);
+const [modifiedExternal, setModifiedExternal] = useState(proposalData.external);
+
+
+
+  
+
+const [formData, setFormData] = useState({
+  title: proposalData.title,
+  description: proposalData.description,
+  knowledge: proposalData.knowledge,
+  deadline: proposalData.deadline,
+  notes: proposalData.notes,
+  type:proposalData.type,
+});
+
+
+
+const store = useContext(StoreContext);
+useEffect(() => {
+  setFormData(proposalData);
+  setSelectedKeywords(proposalData.keywords);
+  setSelectedLevel(proposalData.level);
+  setSelectedProgram(proposalData.program);
+  console.log(proposalData.program);
+  setModifiedInternal(proposalData.internal);
+  setModifiedExternal(proposalData.external);
+    const handleEffect = async () => {
+  //getting cds from server
+  const cds = await store.getAllCds();
+  for (let index = 0; index < cds.length; index++) {
+    cdss[index] = {
+      value: cds[index].cod_degree,
+      label: cds[index].title_degree,
+    };
+  }
+
+};
+handleEffect();
+
+}, [proposalData]);
+
+
+
+
+
+
 
 
       const handleInputChange = (e) => {
@@ -52,6 +114,7 @@ function EditProposal({ proposalData }) {
               id="title"
               name="title"
               placeholder="Enter proposal title"
+              value={proposalData.title || ''} onChange={handleInputChange} 
             
              
             />
@@ -65,7 +128,10 @@ function EditProposal({ proposalData }) {
               id="description"
               name="description"
               placeholder="Enter proposal description"
-              
+              value={proposalData.description || ''}
+              onChange={handleInputChange} 
+
+
               rows="4"
             ></textarea>
           </div>
@@ -80,7 +146,8 @@ function EditProposal({ proposalData }) {
               id="knowledge"
               name="knowledge"
               placeholder="Enter required knowledge"
-              
+               value={proposalData.knowledge || ''}
+               onChange={handleInputChange} 
             />
           </div>
 
@@ -89,6 +156,11 @@ function EditProposal({ proposalData }) {
               <label htmlFor="level" className="form-label block">
                 Level:
               </label>
+              <Select
+                 defaultValue={levels.find(option => option.value === selectedLevel)}
+                onChange={setSelectedLevel}
+                options={levels}
+              />
             
             </div>
 
@@ -96,6 +168,12 @@ function EditProposal({ proposalData }) {
               <label htmlFor="programmes" className="form-label block">
                 CdS /programmes:
               </label>
+              <Select
+                defaultValue= {selectedProgram}
+                onChange={setSelectedProgram}
+                options={cdss}
+          
+              />
              
             </div>
 
@@ -108,6 +186,8 @@ function EditProposal({ proposalData }) {
                 className="form-control border rounded px-3 py-2"
                 id="deadline"
                 name="deadline"
+                value={proposalData.deadline}
+                onChange={handleInputChange}
                
               />
             </div>
@@ -119,6 +199,9 @@ function EditProposal({ proposalData }) {
               >
                 Internal Co-supervisors:
               </label>
+            
+           
+            
               
             </div>
 
@@ -142,6 +225,9 @@ function EditProposal({ proposalData }) {
               className="form-control border rounded px-3 py-2 mt-1 mb-2"
               id="type"
               name="type"
+              value={formData.type}
+              placeholder="Enter type..."
+              onChange={handleInputChange}
              
             />
           </div>
@@ -162,6 +248,8 @@ function EditProposal({ proposalData }) {
               id="notes"
               name="notes"
               placeholder="Enter additional notes here..."
+              value={formData.notes}
+              onChange={handleInputChange}
               
               rows="3"
             ></textarea>
