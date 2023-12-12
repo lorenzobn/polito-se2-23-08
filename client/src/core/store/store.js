@@ -228,7 +228,7 @@ export class Store {
       );
       return res.data;
     } catch (err) {
-      return [];
+      return err;
     }
   }
 

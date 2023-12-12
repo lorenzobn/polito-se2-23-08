@@ -177,14 +177,14 @@ function InsertProposal({proposalData}) {
           co_supervisor
         );
         setInsertProposals(insertProposal);
-        console.log("test log:" , insertProposal);
+        //console.log("test log:" , insertProposal.response.data.msg);
         if (insertProposal.msg === "Proposal created successfully") {
           toast.success("Your proposal submitted successfully!", {
             position: toast.POSITION.TOP_CENTER,
           });
           navigate("/thesis-proposals");
         } else {
-          toast.error("Something went wrong", {
+          toast.error(insertProposal.response.data.msg, {
             position: toast.POSITION.TOP_CENTER,
           });
         }

@@ -297,6 +297,7 @@ const updateProposal = async (req, res) => {
   // TODO: Handling update of keywords and co-supervisions
   try {
     const { proposalId } = req.params;
+
     const updateFields = req.body;
     const {
       title,
@@ -447,7 +448,7 @@ const updateProposal = async (req, res) => {
 
     const result = await pool.query(query, values);
 
-    if (result.rows.length === 0) {
+    if (result.rowCount === 0) {
       return res.status(404).json({ msg: "Thesis proposal not found." });
     }
 
@@ -477,13 +478,18 @@ const searchProposal = async (req, res) => {
     });
 
     const { error, value } = proposalSchema.validate(req.query);
+
+    if (error) {
+      return res.status(400).json({ msg: error.details[0].message });
+    }
+
     let { title, type, description, required_knowledge, notes, programme } =
       req.query;
-    title = title.toLowerCase();
-    type = type.toLowerCase();
-    description = description.toLowerCase();
-    required_knowledge = required_knowledge.toLowerCase();
-    notes = notes.toLowerCase();
+    title = title?.toLowerCase();
+    type = type?.toLowerCase();
+    description = description?.toLowerCase();
+    required_knowledge = required_knowledge?.toLowerCase();
+    notes = notes?.toLowerCase();
     const query = `
       SELECT * FROM thesis_proposal
       WHERE  LOWER(title) LIKE '%${title}%' OR LOWER(type) LIKE '%${type}%' OR LOWER(description) LIKE '%${description}%' OR LOWER(required_knowledge) LIKE '%${required_knowledge}%' OR LOWER(notes) LIKE '%${notes}%' OR LOWER(programme) LIKE '%${programme}%';
@@ -498,7 +504,7 @@ const searchProposal = async (req, res) => {
     });
   } catch (error) {
     logger.error(error.message);
-    return res.status(500).json({ msg: "Unknown error occurred" });
+    return res.status(500).json({ msg: error.message });
   }
 };
 
