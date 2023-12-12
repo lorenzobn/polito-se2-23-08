@@ -182,7 +182,7 @@ function InsertProposal({proposalData}) {
           toast.success("Your proposal submitted successfully!", {
             position: toast.POSITION.TOP_CENTER,
           });
-          //navigate("/thesis-proposals");
+          navigate("/thesis-proposals");
         } else {
           toast.error("Something went wrong", {
             position: toast.POSITION.TOP_CENTER,

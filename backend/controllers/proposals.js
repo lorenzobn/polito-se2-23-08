@@ -160,8 +160,6 @@ const createProposal = async (req, res) => {
     }
 
     const newId = result.rows[0].id;
-    //adding co supervisors to the proposal
-    //for each co supervisor, add a row in the THESIS_CO_SUPERVISION table
     for (var i = 0; i < coSupervisors.length; i++) {
       let r = -1;
       if (coSupervisors[i].isExternal === true) {
@@ -188,7 +186,7 @@ const createProposal = async (req, res) => {
     }
 
     for (var i = 0; i < keywords.length; i++) {
-      let r = await keywordsAdd(newId, keywords[i]);
+      let r = await keywordsAdd(newId, keywords[i], req.session.clock.time);
       if (r < 0){
         // abort, error!
         //logging.error(`Error inserting a keyword for the thesis ${newId}`)
@@ -335,7 +333,15 @@ const updateProposal = async (req, res) => {
     }
 
     //2. Check if there is already an accepted application for this thesis proposal: if yes, cannot edit!
+    query = {
+      text: "SELECT id FROM THESIS_APPLICATION WHERE thesis_id=$1 AND status='accepted';",
+      values: [proposalId],
+    };   
 
+    r = await pool.query(query);
+    if(r.rowCount > 0){
+      return res.status(400).json({ msg: "Cannot modify a proposal because there already an accept application." });
+    }
 
     //3. Is there a deadline?
     if(deadline != undefined && new Date(deadline) < req.session.clock.time){
@@ -351,9 +357,57 @@ const updateProposal = async (req, res) => {
         return res.status(400).json({ msg: "Invalid Programme/CdS provided." });
       }
     }
+    await pool.query('BEGIN');
+    if(coSupervisors){
+      //delete all supervisors
+      await pool.query("DELETE FROM THESIS_CO_SUPERVISION WHERE THESIS_PROPOSAL_id=$1", [
+        proposalId,
+      ]);
 
-    //4. TODO: Check what needs to be updated: keywords? Supervision?
-    /* ... */
+      for (var i = 0; i < coSupervisors.length; i++) {
+        if (coSupervisors[i].external != true && coSupervisors[i]?.id === req.session?.user?.id) {
+          return res.status(400).json({ msg: "The supervisor must not be also a cosupervisor." });
+        }
+        r = -1;
+        if (coSupervisors[i].isExternal === true) {
+          //TODO: if doesn't exist it returns no error!!!!
+          r = await coSupervisorAdd(
+            proposalId,
+            coSupervisors[i].name,
+            coSupervisors[i].surname,
+            true
+          );
+        } else {
+          r = await coSupervisorAdd(
+            proposalId,
+            coSupervisors[i].name,
+            coSupervisors[i].surname,
+            false
+          );
+        }
+        if (r < 0){
+          // abort, error!
+          //logging.error(`Error inserting a cosupervisor for the thesis ${newId}`)
+          //return res.status(500).json({ msg: "Error during the insertion of the cosupervisors." });
+          throw {message: "Error during the insertion of the cosupervisors.", code: 500}
+        }
+      }
+    }
+
+    if(keywords){
+      await pool.query("DELETE FROM keywords WHERE thesisId=$1", [
+        proposalId,
+      ]);
+      for (var i = 0; i < keywords.length; i++) {
+        r = await keywordsAdd(proposalId, keywords[i]);
+        if (r < 0){
+          // abort, error!
+          //logging.error(`Error inserting a keyword for the thesis ${newId}`)
+          //return res.status(500).json({ msg: "Error during the insertion of the keywords." });
+          throw {message: "Error during the insertion of the keywords.", code: 500}
+        }
+      }
+    }
 
     if(updateFields.requiredKnowledge){
       updateFields.required_knowledge = updateFields.requiredKnowledge
@@ -366,8 +420,6 @@ const updateProposal = async (req, res) => {
       }
       return newObj;
     }, {});
-    
-    logger.info(thesisRelation);
 
     const setClause = Object.entries(thesisRelation)
       .filter(([key, value]) => value !== undefined)
@@ -399,13 +451,16 @@ const updateProposal = async (req, res) => {
       return res.status(404).json({ msg: "Thesis proposal not found." });
     }
 
+    await pool.query('COMMIT');
+
     return res.status(200).json({
       msg: "Thesis proposal updated successfully",
       data: result.rows[0],
     });
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ msg: "Unknown error occurred" });
+    await pool.query('ROLLBACK');
+    return res.status(500).json({ msg: error.message });
   }
 };
 
