@@ -1,11 +1,6 @@
-const request = require('supertest');
-const jwt = require('jsonwebtoken');
-const authorize = require('../controllers/auth');
 const { createProposal, getProposals, getProposalbyId, getProposalsByTeacher, updateProposal, searchProposal, getAllCdS, getAllGroups, getAllProgrammes } = require('../controllers/proposals');
 const pool = require("../db/connection");
 const { coSupervisorAdd, keywordsAdd, getKeywords, getCoSupThesis, getECoSupThesis} = require("../controllers/utils");
-const { get } = require('mongoose');
-const utils = require('../controllers/utils');
 
 jest.mock('../controllers/auth', () => ({
   ...jest.requireActual('../controllers/auth'),
