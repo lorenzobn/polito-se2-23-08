@@ -34,9 +34,9 @@ jest.mock('../db/connection', () => ({
 // • test case to check the deadline
 describe('T1 -- createProposal', () => {
 
-  afterEach(() => {
-    // Interrompi le operazioni asincrone qui
+  beforeEach(() => {
     jest.clearAllMocks();
+    pool.query.mockClear();
   });
 
   //T1.1 - body is empty
@@ -389,9 +389,9 @@ describe('T1 -- createProposal', () => {
 //getProposals
 describe('T2 -- getProposals', () => {
 
-  afterEach(() => {
-    // Interrompi le operazioni asincrone qui
+  beforeEach(() => {
     jest.clearAllMocks();
+    pool.query.mockClear();
   });
 
   //correct get proposals called by Professor
@@ -516,9 +516,9 @@ describe('T2 -- getProposals', () => {
 // • test case for error.code = 22P02
 describe('T3 -- getProposalbyId', () => {
 
-  afterEach(() => {
-    // Interrompi le operazioni asincrone qui
+  beforeEach(() => {
     jest.clearAllMocks();
+    pool.query.mockClear();
   });
 
   // error 404, resource not found
@@ -615,9 +615,9 @@ describe('T3 -- getProposalbyId', () => {
 // • test case for error.code = 22P02
 describe('T4 -- getProposalsByTeacher', () => {
 
-  afterEach(() => {
-    // Interrompi le operazioni asincrone qui
+  beforeEach(() => {
     jest.clearAllMocks();
+    pool.query.mockClear();
   });
 
   // correct get proposals by teacher
@@ -700,6 +700,7 @@ describe('T5 -- updateProposal', () => {
 
   beforeEach(() => {
     jest.clearAllMocks();
+    pool.query.mockClear();
   });
 
   // T5.1 - validation fails
@@ -831,8 +832,8 @@ describe('T5 -- updateProposal', () => {
     expect(res.json).toHaveBeenCalledWith({ msg: 'Not authorized to update this proposal.' });
   });
 
-  // T5.4 - deadline is already passed
-  it('T5.4 - should return 400 if the deadline is passed', async () => {
+  // T5.4 - Cannot modify a proposal because there already an accept application.
+  it('T5.4 - Cannot modify a proposal because there is already an accept application.', async () => {
     const req = {
       body: {
         // Crea un oggetto proposta di prova
@@ -877,14 +878,20 @@ describe('T5 -- updateProposal', () => {
       rowCount: 1,
     });
 
+    pool.query.mockResolvedValueOnce({
+      rows: [{example_data: "example data"}],
+      rowCount: 1,
+    })
+
+
     await updateProposal(req, res);
 
     expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ msg: 'The deadline is passed already!' });
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Cannot modify a proposal because there already an accept application.' });
   });
 
-  // T5.5 - Invalid Programme/CdS provided.
-  it('T5.5 - should return 400 if the programme is invalid', async () => {
+  // T5.5 - deadline is already passed
+  it('T5.5 - should return 400 if the deadline is passed', async () => {
     const req = {
       body: {
         // Crea un oggetto proposta di prova
@@ -895,99 +902,10 @@ describe('T5 -- updateProposal', () => {
         notes: 'Test Notes',
         level: 'BSc',
         programme: 'LM-32',
-        deadline: new Date('2023/11/23'),
+        deadline: new Date('2023/11/19'),
 
-      },
-      params: {
-        proposalId: "p123"
-      },
-      session: {
-        user: {
-          id: 't123',
-        },
-        clock: {
-          //20-11-2023
-          time: new Date('2023/11/20')
-        }
-      },
-    };
-
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-    //Mocking functions
-    pool.query.mockResolvedValueOnce({
-      rows: [
-        { 
-          supervisor_id: "t123"
-        }
-      ],
-      rowCount: 1,
-    });
-    pool.query.mockResolvedValueOnce(false)
-
-    await updateProposal(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ msg: 'Invalid Programme/CdS provided.'});
-  });
-
-  // T5.6 - no fields are provided for update
-  it('T5.6 - should return 400 if no fields are provided for update', async () => {
-    const req = {
-      body: {
-        // Crea un oggetto proposta di prova
-      },
-      params: {
-        proposalId: "p123"
-      },
-      session: {
-        user: {
-          id: 't123',
-        },
-        clock: {
-          //20-11-2023
-          time: new Date('2023/11/20')
-        }
-      },
-    };
-
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-    //Mocking functions
-    pool.query.mockResolvedValueOnce({
-      rows: [
-        { 
-          supervisor_id: "t123"
-        }
-      ],
-      rowCount: 1,
-    });
-
-    await updateProposal(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ msg: 'No valid fields provided for update.'});
-  });
-
-  // T5.7 - should return 400 if no thesis proposal is found.
-  it('T5.7 - should return 400 if no thesis proposal is found.', async () => {
-    const req = {
-      body: {
-        // Crea un oggetto proposta di prova
-        title: 'Test Proposal 2',
-        description: 'Test Description',
-        requiredKnowledge: 'Test Knowledge',
-        type: "science",
-        notes: 'Test Notes',
-        level: 'BSc',
-        programme: undefined,
-        deadline: new Date('2023/11/23'),
+        keywords: [],
+        coSupervisors: [{id: "t125", external: false}]
       },
       params: {
         proposalId: "p123"
@@ -1022,14 +940,15 @@ describe('T5 -- updateProposal', () => {
       rowCount: 0,
     })
 
+
     await updateProposal(req, res);
 
-    //expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ msg: 'Thesis proposal not found.'});
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'The deadline is passed already!' });
   });
 
-  // T5.8 - should return 200 if correctly updated.
-  it('T5.8 - should return 200 if correctly updated.', async () => {
+  // T5.6 - Invalid Programme/CdS provided.
+  it('T5.6 - should return 400 if the programme is invalid', async () => {
     const req = {
       body: {
         // Crea un oggetto proposta di prova
@@ -1040,6 +959,211 @@ describe('T5 -- updateProposal', () => {
         notes: 'Test Notes',
         level: 'BSc',
         programme: 'LM-32',
+        deadline: new Date('2023/11/23'),
+
+      },
+      params: {
+        proposalId: "p123"
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          //20-11-2023
+          time: new Date('2023/11/20')
+        }
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [
+        { 
+          supervisor_id: "t123"
+        }
+      ],
+      rowCount: 1,
+    });
+    
+    pool.query.mockResolvedValueOnce({
+      rows: [],
+      rowCount: 0,
+    })
+    pool.query.mockResolvedValueOnce(false)
+
+    await updateProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Invalid Programme/CdS provided.'});
+  });
+
+  // T5.7 - The supervisor must not be also a cosupervisor.
+  it('T5.7 - should return 400, The supervisor must not be also a cosupervisor.', async () => {
+    const req = {
+      body: {
+        coSupervisors: [{id: "t123", external: false}]
+      },
+      params: {
+        proposalId: "p123"
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          //20-11-2023
+          time: new Date('2023/11/20')
+        }
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [
+        { 
+          supervisor_id: "t123"
+        }
+      ],
+      rowCount: 1,
+    });
+    
+    pool.query.mockResolvedValueOnce({
+      rows: [],
+      rowCount: 0,
+    })
+    pool.query.mockResolvedValueOnce(null); //BEGIN
+    pool.query.mockResolvedValueOnce(null); 
+
+    await updateProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'The supervisor must not be also a cosupervisor.'});
+  });
+
+  // T5.8 - Error during the insertion of the cosupervisors.
+  it('T5.8 - should return 500 if Error during the insertion of the cosupervisors.', async () => {
+    const req = {
+      body: {
+        coSupervisors: [{id: "t126", external: false}]
+      },
+      params: {
+        proposalId: "p123"
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          //20-11-2023
+          time: new Date('2023/11/20')
+        }
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [
+        { 
+          supervisor_id: "t123"
+        }
+      ],
+      rowCount: 1,
+    });
+    
+    pool.query.mockResolvedValueOnce({
+      rows: [],
+      rowCount: 0,
+    })
+    pool.query.mockResolvedValueOnce(null); //BEGIN
+    pool.query.mockResolvedValueOnce(null); 
+    coSupervisorAdd.mockResolvedValueOnce(-1);
+
+    await updateProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Error during the insertion of the cosupervisors.'});
+  });
+
+  // T5.9 - Error during the insertion of the keywords.
+  it('T5.9 - should return 500 if Error during the insertion of the keywords.', async () => {
+    const req = {
+      body: {
+        coSupervisors: [{id: "t126", external: true}],
+        keywords: ["science"]
+      },
+      params: {
+        proposalId: "p123"
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          //20-11-2023
+          time: new Date('2023/11/20')
+        }
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [
+        { 
+          supervisor_id: "t123"
+        }
+      ],
+      rowCount: 1,
+    });
+    
+    pool.query.mockResolvedValueOnce({
+      rows: [],
+      rowCount: 0,
+    })
+    pool.query.mockResolvedValueOnce(null); //BEGIN
+    pool.query.mockResolvedValueOnce(null); 
+    coSupervisorAdd.mockResolvedValueOnce(1);
+    pool.query.mockResolvedValueOnce(null);
+    keywordsAdd.mockResolvedValueOnce(-1);
+
+    await updateProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Error during the insertion of the keywords.'});
+  });
+
+
+  // T5.10 - should return 404 if no thesis proposal is found.
+  it('T5.10 - should return 404 if no thesis proposal is found.', async () => {
+    const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+        title: 'Test Proposal 2',
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        type: "science",
+        notes: 'Test Notes',
+        level: 'BSc',
         deadline: new Date('2023/11/23'),
       },
       params: {
@@ -1070,28 +1194,88 @@ describe('T5 -- updateProposal', () => {
       ],
       rowCount: 1,
     });
-    pool.query.mockResolvedValueOnce(true)
     pool.query.mockResolvedValueOnce({
-      rows: [{example_data: "example data"}],
-      rowCount: 1,
+      rows: [],
+      rowCount: 0,
     })
+    pool.query.mockResolvedValueOnce(null); //BEGIN
+    pool.query.mockResolvedValueOnce({
+      rows: [],
+      rowCount: 0,
+    });
 
     await updateProposal(req, res);
 
-    //expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ msg: 'Thesis proposal updated successfully', data: {example_data: "example data"}});
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Thesis proposal not found.'});
   });
 
-  
+  // T5.11 - CORRECT UPDATE
+  it('T5.11 - should return 200, CORRECT', async () => {
+    const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+        title: 'Test Proposal 2',
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        type: "science",
+        notes: 'Test Notes',
+        level: 'BSc',
+        deadline: new Date('2023/11/23'),
+      },
+      params: {
+        proposalId: "p123"
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          //20-11-2023
+          time: new Date('2023/11/20')
+        }
+      },
+    };
 
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
 
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [
+        { 
+          supervisor_id: "t123"
+        }
+      ],
+      rowCount: 1,
+    });
+    pool.query.mockResolvedValueOnce({
+      rows: [],
+      rowCount: 0,
+    })
+    pool.query.mockResolvedValueOnce(null); //BEGIN
+    pool.query.mockResolvedValueOnce({
+      rows: [{id: "p123"}],
+      rowCount: 1,
+    });
+    pool.query.mockResolvedValueOnce(null); //COMMIT
+
+    await updateProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Thesis proposal updated successfully', data: {id: "p123"}});
+  });
 
 });
 
 // SearchProposal
 describe('T6 -- searchProposal', () => {
-  afterEach(() => {
+  
+  beforeEach(() => {
     jest.clearAllMocks();
+    pool.query.mockClear();
   });
 
   // T6.1 - Resource not found
@@ -1167,8 +1351,9 @@ describe('T6 -- searchProposal', () => {
 //getAllCds
 describe('T7 -- getAllCdS', () => {
 
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
+    pool.query.mockClear();
   });
 
   // T7.1 - should return 500 and an error message when the query fails
@@ -1206,8 +1391,9 @@ describe('T7 -- getAllCdS', () => {
 //getAllProgrammes
 describe('T8 -- getAllProgrammes', () => {
 
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
+    pool.query.mockClear();
   });
 
   it('T8.1 -- should return 201 and the results when the query is successful', async () => {
@@ -1243,8 +1429,9 @@ describe('T8 -- getAllProgrammes', () => {
 //getAllGroups
 describe('T9 -- getAllGroups', () => {
 
-  afterEach(() => {
+  beforeEach(() => {
     jest.clearAllMocks();
+    pool.query.mockClear();
   });
 
   it('T9.1 -- should return 201 and the results when the query is successful', async () => {
