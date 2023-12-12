@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import MyNavbar from "./Navbar";
 import {
   Row,
@@ -26,7 +26,7 @@ export default function AcceptApplications() {
   const param = useParams();
   const proposalId = param.thesisId;
   const store = useContext(StoreContext);
-
+  const navigate = useNavigate();
   const [status, setStatus] = useState("");
   const [proposal, setProposal] = useState([]);
   const [proposalDetails, setProposalDetails] = useState([]);
@@ -36,13 +36,16 @@ export default function AcceptApplications() {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
     const handleEffect = async () => {
-      const response = await store.getReceivedApplicationsByThesisId(
+      try {const response = await store.getReceivedApplicationsByThesisId(
         proposalId
       );
       setProposal(response);
       const details = proposal.map((p) => p.applicationstatus);
       setProposalDetails(details);
-      setProposalTitle(response[0].title);
+      setProposalTitle(response[0].title);}
+      catch (error) {
+        navigate("/404");
+      }
     };
     handleEffect();
   }, [status]);

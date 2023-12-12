@@ -78,7 +78,7 @@ function App() {
             path="/editProposal/:id"
             element={<EditProposal></EditProposal>}
           ></Route>
-          <Route path="/error" element={<ErrorPage></ErrorPage>}></Route>
+          <Route path="*" element={<ErrorPage></ErrorPage>}></Route>
         </Routes>
       </BrowserRouter>
     </div>
