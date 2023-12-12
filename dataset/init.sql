@@ -831,5 +831,41 @@ VALUES(8, 'Company Project');
 INSERT INTO KEYWORDS
 VALUES(8, 'Infrastructure as Code');
 
+/*New Student*/
 
+INSERT INTO student(
+    id,
+    name,
+    surname,
+    gender,
+    nationality,
+    email,
+    COD_DEGREE,
+    ENROLLMENT_YEAR
+  )
+values (
+    's126',
+    'Chiara',
+    'Ferrero',
+    'F',
+    'italian',
+    'chiara.ferrero.unito@gmail.com',
+    'LM-32',
+    2019
+  );
 
+INSERT INTO THESIS_APPLICATION(
+    student_id,
+    thesis_id,
+    status,
+    cv_uri
+  )
+VALUES ('s126', 3, 'idle', '');
+
+INSERT INTO THESIS_APPLICATION(
+    student_id,
+    thesis_id,
+    status,
+    cv_uri
+  )
+VALUES ('s126', 6, 'idle', '');
