@@ -2,10 +2,9 @@ const pool = require("../db/connection");
 const Joi = require("@hapi/joi");
 const { userRoles } = require("./auth");
 const logger = require("../services/logger.js");
-
+const { createNotification } = require("./notifications");
 const fs = require("fs");
 const path = require("path");
-
 
 const uploadPath = "uploads/";
 const createApplication = async (req, res) => {

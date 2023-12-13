@@ -134,11 +134,11 @@ const createProposal = async (req, res) => {
     const cod_group = r.rows[0].cod_group;
     let activeStatus = "active";
 
-    if(new Date(deadline) < req.session.clock.time){
+    if (new Date(deadline) < req.session.clock.time) {
       return res.status(400).json({ msg: "The deadline is passed already!" });
     }
-    
-    await pool.query('BEGIN');
+
+    await pool.query("BEGIN");
 
     const query = `
       INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, COD_GROUP, description, required_knowledge, notes, level, programme, deadline, status, created_at)
@@ -197,7 +197,7 @@ const createProposal = async (req, res) => {
 
     for (var i = 0; i < keywords.length; i++) {
       let r = await keywordsAdd(newId, keywords[i], req.session.clock.time);
-      if (r < 0){
+      if (r < 0) {
         // abort, error!
         //logging.error(`Error inserting a keyword for the thesis ${newId}`)
         //return res.status(500).json({ msg: "Error during the insertion of the keywords." });
@@ -307,6 +307,44 @@ const getProposalsByTeacher = async (req, res) => {
     return res.status(500).json({ msg: errorMsg });
   }
 };
+const deleteProposal = async (req, res) => {
+  const query1 = {
+    text: "SELECT * FROM thesis_proposal WHERE id=$1 AND SUPERVISOR_id=$2 AND created_at < $3",
+    values: [
+      req.params.proposalId,
+      req.session.user.id,
+      req.session.clock.time,
+    ],
+  };
+  const query2 = {
+    text: "DELETE FROM thesis_proposal WHERE id=$1 AND created_at < $2",
+    values: [req.params.proposalId, req.session.clock.time],
+  };
+  try {
+    const result = await pool.query(query1);
+    if (result.rows.length === 0) {
+      return res
+        .status(401)
+        .json({ msg: "You don't have access to this resource!" });
+    }
+    await pool.query(query2);
+    return res
+      .status(200)
+      .json({ msg: "Proposal has been deleted successfully!" });
+  } catch (error) {
+    errorMsg = "";
+    switch (error.code) {
+      case "22P02":
+        errorMsg = "Invalid data provided";
+        break;
+      default:
+        errorMsg = "Unknown error occurred";
+        break;
+    }
+    console.log(error);
+    return res.status(500).json({ msg: errorMsg });
+  }
+};
 
 const updateProposal = async (req, res) => {
   // TODO: Editing is disabled if there is one accepted application!
@@ -326,9 +364,10 @@ const updateProposal = async (req, res) => {
       deadline,
       keywords,
       coSupervisors,
+      status,
     } = req.body;
 
-    const { error } = proposalSchemaUpdate.validate(updateFields)
+    const { error } = proposalSchemaUpdate.validate(updateFields);
     if (error) {
       return res.status(400).json({ msg: error.details[0].message });
     }
@@ -336,54 +375,67 @@ const updateProposal = async (req, res) => {
     let query = {
       text: "SELECT supervisor_id FROM THESIS_PROPOSAL WHERE thesis_proposal.id=$1;",
       values: [proposalId],
-    };   
+    };
 
     let r = await pool.query(query);
-    if(r.rowCount == 0 || !r.rows[0].supervisor_id){
+    if (r.rowCount == 0 || !r.rows[0].supervisor_id) {
       return res.status(400).json({ msg: "Invalid proposal id." });
     }
 
     logger.info(r);
 
-    if(r.rows[0].supervisor_id !== req.session.user.id){
-      return res.status(401).json({ msg: "Not authorized to update this proposal." });
+    if (r.rows[0].supervisor_id !== req.session.user.id) {
+      return res
+        .status(401)
+        .json({ msg: "Not authorized to update this proposal." });
     }
 
     //2. Check if there is already an accepted application for this thesis proposal: if yes, cannot edit!
     query = {
       text: "SELECT id FROM THESIS_APPLICATION WHERE thesis_id=$1 AND status='accepted';",
       values: [proposalId],
-    };   
+    };
 
     r = await pool.query(query);
-    if(r.rowCount > 0){
-      return res.status(400).json({ msg: "Cannot modify a proposal because there already an accept application." });
+    if (r.rowCount > 0) {
+      return res
+        .status(400)
+        .json({
+          msg: "Cannot modify a proposal because there already an accept application.",
+        });
     }
 
     //3. Is there a deadline?
-    if(deadline != undefined && new Date(deadline) < req.session.clock.time){
+    if (deadline != undefined && new Date(deadline) < req.session.clock.time) {
       return res.status(400).json({ msg: "The deadline is passed already!" });
     }
 
     //4. is there a programme?
-    if(programme != undefined){
-      r = await pool.query("SELECT COD_DEGREE FROM DEGREE WHERE COD_DEGREE=$1", [
-        programme,
-      ]);
+    if (programme != undefined) {
+      r = await pool.query(
+        "SELECT COD_DEGREE FROM DEGREE WHERE COD_DEGREE=$1",
+        [programme]
+      );
       if (!r || !r) {
         return res.status(400).json({ msg: "Invalid Programme/CdS provided." });
       }
     }
-    await pool.query('BEGIN');
-    if(coSupervisors){
+    await pool.query("BEGIN");
+    if (coSupervisors) {
       //delete all supervisors
-      await pool.query("DELETE FROM THESIS_CO_SUPERVISION WHERE THESIS_PROPOSAL_id=$1", [
-        proposalId,
-      ]);
+      await pool.query(
+        "DELETE FROM THESIS_CO_SUPERVISION WHERE THESIS_PROPOSAL_id=$1",
+        [proposalId]
+      );
 
       for (var i = 0; i < coSupervisors.length; i++) {
-        if (coSupervisors[i].external != true && coSupervisors[i]?.id === req.session?.user?.id) {
-          return res.status(400).json({ msg: "The supervisor must not be also a cosupervisor." });
+        if (
+          coSupervisors[i].external != true &&
+          coSupervisors[i]?.id === req.session?.user?.id
+        ) {
+          return res
+            .status(400)
+            .json({ msg: "The supervisor must not be also a cosupervisor." });
         }
         r = -1;
         if (coSupervisors[i].isExternal === true) {
@@ -402,47 +454,65 @@ const updateProposal = async (req, res) => {
             false
           );
         }
-        if (r < 0){
+        if (r < 0) {
           // abort, error!
           //logging.error(`Error inserting a cosupervisor for the thesis ${newId}`)
           //return res.status(500).json({ msg: "Error during the insertion of the cosupervisors." });
-          throw {message: "Error during the insertion of the cosupervisors.", code: 500}
+          throw {
+            message: "Error during the insertion of the cosupervisors.",
+            code: 500,
+          };
         }
       }
     }
 
-    if(keywords){
-      await pool.query("DELETE FROM keywords WHERE thesisId=$1", [
-        proposalId,
-      ]);
+    if (keywords) {
+      await pool.query("DELETE FROM keywords WHERE thesisId=$1", [proposalId]);
       for (var i = 0; i < keywords.length; i++) {
         r = await keywordsAdd(proposalId, keywords[i]);
-        if (r < 0){
+        if (r < 0) {
           // abort, error!
           //logging.error(`Error inserting a keyword for the thesis ${newId}`)
           //return res.status(500).json({ msg: "Error during the insertion of the keywords." });
-          throw {message: "Error during the insertion of the keywords.", code: 500}
+          throw {
+            message: "Error during the insertion of the keywords.",
+            code: 500,
+          };
         }
       }
     }
 
-    if(updateFields.requiredKnowledge){
-      updateFields.required_knowledge = updateFields.requiredKnowledge
-      delete updateFields.requiredKnowledge
+    if (updateFields.requiredKnowledge) {
+      updateFields.required_knowledge = updateFields.requiredKnowledge;
+      delete updateFields.requiredKnowledge;
     }
 
-    const thesisRelation = Object.keys(updateFields).reduce(function(newObj, key) {
-      if (['title', 'type', 'description', 'required_knowledge', 'notes', 'level', 'programme', 'deadline'].indexOf(key) !== -1) {
-          newObj[key] = updateFields[key];
+    const thesisRelation = Object.keys(updateFields).reduce(function (
+      newObj,
+      key
+    ) {
+      if (
+        [
+          "title",
+          "type",
+          "description",
+          "required_knowledge",
+          "notes",
+          "level",
+          "programme",
+          "deadline",
+        ].indexOf(key) !== -1
+      ) {
+        newObj[key] = updateFields[key];
       }
       return newObj;
-    }, {});
+    },
+    {});
 
     const setClause = Object.entries(thesisRelation)
       .filter(([key, value]) => value !== undefined)
       .map(([key, value], index) => `${key} = $${index + 3}`)
       .join(", ");
-
     if (!setClause) {
       return res
         .status(400)
@@ -461,21 +531,21 @@ const updateProposal = async (req, res) => {
       req.session.clock.time,
       ...Object.values(thesisRelation),
     ];
-
     const result = await pool.query(query, values);
 
     if (result.rowCount === 0) {
       return res.status(404).json({ msg: "Thesis proposal not found." });
     }
+
     createNotification(
       req.session.user.id,
       userTypes.teacher,
       "Proposal Updated!",
-      `Your proposal '${result.rows.title}' has been updated successfully!`,
+      `Your proposal '${result.rows[0].title}' has been updated successfully!`,
       true
     );
 
-    await pool.query('COMMIT');
+    await pool.query("COMMIT");
 
     return res.status(200).json({
       msg: "Thesis proposal updated successfully",
@@ -483,7 +553,7 @@ const updateProposal = async (req, res) => {
     });
   } catch (error) {
     logger.error(error);
-    await pool.query('ROLLBACK');
+    await pool.query("ROLLBACK");
     return res.status(500).json({ msg: error.message });
   }
 };
@@ -543,4 +613,5 @@ module.exports = {
   getAllCdS,
   getAllGroups,
   getAllProgrammes,
+  deleteProposal,
 };
