@@ -35,10 +35,31 @@ const createNotification = async (
 
   try {
     const result = await pool.query(query);
-    return result.rows[0];
     if (sendEmail) {
-      // handle sending email
+      let query2 = "";
+      if (userType === userTypes.student) {
+        query2 = {
+          text: `
+          SELECT email FROM Teacher
+          WHERE id = $1;
+        `,
+          values: [teacherId],
+        };
+      }
+      if (userType === userTypes.teacher) {
+        query2 = {
+          text: `
+          SELECT email FROM Student
+          WHERE id = $1;
+        `,
+          values: [studentId],
+        };
+      }
+      const result2 = await pool.query(query2);
+      const email = result2.rows[0].email;
+      sendEmail(email, title, message);
     }
+    return result?.rows[0];
   } catch (error) {
     throw error;
   }
