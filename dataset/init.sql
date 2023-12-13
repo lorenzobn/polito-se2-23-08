@@ -103,6 +103,19 @@ CREATE TABLE IF NOT EXISTS KEYWORDS(
   FOREIGN KEY (thesisId) REFERENCES THESIS_PROPOSAL(id),
   PRIMARY KEY (thesisId, keyword)
 );
+CREATE TABLE IF NOT EXISTS Notification (
+  id serial PRIMARY KEY,
+  teacher_id varchar(30),
+  student_id varchar(30),
+  user_type varchar(10) NOT NULL,
+  title varchar(255) NOT NULL,
+  message varchar(255) NOT NULL,
+  emailed boolean NOT NULL,
+  seen boolean NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (teacher_id) REFERENCES TEACHER(id),
+  FOREIGN KEY (student_id) REFERENCES student(id)
+);
 INSERT INTO DEGREE (COD_DEGREE, TITLE_DEGREE)
 values ('LM-32', 'Computer Engineering');
 INSERT INTO DEGREE (COD_DEGREE, TITLE_DEGREE)
@@ -544,10 +557,8 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES (3, NULL, 'c126', TRUE);
-
 /* Thesis #4 */
 /* Summary: 2 Exertnal Supervisors, 1 Internal Supervisor, 3 keywords */
-
 INSERT INTO THESIS_PROPOSAL(
     title,
     SUPERVISOR_ID,
@@ -574,7 +585,6 @@ VALUES (
     '2024-02-01',
     'active'
   );
-
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
     INTERNAL_CO_SUPERVISOR_id,
@@ -582,7 +592,6 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES (4, NULL, 'c125', TRUE);
-
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
     INTERNAL_CO_SUPERVISOR_id,
@@ -590,7 +599,6 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES (4, NULL, 'c126', TRUE);
-
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
     INTERNAL_CO_SUPERVISOR_id,
@@ -598,19 +606,14 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES (4, 't123', NULL, FALSE);
-
 INSERT INTO KEYWORDS
 VALUES(4, 'Biomedical');
-
 INSERT INTO KEYWORDS
 VALUES(4, 'Python');
-
 INSERT INTO KEYWORDS
 VALUES(4, 'Digital Image Processing');
-
 /* Thesis #5 */
 /* Summary: 1 Exertnal Supervisors, 1 Internal Supervisor, 3 keywords */
-
 INSERT INTO THESIS_PROPOSAL(
     title,
     SUPERVISOR_ID,
@@ -637,7 +640,6 @@ VALUES (
     '2024-03-01',
     'active'
   );
-
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
     INTERNAL_CO_SUPERVISOR_id,
@@ -645,7 +647,6 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES (5, NULL, 'c126', TRUE);
-
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
     INTERNAL_CO_SUPERVISOR_id,
@@ -653,19 +654,14 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES(5, 't124', NULL, FALSE);
-
 INSERT INTO KEYWORDS
 VALUES(5, 'Biomedical');
-
 INSERT INTO KEYWORDS
 VALUES(5, 'Computer Vision');
-
 INSERT INTO KEYWORDS
 VALUES(5, 'Machine Learning');
-
 /* Thesis #6 */
 /* Summary: 1 Internal Supervisor, 1 External Supervisor, 3 keywords */
-
 INSERT INTO THESIS_PROPOSAL(
     title,
     SUPERVISOR_ID,
@@ -692,7 +688,6 @@ VALUES (
     '2024-05-01',
     'active'
   );
-
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
     INTERNAL_CO_SUPERVISOR_id,
@@ -700,7 +695,6 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES(6, NULL, 'c126', TRUE);
-
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
     INTERNAL_CO_SUPERVISOR_id,
@@ -708,19 +702,14 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES(6, 't124', NULL, FALSE);
-
 INSERT INTO KEYWORDS
 VALUES(6, 'Computer Engineering');
-
 INSERT INTO KEYWORDS
 VALUES(6, 'Research');
-
 INSERT INTO KEYWORDS
 VALUES(6, 'Machine Learning');
-
 /* Thesis #7 */
 /* Summary: 1 Internal Supervisor, 1 External Supervisor, 3 keywords */
-
 INSERT INTO THESIS_PROPOSAL(
     title,
     SUPERVISOR_ID,
@@ -747,7 +736,6 @@ VALUES (
     '2024-05-01',
     'active'
   );
-
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
     INTERNAL_CO_SUPERVISOR_id,
@@ -755,7 +743,6 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES(7, NULL, 'c126', TRUE);
-
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
     INTERNAL_CO_SUPERVISOR_id,
@@ -763,22 +750,16 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES(7, 't124', NULL, FALSE);
-
 INSERT INTO KEYWORDS
 VALUES(7, 'Cloud Computing');
-
 INSERT INTO KEYWORDS
 VALUES(7, 'Company Project');
-
 INSERT INTO KEYWORDS
 VALUES(7, 'Artifical Intelligence');
-
 INSERT INTO KEYWORDS
 VALUES(7, 'Machine Learning');
-
 /* Thesis #8 */
 /* Summary: 1 Internal Supervisor, 1 External Supervisor, 3 keywords */
-
 INSERT INTO THESIS_PROPOSAL(
     title,
     SUPERVISOR_ID,
@@ -805,7 +786,6 @@ VALUES (
     '2024-05-01',
     'active'
   );
-
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
     INTERNAL_CO_SUPERVISOR_id,
@@ -813,7 +793,6 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES (8, NULL, 'c125', TRUE);
-
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
     INTERNAL_CO_SUPERVISOR_id,
@@ -821,13 +800,10 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES(8, 't124', NULL, FALSE);
-
 INSERT INTO KEYWORDS
 VALUES(8, 'IoT Solutions');
-
 INSERT INTO KEYWORDS
 VALUES(8, 'Company Project');
-
 INSERT INTO KEYWORDS
 VALUES(8, 'Infrastructure as Code');
 

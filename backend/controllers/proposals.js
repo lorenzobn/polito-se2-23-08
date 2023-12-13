@@ -1,6 +1,6 @@
 // import models here
 const pool = require("../db/connection");
-const logger = require('../services/logger.js');
+const logger = require("../services/logger.js");
 const Joi = require("@hapi/joi");
 const {
   coSupervisorAdd,
@@ -11,6 +11,8 @@ const {
   getCoSupThesis,
   getECoSupThesis,
 } = require("./utils");
+const { createNotification } = require("./notifications.js");
+const { userTypes } = require("./users.js");
 
 const proposalSchema = Joi.object({
   title: Joi.string().min(8).max(150).required(),
@@ -83,7 +85,6 @@ const getAllGroups = async (req, res) => {
 
 const createProposal = async (req, res) => {
   try {
-
     let SUPERVISOR_id = req.session.user.id;
     const { error, value } = proposalSchema.validate(req.body);
     if (error) {
@@ -105,14 +106,20 @@ const createProposal = async (req, res) => {
     } = req.body;
 
     for (var i = 0; i < coSupervisors.length; i++) {
-      if (coSupervisors[i].external != true && coSupervisors[i]?.id === req.session?.user?.id) {
-        return res.status(400).json({ msg: "The supervisor must not be also a cosupervisor." });
+      if (
+        coSupervisors[i].external != true &&
+        coSupervisors[i]?.id === req.session?.user?.id
+      ) {
+        return res
+          .status(400)
+          .json({ msg: "The supervisor must not be also a cosupervisor." });
       }
     }
 
-    let r = await pool.query("SELECT COD_DEGREE FROM DEGREE WHERE COD_DEGREE=$1", [
-      programme,
-    ]);
+    let r = await pool.query(
+      "SELECT COD_DEGREE FROM DEGREE WHERE COD_DEGREE=$1",
+      [programme]
+    );
     if (!r || !r) {
       return res.status(400).json({ msg: "Invalid Programme/CdS provided." });
     }
@@ -177,11 +184,14 @@ const createProposal = async (req, res) => {
           false
         );
       }
-      if (r < 0){
+      if (r < 0) {
         // abort, error!
         //logging.error(`Error inserting a cosupervisor for the thesis ${newId}`)
         //return res.status(500).json({ msg: "Error during the insertion of the cosupervisors." });
-        throw {message: "Error during the insertion of the cosupervisors.", code: 500}
+        throw {
+          message: "Error during the insertion of the cosupervisors.",
+          code: 500,
+        };
       }
     }
 
@@ -191,37 +201,43 @@ const createProposal = async (req, res) => {
         // abort, error!
         //logging.error(`Error inserting a keyword for the thesis ${newId}`)
         //return res.status(500).json({ msg: "Error during the insertion of the keywords." });
-        throw {message: "Error during the insertion of the keywords.", code: 500}
+        throw {
+          message: "Error during the insertion of the keywords.",
+          code: 500,
+        };
       }
     }
-    await pool.query('COMMIT');
+    await pool.query("COMMIT");
+    createNotification(
+      SUPERVISOR_id,
+      userTypes.teacher,
+      "Proposal Created",
+      `Your proposal '${title}' has been created successfully!`,
+      true
+    );
     return res
       .status(201)
       .json({ msg: "Proposal created successfully", data: result.rows[0] });
   } catch (error) {
     logger.error(error.message);
-    await pool.query('ROLLBACK');
+    await pool.query("ROLLBACK");
     return res.status(500).json({ msg: error.message });
   }
 };
 
 const getProposals = async (req, res) => {
   try {
-      let q = "SELECT * FROM thesis_proposal WHERE created_at < $1 AND deadline > $1"
-      let args = [req.session.clock.time]
-    if (req.session.user?.role === "student") 
-    {
-      q = "SELECT * FROM thesis_proposal WHERE created_at < $1 AND deadline > $1 AND programme = (SELECT COD_DEGREE FROM student WHERE id = $2 )";
+    let q =
+      "SELECT * FROM thesis_proposal WHERE created_at < $1 AND deadline > $1";
+    let args = [req.session.clock.time];
+    if (req.session.user?.role === "student") {
+      q =
+        "SELECT * FROM thesis_proposal WHERE created_at < $1 AND deadline > $1 AND programme = (SELECT COD_DEGREE FROM student WHERE id = $2 )";
       args.push(req.session.user.id);
     }
-    const results = await pool
-      .query(
-       q,
-       args,
-      )
-      .then((result) => {
-        return res.status(200).json({ msg: "OK", data: result.rows });
-      });
+    const results = await pool.query(q, args).then((result) => {
+      return res.status(200).json({ msg: "OK", data: result.rows });
+    });
   } catch (error) {
     logger.error(error.message);
     return res.status(500).json({ msg: error.message });
@@ -451,6 +467,13 @@ const updateProposal = async (req, res) => {
     if (result.rowCount === 0) {
       return res.status(404).json({ msg: "Thesis proposal not found." });
     }
+    createNotification(
+      req.session.user.id,
+      userTypes.teacher,
+      "Proposal Updated!",
+      `Your proposal '${result.rows.title}' has been updated successfully!`,
+      true
+    );
 
     await pool.query('COMMIT');
 
