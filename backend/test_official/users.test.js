@@ -6,6 +6,12 @@ jest.mock("../db/connection", () => ({
 }));
 
 describe("fetchSelf", () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    pool.query.mockClear();
+  });
+
   test("T1.1 - should return 401 if user is not authenticated", async () => {
     const req = {
       session: {},
@@ -39,7 +45,12 @@ describe("fetchSelf", () => {
       json: jest.fn(),
     };
 
-    pool.query.mockImplementation(() => ({
+    pool.query.mockImplementationOnce(() => ({
+      rows: [],
+      rowCount: 0,
+    }));
+
+    pool.query.mockImplementationOnce(() => ({
       rows: [],
       rowCount: 0,
     }));
@@ -73,9 +84,14 @@ describe("fetchSelf", () => {
       surname: "Doe",
     };
 
-    pool.query.mockImplementation(() => ({
+    pool.query.mockImplementationOnce(() => ({
       rows: [studentData],
       rowCount: 1,
+    }));
+
+    pool.query.mockImplementationOnce(() => ({
+      rows: [],
+      rowCount: 0,
     }));
 
     await fetchSelf(req, res);
@@ -107,7 +123,7 @@ describe("fetchSelf", () => {
       surname: "Smith",
     };
 
-    pool.query.mockImplementation(() => ({
+    pool.query.mockImplementationOnce(() => ({
       rows: [],
       rowCount: 0,
     }));
