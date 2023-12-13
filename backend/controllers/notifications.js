@@ -1,9 +1,9 @@
 const { userTypes } = require("./users");
 const pool = require("../db/connection");
 const { sendEmail  } = require("./email");
+
 const createNotification = async (
   userId,
-
   userType,
   title,
   message,
@@ -73,8 +73,7 @@ const getNotificationsByUserId = async (req, res) => {
   const columnName =
     userType === userTypes.teacher ? "teacher_id" : "student_id";
   const query = {
-    text: `
-        SELECT * FROM Notification
+    text: `SELECT * FROM Notification
         WHERE ${columnName} = $1 AND seen = false AND created_at < $2;
       `,
     values: [userId, req.session.clock.time],
