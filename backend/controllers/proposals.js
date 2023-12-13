@@ -518,7 +518,7 @@ const updateProposal = async (req, res) => {
     return res.status(200).json({
       msg: "Thesis proposal updated successfully",
       data: result.rows[0],
-    });
+    }); 
   } catch (error) {
     logger.error(error);
     //await pool.query('ROLLBACK');

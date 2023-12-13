@@ -84,7 +84,7 @@ export default function MyProposals() {
               className="mb-5 ml-4"
               style={{ width: "95%", marginLeft: "5%" }}
             >
-              <Tab eventKey="Proposals" title="Proposals">
+              <Tab eventKey="Proposals" title="Active">
                 {" "}
                 {proposals.map((e) => (
                   <div key={e.id} className="thesis-section">
@@ -243,7 +243,7 @@ export default function MyProposals() {
                   </div>
                 ))}
               </Tab>
-              <Tab eventKey="Archive" title="Archive">
+              <Tab eventKey="Archive" title="Archived">
                 {archivedProposals.length === 0 && (
                   <p className="ms-5 ps-3">You don't have any archived proposals yet</p>
                 )}
