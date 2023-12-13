@@ -3,7 +3,7 @@ const pool = require("../db/connection");
 //search external co supervisor based on name, surname
 const searchExternalByName = async (req, res) => {
   try {
-    const { name, surname } = req.query;
+    let { name, surname } = req.query;
 
     //to lower case
     name = name.toLowerCase();
@@ -33,7 +33,7 @@ const searchExternalByName = async (req, res) => {
 
 const searchExternalByEmail = async (req, res) => {
   try {
-    const { email } = req.query;
+    let { email } = req.query;
 
     //check email format
     if (!email.includes("@")) {
@@ -64,7 +64,7 @@ const searchExternalByEmail = async (req, res) => {
 //insert new external supervisor
 const insertExternal = async (req, res) => {
   try {
-    const { name, surname, email } = req.body;
+    let { name, surname, email } = req.body;
 
     //check email format
     if (!email.includes("@")) {
