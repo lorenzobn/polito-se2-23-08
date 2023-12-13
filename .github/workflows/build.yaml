@@ -20,7 +20,7 @@ jobs:
         run:  sudo npm install -g jest
         working-directory: ./backend
       - name: Run Tests
-        run:  npm run test
+        run:  npm run test --coverage
         working-directory: ./backend
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
