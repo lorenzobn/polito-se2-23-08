@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import Navbar from './Navbar';
-import Button from './Button';
-import { ToastContainer } from 'react-toastify';
-import { useLocation} from 'react-router-dom';
-import { useEffect } from 'react';
-import Select from 'react-select';
+import React, { useState } from "react";
+import Navbar from "./Navbar";
+import Button from "./Button";
+import { ToastContainer } from "react-toastify";
+import { useParams, useNavigate } from "react-router-dom";
+import { useEffect } from "react";
+import Select from "react-select";
 import { StoreContext } from "../core/store/Provider";
 import { useContext } from "react";
 
@@ -13,96 +13,88 @@ const levels = [
   { value: "MSc", label: "Master" },
 ];
 
-let cdss = [];
 let internal_co_supervisors = [];
 let external_co_supervisors = [];
 
-
-
 function EditProposal() {
+  const param = useParams();
+  const proposalId = param.id;
+  const navigate = useNavigate();
+  const [selectedKeywords, setSelectedKeywords] = useState(
+    ''
+  );
+  const [selectedLevel, setSelectedLevel] = useState({});
+  const [selectedProgram, setSelectedProgram] = useState('');
+  const [modifiedInternal, setModifiedInternal] = useState(
+    ''
+  );
+  const [modifiedExternal, setModifiedExternal] = useState(
+    ''
+  );
+  const [cdss, setCdss] = useState([])
 
+  const [formData, setFormData] = useState({
+    title: '',
+    description: '',
+    required_knowledge: '',
+    deadline: '',
+    notes: '',
+    type: '',
+  });
 
-  
-const location = useLocation();
-const proposalData = location.state.proposalData;
-const [selectedKeywords, setSelectedKeywords] = useState(proposalData.keywords);
-const [selectedLevel, setSelectedLevel] = useState(proposalData.level);
-const [selectedProgram, setSelectedProgram] = useState(proposalData.program);
-const [modifiedInternal, setModifiedInternal] = useState(proposalData.internal);
-const [modifiedExternal, setModifiedExternal] = useState(proposalData.external);
+  const store = useContext(StoreContext);
+  useEffect(() => {
+    const fetchProposal = async () => {
+      try {
+        const res = await store.getProposal(proposalId);
+        const proposal = res.data[0];
+        setFormData(proposal);
+        setSelectedKeywords(proposal.keywords);
+        setSelectedLevel(levels.find(e => e.value === proposal.level));
+        setModifiedInternal(proposal.internal);
+        setModifiedExternal(proposal.external);
+      } catch (error) {
+        navigate("/404");
+      }
+    };
+    fetchProposal();
 
-
-
-  
-
-const [formData, setFormData] = useState({
-  title: proposalData.title,
-  description: proposalData.description,
-  knowledge: proposalData.knowledge,
-  deadline: proposalData.deadline,
-  notes: proposalData.notes,
-  type:proposalData.type,
-});
-
-
-
-const store = useContext(StoreContext);
-useEffect(() => {
-  setFormData(proposalData);
-  setSelectedKeywords(proposalData.keywords);
-  setSelectedLevel(proposalData.level);
-  setSelectedProgram(proposalData.program);
-  console.log(proposalData.program);
-  setModifiedInternal(proposalData.internal);
-  setModifiedExternal(proposalData.external);
     const handleEffect = async () => {
-  //getting cds from server
-  const cds = await store.getAllCds();
-  for (let index = 0; index < cds.length; index++) {
-    cdss[index] = {
-      value: cds[index].cod_degree,
-      label: cds[index].title_degree,
+      //getting cds from server
+      const cds = await store.getAllCds();
+      setCdss(cds.map(e => {return {value: e.cod_degree, label: e.title_degree}}));
     };
-  }
+    handleEffect();
+  }, []);
 
-};
-handleEffect();
+  useEffect(() => {
+    setSelectedProgram(cdss.find(e => e.value === formData.programme));
+  }, [cdss]);
 
-}, [proposalData]);
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
 
+  const handleTagsChange = (tags) => {
+    setSelectedKeywords(tags);
+  };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    // Update the proposal with the new form data...
+  };
 
-
-
-
-
-
-      const handleInputChange = (e) => {
-        setFormData({
-          ...formData,
-          [e.target.name]: e.target.value,
-        });
-      };
-    
-      const handleTagsChange = (tags) => {
-        setSelectedKeywords(tags);
-      };
-    
-
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        // Update the proposal with the new form data...
-    };
-
-    return (
-        <>
-         <Navbar />
-        <div className="py-2 px-4 mx-auto max-md">
+  return (
+    <>
+      <Navbar />
+      <div className="py-2 px-4 mx-auto max-md">
         <p className="mb-4 font-light text-center text-gray-500 fs-5"></p>
         <form
           className="container mt-5 p-4 form-proposal rounded shadow mt-10"
           method="post"
-          
         >
           <div className="mb-3">
             <label htmlFor="title" className="form-label">
@@ -114,9 +106,8 @@ handleEffect();
               id="title"
               name="title"
               placeholder="Enter proposal title"
-              value={proposalData.title || ''} onChange={handleInputChange} 
-            
-             
+              value={formData.title || ""}
+              onChange={handleInputChange}
             />
           </div>
           <div className="mb-3">
@@ -128,10 +119,8 @@ handleEffect();
               id="description"
               name="description"
               placeholder="Enter proposal description"
-              value={proposalData.description || ''}
-              onChange={handleInputChange} 
-
-
+              value={formData.description || ""}
+              onChange={handleInputChange}
               rows="4"
             ></textarea>
           </div>
@@ -144,10 +133,10 @@ handleEffect();
               type="text"
               className="form-control border rounded px-3 py-2 mt-1 mb-2"
               id="knowledge"
-              name="knowledge"
+              name="required_knowledge"
               placeholder="Enter required knowledge"
-               value={proposalData.knowledge || ''}
-               onChange={handleInputChange} 
+              value={formData.required_knowledge || ""}
+              onChange={handleInputChange}
             />
           </div>
 
@@ -157,24 +146,21 @@ handleEffect();
                 Level:
               </label>
               <Select
-                 defaultValue={levels.find(option => option.value === selectedLevel)}
+                value={selectedLevel}
                 onChange={setSelectedLevel}
                 options={levels}
               />
-            
             </div>
 
             <div className="col-md-4">
               <label htmlFor="programmes" className="form-label block">
-                CdS /programmes:
+                CdS / Programmes:
               </label>
               <Select
-                defaultValue= {selectedProgram}
+                value={selectedProgram}
                 onChange={setSelectedProgram}
                 options={cdss}
-          
               />
-             
             </div>
 
             <div className="col-md-4">
@@ -186,9 +172,8 @@ handleEffect();
                 className="form-control border rounded px-3 py-2"
                 id="deadline"
                 name="deadline"
-                value={proposalData.deadline}
+                value={formData.deadline.slice(0, 10)}
                 onChange={handleInputChange}
-               
               />
             </div>
 
@@ -199,10 +184,6 @@ handleEffect();
               >
                 Internal Co-supervisors:
               </label>
-            
-           
-            
-              
             </div>
 
             <div className="col-md-6">
@@ -212,7 +193,6 @@ handleEffect();
               >
                 External Co-supervisors:
               </label>
-             
             </div>
           </div>
 
@@ -228,7 +208,6 @@ handleEffect();
               value={formData.type}
               placeholder="Enter type..."
               onChange={handleInputChange}
-             
             />
           </div>
 
@@ -236,7 +215,6 @@ handleEffect();
             <label htmlFor="keywords" className="form-label block">
               Keywords:
             </label>
-        
           </div>
 
           <div className="mb-3">
@@ -250,22 +228,18 @@ handleEffect();
               placeholder="Enter additional notes here..."
               value={formData.notes}
               onChange={handleInputChange}
-              
               rows="3"
             ></textarea>
           </div>
 
           <div className="d-flex justify-content-end mt-4">
-            <Button text={"Confirm"} ></Button>
+            <Button text={"Confirm"}></Button>
             <ToastContainer />
           </div>
         </form>
       </div>
     </>
-
-          
-    );
+  );
 }
 
 export default EditProposal;
-

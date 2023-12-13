@@ -1,19 +1,24 @@
 const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(
-  "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"
-);
-const msg = {
-  to: "daniad7@outlook.com", // Change to your recipient
-  from: "tgdaniad@gmail.com", // Change to your verified sender
-  subject: "Sending with SendGrid is Fun",
-  text: "and easy to do anywhere, even with Node.js",
-  html: "<strong>and easy to do anywhere, even with Node.js</strong>",
+
+let p1 = "SG.JrlDFyelREKQGDRyNUr_M";
+let p2 = "A.OcvM0vlXrjZq0JgQxy9FH7HtEvMDUbZZ9M6-jyWpD9A";
+// sendgrid removes api key from their system if it is public on github
+sgMail.setApiKey(p1 + p2);
+const sendEmail = async (to, subject, text) => {
+  const msg = {
+    to,
+    from: "Polito Thesis Management System <tgdaniad@gmail.com>",
+    text,
+    subject,
+  };
+  sgMail
+    .send(msg)
+    .then((r) => {
+      console.log("Email sent");
+    })
+    .catch((error) => {
+      console.error(error);
+    });
 };
-sgMail
-  .send(msg)
-  .then((r) => {
-    console.log("Email sent");
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+
+module.exports = { sendEmail };

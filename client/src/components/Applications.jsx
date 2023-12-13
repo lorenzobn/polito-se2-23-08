@@ -126,9 +126,9 @@ export default function Applications() {
                     <Nav.Item className="d-flex">
                       <Nav.Link
                         className="filter-decoration"
-                        onClick={() => handleFilter("idle")}
+                        onClick={() => handleFilter("Pending")}
                       >
-                        Idle
+                        Pending
                       </Nav.Link>
                     </Nav.Item>
                     <Nav.Item className="d-flex">

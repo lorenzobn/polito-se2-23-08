@@ -9,8 +9,8 @@ const ErrorPage = () => {
         <div style={{ maxWidth: "30%" }}>
           <h1 className="d-flex justify-content-center">OOPS!</h1>
           <h3 className="d-flex justify-content-center m-5">
-            The page you are looking for might have been removed, might be
-            temporarily unavailable or you don't have the permissions.
+            The page you are looking for might have been removed or
+            temporarily unavailable
           </h3>
           <div className="d-flex justify-content-center">
           <a className="border-thesis-view" href={`/`}>

@@ -1,13 +1,13 @@
 const { userTypes } = require("./users");
 const pool = require("../db/connection");
-
+const { sendEmail  } = require("./email");
 const createNotification = async (
   userId,
 
   userType,
   title,
   message,
-  sendEmail = false
+  email = false
 ) => {
   let teacherId = null;
   let studentId = null;
@@ -35,10 +35,33 @@ const createNotification = async (
 
   try {
     const result = await pool.query(query);
-    return result.rows[0];
-    if (sendEmail) {
-      // handle sending email
+    if (email) {
+      let query2 = "";
+      if (userType === userTypes.teacher) {
+        query2 = {
+          text: `
+          SELECT * FROM Teacher
+          WHERE id = $1;
+        `,
+          values: [teacherId],
+        };
+      }
+      if (userType === userTypes.student) {
+        query2 = {
+          text: `
+          SELECT * FROM Student
+          WHERE id = $1;
+        `,
+          values: [studentId],
+        };
+      }
+      const result2 = await pool.query(query2);
+      const email = result2.rows[0]?.email;
+      if (email) {
+        sendEmail(email, title, message);
+      }
     }
+    return result?.rows[0];
   } catch (error) {
     throw error;
   }
