@@ -358,6 +358,17 @@ export class Store {
     }
   }
 
+  async updateProposal(id, updates) {
+    console.log(updates);
+    try {
+      const res = await updateProposalAPI(id, updates);
+      window.location.reload();
+      return res.data;
+    } catch (err) {
+      toast.error("Unexpected error");
+    }
+  }
+
   async deleteProposal(id) {
     try {
       const res = await updateProposalAPI(id, { status: "deleted" });

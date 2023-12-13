@@ -245,7 +245,7 @@ export default function MyProposals() {
               </Tab>
               <Tab eventKey="Archive" title="Archive">
                 {archivedProposals.length === 0 && (
-                  <p>You don't have any archived proposals yet</p>
+                  <p className="ms-5 ps-3">You don't have any archived proposals yet</p>
                 )}
                 {archivedProposals.map((e) => (
                   <div key={e.id} className="thesis-section">

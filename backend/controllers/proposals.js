@@ -350,9 +350,10 @@ const deleteProposal = async (req, res) => {
 const updateProposal = async (req, res) => {
   // TODO: Editing is disabled if there is one accepted application!
   // TODO: Handling update of keywords and co-supervisions
+  console.log(req.body);
   try {
     const { proposalId } = req.params;
-
+    
     const updateFields = req.body;
     const {
       title,
