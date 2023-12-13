@@ -11,6 +11,7 @@ import { MultiSelect } from "react-multi-select-component";
 import { set } from "mobx";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { updateProposal } from "../core/API/proposals";
 
 const levels = [
   { value: "BSc", label: "Bachelor" },
@@ -162,25 +163,24 @@ function EditProposal() {
           level: selectedLevel.value,
           programme: selectedProgram.value,
           keywords: selectedKeywords,
-          coSupervisors: selectedInternalCoSupervisors.map((e) => {return {name: e.value.split(" ")[0], surname: e.value.split(" ")[1]}}),
+          coSupervisors: selectedInternalCoSupervisors.map((e) => { return { name: e.value.split(" ")[0], surname: e.value.split(" ")[1] } }),
           /* external_co: selectedExternalCoSupervisors.map((e) => e.value), */
         });
         setEditProposal(updatedProposal);
         console.log(updatedProposal)
-        if(updatedProposal.msg === "Proposal updated successfully"){
+        if (updatedProposal.data) {
           toast.success("Your proposal updated successfully!", {
             position: toast.POSITION.TOP_CENTER,
           });
-          
         }
-          else{
-            toast.error(updatedProposal.response.data.msg, {
-              position: toast.POSITION.TOP_CENTER,
-            });
-          }
+        else {
+          toast.error(updatedProposal.msg, {
+            position: toast.POSITION.TOP_CENTER,
+          });
+        }
 
-        
-        
+
+
         //console.log("test log:" , insertProposal.response.data.msg);
         /* if (updatedProposal.msg === "Proposal created successfully") {
           toast.success("Your proposal updated successfully!", {
