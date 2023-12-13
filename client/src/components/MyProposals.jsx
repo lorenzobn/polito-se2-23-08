@@ -278,24 +278,7 @@ export default function MyProposals() {
                               Edit
                             </Dropdown.Item>
 
-                            <Dropdown.Item
-                              onClick={() => {
-                                console.log('Dropdown item clicked');
-                                handleEdit(e);
-                              }}
-                              style={{
-                                color: "#555",
-                                paddingBottom: "8px",
-                                borderBottom: "1px solid #eee",
-                              }}
-                            >
-                              <MdOutlineEdit
-                                className="dropdown-icon"
-                                size={18}
-                              />
-                              Copy
-                            </Dropdown.Item>
-
+                           
                            { /* <Dropdown.Item
                               style={{
                                 color: "#555",
@@ -406,23 +389,7 @@ export default function MyProposals() {
                               </Modal.Footer>
                             </Modal>
 
-                            <Dropdown.Item
-                              onClick={() => {
-                                console.log('Dropdown item clicked');
-                                handleEdit(e);
-                              }}
-                              style={{
-                                color: "#555",
-                                paddingBottom: "8px",
-                                borderBottom: "1px solid #eee",
-                              }}
-                            >
-                              <MdOutlineEdit
-                                className="dropdown-icon"
-                                size={18}
-                              />
-                              Copy
-                            </Dropdown.Item>
+                            
                           </Dropdown.Menu>
                         </Dropdown>
                       </h2>
