@@ -42,6 +42,7 @@ function EditProposal() {
     notes: "",
     type: "",
   });
+  const [editProposal, setEditProposal] = useState({});
 
   const store = useContext(StoreContext);
   useEffect(() => {
@@ -49,6 +50,7 @@ function EditProposal() {
       try {
         const res = await store.getProposal(proposalId);
         console.log(res.internal_co);
+
         const proposal = res.data[0];
         setFormData(proposal);
         setSelectedKeywords(res.keywords.map((e) => e.keyword));
@@ -58,6 +60,7 @@ function EditProposal() {
             return { value: `${name} ${surname}`, label: `${name} ${surname}` };
           })
         );
+        console.log(selectedExternalCoSupervisors);
         setSelectedInternalCoSupervisors(
           res.internal_co.map(({ name, surname }) => {
             return { value: `${name} ${surname}`, label: `${name} ${surname}` };
@@ -161,7 +164,23 @@ function EditProposal() {
           keywords: selectedKeywords,
           coSupervisors: selectedInternalCoSupervisors.map((e) => {return {name: e.value.split(" ")[0], surname: e.value.split(" ")[1]}}),
           /* external_co: selectedExternalCoSupervisors.map((e) => e.value), */
-        })
+        });
+        setEditProposal(updatedProposal);
+        console.log(updatedProposal)
+        if(updatedProposal.msg === "Proposal updated successfully"){
+          toast.success("Your proposal updated successfully!", {
+            position: toast.POSITION.TOP_CENTER,
+          });
+          
+        }
+          else{
+            toast.error(updatedProposal.response.data.msg, {
+              position: toast.POSITION.TOP_CENTER,
+            });
+          }
+
+        
+        
         //console.log("test log:" , insertProposal.response.data.msg);
         /* if (updatedProposal.msg === "Proposal created successfully") {
           toast.success("Your proposal updated successfully!", {
