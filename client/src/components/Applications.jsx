@@ -166,8 +166,10 @@ export default function Applications() {
                     <p>Deadline: {e.deadline.slice(0, 10)}</p>
                     {store.user && store.user.type === "student" ? (
                       <Badge badge-status={e.applicationstatus}>
-                        {e.applicationstatus.charAt(0).toUpperCase() +
-                          e.applicationstatus.slice(1)}
+                        {e.applicationstatus === "idle"
+                          ? "Pending"
+                          : e.applicationstatus.charAt(0).toUpperCase() +
+                            e.applicationstatus.slice(1)}
                       </Badge>
                     ) : (
                       <></>
