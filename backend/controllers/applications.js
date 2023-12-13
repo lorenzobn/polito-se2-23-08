@@ -19,13 +19,29 @@ const createApplication = async (req, res) => {
       cv_uri: Joi.string().allow(""),
     });
 
-    //TODO: is the thesis active? assert(thesis_id.status === active)
-
     const { error, value } = applicationSchema.validate(req.body);
     if (error) {
       logger.error(error);
       return res.status(400).json({ msg: error.details[0].message });
     }
+
+    let query = {
+      text: "SELECT id,status FROM THESIS_PROPOSAL WHERE thesis_proposal.id=$1;",
+      values: [value.thesis_id],
+    };
+
+    let r = await pool.query(query);
+    if (r.rowCount == 0) {
+      return res.status(400).json({ msg: "Invalid proposal id." });
+    }
+
+    if (r.rows[0].status !== 'active'){
+      return res.status(400).json({ msg: "Cannot apply to this thesis because it is not active anymore." });
+    }
+
+
+
+
     const file = req.files && req.files.file;
 
     if (file) {
@@ -35,7 +51,7 @@ const createApplication = async (req, res) => {
       value.cv_uri = filePath;
       await file.mv(filePath);
     }
-    const query = `
+    query = `
       INSERT INTO thesis_application (student_id, thesis_id, status, cv_uri, created_at)
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *;
