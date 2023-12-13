@@ -172,6 +172,8 @@ function EditProposal() {
            
           });
 
+          window.location.href = ("/thesis-proposals");
+
          
         }
         else {
