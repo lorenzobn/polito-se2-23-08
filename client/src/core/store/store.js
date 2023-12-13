@@ -369,9 +369,11 @@ export class Store {
   async archiveProposal(id) {
     try {
       const res = await updateProposalAPI(id, { status: "archived" });
+      console.log(res);
       window.location.reload();
       return res.data;
     } catch (err) {
+      console.log(err);
       toast.error("Unexpected error");
     }
   }

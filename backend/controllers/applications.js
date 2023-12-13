@@ -7,7 +7,6 @@ const fs = require("fs");
 const path = require("path");
 const { userTypes } = require("./users.js");
 
-
 const uploadPath = "uploads/";
 const createApplication = async (req, res) => {
   try {
@@ -196,9 +195,14 @@ const updateApplication = async (req, res) => {
       if (result.rows.length === 0) {
         return res.status(404).json({ msg: "Application not found." });
       }
+      const result2 = await pool.query(
+        "SELECT * FROM THESIS_APPLICATION WHERE id = $1",
+        [applicationId]
+      );
+      const studentId = result2?.rows[0]?.student_id;
       createNotification(
-        req.session.user.id,
-        userTypes.teacher,
+        studentId,
+        userTypes.student,
         "Application Updated",
         `Your application' has been created successfully!`, //TODO: add title of the application in this text
         true

@@ -39,6 +39,7 @@ const proposalSchemaUpdate = Joi.object({
   programme: Joi.string().max(10),
   deadline: Joi.date(),
   keywords: Joi.array(),
+  status: Joi.string(),
 });
 
 const getAllCdS = async (req, res) => {
@@ -398,11 +399,9 @@ const updateProposal = async (req, res) => {
 
     r = await pool.query(query);
     if (r.rowCount > 0) {
-      return res
-        .status(400)
-        .json({
-          msg: "Cannot modify a proposal because there already an accept application.",
-        });
+      return res.status(400).json({
+        msg: "Cannot modify a proposal because there already an accept application.",
+      });
     }
 
     //3. Is there a deadline?
@@ -501,6 +500,7 @@ const updateProposal = async (req, res) => {
           "level",
           "programme",
           "deadline",
+          "status",
         ].indexOf(key) !== -1
       ) {
         newObj[key] = updateFields[key];
