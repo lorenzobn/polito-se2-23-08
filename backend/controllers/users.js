@@ -22,11 +22,14 @@ const fetchSelf = async (req, res) => {
       [id, req.session.clock.time]
     );
 
-    if (student.rows.length === 0 && teacher.rows.length === 0) {
+    if (student.rowCount === 0 && teacher.rowCount === 0) {
       return res.status(400).json({ msg: "Invalid email" });
     }
 
-    if (student.rows[0]) {
+    let userObj;
+    let realPwd;
+
+    if (student.rowCount > 0) {
       userObj = student.rows[0];
       realPwd = student.rows[0].id;
       userObj.type = "student";
@@ -38,7 +41,7 @@ const fetchSelf = async (req, res) => {
     res.status(200).json({ data: userObj });
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "fetching user data failed" });
+    res.status(500).json({ error: error });
   }
 };
 
