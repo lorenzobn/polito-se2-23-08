@@ -14,6 +14,7 @@ import Button from "./Button";
 import {
   faAngleDown,
   faBackward,
+  faRepeat,
   faSearch,
 } from "@fortawesome/free-solid-svg-icons";
 import { StoreContext } from "../core/store/Provider";
@@ -177,7 +178,12 @@ function ThesisList(props) {
           )}
         </Row>
         <Row className="border-thesis-div">
-          <Col style={{ minWidth:'200px' }} xs={12} lg={2} className="d-flex border-thesis-filter">
+          <Col
+            style={{ minWidth: "200px" }}
+            xs={12}
+            lg={2}
+            className="d-flex border-thesis-filter"
+          >
             <Offcanvas
               show={show}
               onHide={handleClose}
@@ -189,7 +195,7 @@ function ThesisList(props) {
               <Offcanvas.Body>
                 <Nav
                   variant="underline"
-                  className="flex-column m-5 justify-content-center"
+                  className="flex-column  justify-content-center"
                   onSelect={handleFilter}
                 >
                   {filter === "Research Group" &&
@@ -250,10 +256,10 @@ function ThesisList(props) {
             </Offcanvas>
             <Stack>
               <Form
-                className="d-flex flex-row ms-5 me-5 mt-5"
+                className="d-flex flex-row  me-2 mt-5"
                 style={{ height: "100px" }}
               >
-                <div className="me-3 align-self-center">
+                <div className="mx-3 align-self-center">
                   <Form.Control
                     type="text"
                     placeholder="Search"
@@ -271,7 +277,7 @@ function ThesisList(props) {
                     </div>
                     {search ? (
                       <div className="search-icon" onClick={handleReset}>
-                        <FontAwesomeIcon icon={faBackward}></FontAwesomeIcon>
+                        <FontAwesomeIcon icon={faRepeat}></FontAwesomeIcon>
                       </div>
                     ) : (
                       <></>
@@ -282,7 +288,7 @@ function ThesisList(props) {
               <Nav
                 ref={scopeDegree}
                 variant="underline"
-                className="flex-column m-5"
+                className="flex-column m-4"
                 onSelect={handleShow}
               >
                 <Nav.Item className="d-flex">

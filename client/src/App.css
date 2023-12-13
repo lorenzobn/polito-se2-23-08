@@ -395,8 +395,13 @@ a.dropdown-item:hover {
 }
 .custom-dropdown-toggle {
   background-color: var(--background);
-  border-color: rgb(195, 194, 194);
+  border: none;
+  border-radius: 3px;
   color: var(--dropdown-color);
+  transform: scale(1.3);
+}
+.custom-dropdown-toggle:hover {
+  border: none;
 }
 
 .dropdown-item:hover {
@@ -433,8 +438,9 @@ a.dropdown-item:hover {
 }
 
 .dropdown-icon {
-  margin-left: 10px;
+  margin-right: 0.5rem;
 }
+
 .description-container {
   width: 95%;
 }
@@ -447,8 +453,11 @@ a.dropdown-item:hover {
   justify-content: center;
 }
 
-.modal-button {
-  margin: 0 20px;
+.error-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
 }
 
 .bell-passive {
@@ -471,9 +480,9 @@ a.dropdown-item:hover {
   animation: scaleAnimation 1s infinite linear;
 }
 
-.error-page {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100dvh;
+.modal-content {
+  border-radius: 4px;
+}
+.modal-body {
+  border-bottom: none;
 }

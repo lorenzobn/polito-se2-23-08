@@ -36,6 +36,16 @@ export const getMyApplications = async () => {
   }
 };
 
+export const updateProposal = async (id, updates) => {
+  try {
+    console.log("/thesis-proposals/" + id);
+    const res = await client.put("/thesis-proposals/" + id, updates);
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const searchProposal = async (keyword) => {
   try {
     const res = await client.get("/thesis-proposals/search", {
