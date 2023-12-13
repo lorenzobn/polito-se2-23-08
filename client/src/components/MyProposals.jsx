@@ -366,7 +366,7 @@ export default function MyProposals() {
                                     setShowArchiveModal(false);
                                     setProposalIdToArchive(null);
                                   }}
-                                  text={"Cancel"}
+                                  text={"Cancel12"}
                                   icon={faHand}
                                 ></Button>
 
@@ -379,7 +379,7 @@ export default function MyProposals() {
                                     );
                                     setShowArchiveModal(false);
                                   }}
-                                  text={"ARHIVE"}
+                                  text={"ARCHIVE"}
                                   icon={faTrash}
                                 ></Button>
                               </Modal.Footer>
