@@ -43,9 +43,7 @@ const coSupervisorAdd = async (thesisId, name, surname, external) => {
 };
 
 const getExtCoSupervisors = async (req, res) => {
-  const query = `
-    SELECT name,surname FROM EXTERNAL_CO_SUPERVISOR;
-    `;
+  const query = `SELECT name,surname FROM EXTERNAL_CO_SUPERVISOR;`;
   const values = [];
   try {
     const results = await pool.query(query, values)

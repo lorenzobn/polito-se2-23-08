@@ -1,5 +1,5 @@
 const pool = require("../db/connection");
-const { coSupervisorAdd } = require('../controllers/utils'); // Replace 'yourModule' with the actual path to your module
+const { coSupervisorAdd, getExtCoSupervisors } = require('../controllers/utils'); // Replace 'yourModule' with the actual path to your module
 const logger = require('../services/logger.js');
 
 // Mocking pool.query
@@ -78,3 +78,60 @@ describe('T1 -- coSupervisorAdd', () => {
     expect(pool.query).toHaveBeenCalledTimes(1);
   });
 });
+
+
+describe('T2 -- getExtCoSupervisors', () => {
+
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
+  it('T2.1 - should return external co-supervisors', async () => {
+    // Mock the query result for external co-supervisors
+    const expectedResults = [
+      { name: 'John', surname: 'Doe' },
+      { name: 'Jane', surname: 'Smith' },
+    ];
+
+    pool.query.mockResolvedValueOnce({
+      rowCount: expectedResults.length,
+      rows: expectedResults,
+    });
+
+    // Mock Express response object
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    await getExtCoSupervisors(null, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(200);
+    expect(mockRes.json).toHaveBeenCalledWith({ data: expectedResults });
+    expect(pool.query).toHaveBeenCalledWith(
+        `SELECT name,surname FROM EXTERNAL_CO_SUPERVISOR;`,
+      []
+    );
+    expect(logger.error).not.toHaveBeenCalled();
+  });
+
+  it('T2.2 - should handle errors and return 500 status', async () => {
+    // Mock the error scenario
+    const mockError = new Error('Database error');
+
+    pool.query.mockRejectedValueOnce(mockError);
+
+    // Mock Express response object
+    const mockRes = {
+      status: jest.fn().mockReturnThis(),
+      json: jest.fn(),
+    };
+
+    await getExtCoSupervisors(null, mockRes);
+
+    expect(mockRes.status).toHaveBeenCalledWith(500);
+    expect(mockRes.json).toHaveBeenCalledWith({ msg: 'Unknown error occurred' });
+    expect(logger.error).toHaveBeenCalledWith(mockError);
+  });
+});
+
