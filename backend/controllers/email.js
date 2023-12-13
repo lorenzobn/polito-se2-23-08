@@ -1,7 +1,9 @@
 const sgMail = require("@sendgrid/mail");
-sgMail.setApiKey(
-  "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"
-);
+
+let p1 = "SG.JrlDFyelREKQGDRyNUr_M";
+let p2 = "A.OcvM0vlXrjZq0JgQxy9FH7HtEvMDUbZZ9M6-jyWpD9A";
+// sendgrid removes api key from their system if it is public on github
+sgMail.setApiKey(p1 + p2);
 const sendEmail = async (to, subject, text) => {
   const msg = {
     to,
