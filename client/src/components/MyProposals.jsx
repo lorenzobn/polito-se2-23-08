@@ -16,6 +16,7 @@ import { FaEdit, FaTrashAlt, FaSyncAlt, FaCopy } from "react-icons/fa";
 import { MdOutlineEdit, MdOutlineDelete } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../core/store/Provider";
+import { FaArrowDown } from "react-icons/fa";
 
 export default function MyProposals() {
   const navigate = useNavigate();
@@ -128,7 +129,7 @@ export default function MyProposals() {
                                 setProposalIdToArchive(e.id);
                               }}
                             >
-                              <FaCopy className="dropdown-icon" size={18} />
+                              <FaArrowDown className="dropdown-icon" size={18} />
                               Archive
                             </Dropdown.Item>
                             <Dropdown.Item
@@ -205,7 +206,7 @@ export default function MyProposals() {
                                     setShowArchiveModal(false);
                                     setProposalIdToArchive(null);
                                   }}
-                                  text={"Cancel"}
+                                  text={"CANCEL"}
                                   icon={faHand}
                                 ></Button>
 
@@ -218,7 +219,7 @@ export default function MyProposals() {
                                     );
                                     setShowArchiveModal(false);
                                   }}
-                                  text={"ARHIVE"}
+                                  text={"ARCHIVE"}
                                   icon={faTrash}
                                 ></Button>
                               </Modal.Footer>
@@ -277,7 +278,25 @@ export default function MyProposals() {
                               Edit
                             </Dropdown.Item>
 
-                            {/* <Dropdown.Item
+                            <Dropdown.Item
+                              onClick={() => {
+                                console.log('Dropdown item clicked');
+                                handleEdit(e);
+                              }}
+                              style={{
+                                color: "#555",
+                                paddingBottom: "8px",
+                                borderBottom: "1px solid #eee",
+                              }}
+                            >
+                              <MdOutlineEdit
+                                className="dropdown-icon"
+                                size={18}
+                              />
+                              Copy
+                            </Dropdown.Item>
+
+                           { /* <Dropdown.Item
                               style={{
                                 color: "#555",
                                 marginTop: "8px",
@@ -291,7 +310,8 @@ export default function MyProposals() {
                             >
                               <FaCopy className="dropdown-icon" size={18} />
                               Unarchive
-                            </Dropdown.Item> */}
+                            </Dropdown.Item>*/
+}
                             <Dropdown.Item
                               onClick={() => {
                                 setShowDeleteModal(true);
@@ -305,6 +325,7 @@ export default function MyProposals() {
                               />
                               Delete
                             </Dropdown.Item>
+
 
                             <Modal
                               show={showDeleteModal}
@@ -366,7 +387,7 @@ export default function MyProposals() {
                                     setShowArchiveModal(false);
                                     setProposalIdToArchive(null);
                                   }}
-                                  text={"Cancel12"}
+                                  text={"CANCEL"}
                                   icon={faHand}
                                 ></Button>
 
@@ -384,6 +405,24 @@ export default function MyProposals() {
                                 ></Button>
                               </Modal.Footer>
                             </Modal>
+
+                            <Dropdown.Item
+                              onClick={() => {
+                                console.log('Dropdown item clicked');
+                                handleEdit(e);
+                              }}
+                              style={{
+                                color: "#555",
+                                paddingBottom: "8px",
+                                borderBottom: "1px solid #eee",
+                              }}
+                            >
+                              <MdOutlineEdit
+                                className="dropdown-icon"
+                                size={18}
+                              />
+                              Copy
+                            </Dropdown.Item>
                           </Dropdown.Menu>
                         </Dropdown>
                       </h2>
