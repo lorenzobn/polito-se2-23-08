@@ -204,7 +204,7 @@ const updateApplication = async (req, res) => {
         studentId,
         userTypes.student,
         "Application Updated",
-        `Your application' has been created successfully!`, //TODO: add title of the application in this text
+        `Your application status has been updated! Please check your applications section.`, //TODO: add title of the application in this text
         true
       );
 

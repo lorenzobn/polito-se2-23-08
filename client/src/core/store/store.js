@@ -342,6 +342,7 @@ export class Store {
     try {
       const res = await getNotificationsAPI();
       this.user.notifications = res.data.data;
+      this.user.notifications.reverse();
       return res.data;
     } catch (err) {
       return [];
