@@ -29,7 +29,8 @@ export default function MyProposals() {
 
     const handleEdit = (e) => {
         setProposalData(e);
-        navigate('/editProposal/');
+        navigate(`/editProposal/${e.id}` , { state: { proposalData: e } });
+        console.log(e);
         
     };
 

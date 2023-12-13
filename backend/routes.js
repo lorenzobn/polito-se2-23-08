@@ -84,8 +84,6 @@ router.get(
   getApplicationById
 );
 
-//router.get("/my-applications/decisions", getApplicationsDecisions);
-
 router.get(
   "/received-applications",
   authorize(userRoles.teacher),

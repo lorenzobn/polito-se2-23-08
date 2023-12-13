@@ -59,11 +59,7 @@ function InsertProposal({proposalData}) {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
     const handleEffect = async () => {
-      if (store.user.type == "student") {
-        setUserType("student");
-      } else if (store.user.type == "professor") {
-        setUserType("professor");
-      }
+      
       //getting cds from server
       const cds = await store.getAllCds();
       for (let index = 0; index < cds.length; index++) {
@@ -128,7 +124,7 @@ function InsertProposal({proposalData}) {
       });
     };
     handleEffect();
-  }, [formData, selectedKeywords]);
+  }, [selectedKeywords]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -181,14 +177,14 @@ function InsertProposal({proposalData}) {
           co_supervisor
         );
         setInsertProposals(insertProposal);
-        console.log("test log:" , insertProposal);
+        //console.log("test log:" , insertProposal.response.data.msg);
         if (insertProposal.msg === "Proposal created successfully") {
           toast.success("Your proposal submitted successfully!", {
             position: toast.POSITION.TOP_CENTER,
           });
-          //navigate("/thesis-proposals");
+          navigate("/thesis-proposals");
         } else {
-          toast.error("Something went wrong", {
+          toast.error(insertProposal.response.data.msg, {
             position: toast.POSITION.TOP_CENTER,
           });
         }

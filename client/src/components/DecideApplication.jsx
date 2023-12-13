@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
 import MyNavbar from "./Navbar";
 import {
   Row,
@@ -26,7 +26,7 @@ export default function AcceptApplications() {
   const param = useParams();
   const proposalId = param.thesisId;
   const store = useContext(StoreContext);
-
+  const navigate = useNavigate();
   const [status, setStatus] = useState("");
   const [proposal, setProposal] = useState([]);
   const [proposalDetails, setProposalDetails] = useState([]);
@@ -36,16 +36,19 @@ export default function AcceptApplications() {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
     const handleEffect = async () => {
-      const response = await store.getReceivedApplicationsByThesisId(
+      try {const response = await store.getReceivedApplicationsByThesisId(
         proposalId
       );
       setProposal(response);
       const details = proposal.map((p) => p.applicationstatus);
       setProposalDetails(details);
-      setProposalTitle(response[0].title);
+      setProposalTitle(response[0].title);}
+      catch (error) {
+        navigate("/404");
+      }
     };
     handleEffect();
-  }, []);
+  }, [status]);
 
   const handleAccept = async (index) => {
     const selectedForm = proposal[index];
@@ -55,14 +58,12 @@ export default function AcceptApplications() {
       selectedForm.applicationid,
       "accepted"
     );
-    if (response.response.status) {
-      toast.error(
-        response.response.data.msg,
-        {
-          position: toast.POSITION.TOP_CENTER,
-        }
-      );
+    if (response.status !== 200) {
+      toast.error(response.data.msg, {
+        position: toast.POSITION.TOP_CENTER,
+      });
     } else {
+      setStatus("accepted");
       toast.success(
         `You accepted ${selectedForm.student_id} application successfully!`,
         {
@@ -75,15 +76,16 @@ export default function AcceptApplications() {
   const handleReject = async (index) => {
     const selectedForm = proposal[index];
     //console.log("Rejected form at index", index, selectedForm);
-    const response = await store.applicationDecision(selectedForm.applicationid, "rejected");
-    if (response.response.status) {
-      toast.error(
-        response.response.data.msg,
-        {
-          position: toast.POSITION.TOP_CENTER,
-        }
-      );
+    const response = await store.applicationDecision(
+      selectedForm.applicationid,
+      "rejected"
+    );
+    if (response.status !== 200) {
+      toast.error(response.data.msg, {
+        position: toast.POSITION.TOP_CENTER,
+      });
     } else {
+      setStatus("rejected");
       toast.success(
         `You rejected ${selectedForm.student_id} application successfully!`,
         {
@@ -112,18 +114,26 @@ export default function AcceptApplications() {
                 <strong>Application Status:</strong> {student.applicationstatus}
                 <div className="row">
                   <div className="col text-start mt-4">
-                    <BadButton
-                      icon={faX}
-                      text={"REJECT"}
-                      onClick={() => handleReject(index)}
-                    ></BadButton>
+                    {student.applicationstatus === "idle" ? (
+                      <BadButton
+                        icon={faX}
+                        text={"REJECT"}
+                        onClick={() => handleReject(index)}
+                      ></BadButton>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                   <div className="col text-end mt-4">
-                    <Button
-                      icon={faCheck}
-                      text={"ACCEPT"}
-                      onClick={() => handleAccept(index)}
-                    ></Button>
+                    {student.applicationstatus === "idle" ? (
+                      <Button
+                        icon={faCheck}
+                        text={"ACCEPT"}
+                        onClick={() => handleAccept(index)}
+                      ></Button>
+                    ) : (
+                      <></>
+                    )}
                   </div>
                 </div>
               </li>

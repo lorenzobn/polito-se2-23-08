@@ -55,8 +55,8 @@ body {
   font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
-  height: 100dvh;
-  transition: background-color 0.4s ease-in-out;
+  /* height: 100dvh; */
+  /* transition: background-color .4s ease-in-out; */
 }
 
 @media screen and (max-width: 768px) {
@@ -82,7 +82,8 @@ body {
 
 .app {
   background-color: var(--background);
-  transition: background-color 0.4s ease-in-out;
+  transition: background-color .4s ease-in-out; 
+  height: 100dvh;
 }
 
 a {
@@ -468,4 +469,11 @@ a.dropdown-item:hover {
   font-size: "140%";
   color: rgb(252, 122, 8);
   animation: scaleAnimation 1s infinite linear;
+}
+
+.error-page {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100dvh;
 }

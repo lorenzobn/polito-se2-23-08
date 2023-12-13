@@ -10,6 +10,7 @@ import ProposalPage from "./components/ProposalPage";
 import MyProposals from "./components/MyProposals";
 import Applications from "./components/Applications";
 import DecideApplication from "./components/DecideApplication";
+import ErrorPage from "./components/404";
 import { StoreContext } from "./core/store/Provider";
 import Login from "./components/Login";
 import "react-toastify/dist/ReactToastify.css";
@@ -75,9 +76,10 @@ function App() {
             element={store.user.type !== 'student'? <MyProposals></MyProposals>:<Navigate replace to='/'></Navigate>}
           ></Route>
           <Route
-            path="/editProposal/"
-            element={<EditProposal />}
+            path="/editProposal/:id"
+            element={<EditProposal></EditProposal>}
           ></Route>
+          <Route path="*" element={<ErrorPage></ErrorPage>}></Route>
         </Routes>
       </BrowserRouter>
     </div>

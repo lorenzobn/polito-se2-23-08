@@ -27,6 +27,20 @@ const proposalSchema = Joi.object({
   keywords: Joi.array(),
 });
 
+// In this schema nothing is required
+const proposalSchemaUpdate = Joi.object({
+  title: Joi.string().min(8).max(150),
+  coSupervisors: Joi.array(),
+  type: Joi.string().min(1).max(30),
+  description: Joi.string().max(500),
+  requiredKnowledge: Joi.string().allow(""),
+  notes: Joi.string().allow(""),
+  level: Joi.string().valid("BSc", "MSc"),
+  programme: Joi.string().max(10),
+  deadline: Joi.date(),
+  keywords: Joi.array(),
+});
+
 const getAllCdS = async (req, res) => {
   const query = `
   SELECT * FROM DEGREE;
@@ -114,15 +128,17 @@ const createProposal = async (req, res) => {
       SUPERVISOR_id,
     ]);
     if (!r || !r) {
-      return res.status(400).json({ msg: "Invalid group provided." });
+      return res.status(400).json({ msg: "Invalid supervisor provided." });
     }
 
     const cod_group = r.rows[0].cod_group;
     let activeStatus = "active";
 
-    //TODO: The deadline shoud be checked! assert(deadline > current_virtual_clock_time) === true
-
-    await pool.query("BEGIN");
+    if(new Date(deadline) < req.session.clock.time){
+      return res.status(400).json({ msg: "The deadline is passed already!" });
+    }
+    
+    await pool.query('BEGIN');
 
     const query = `
       INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, COD_GROUP, description, required_knowledge, notes, level, programme, deadline, status, created_at)
@@ -151,8 +167,6 @@ const createProposal = async (req, res) => {
     }
 
     const newId = result.rows[0].id;
-    //adding co supervisors to the proposal
-    //for each co supervisor, add a row in the THESIS_CO_SUPERVISION table
     for (var i = 0; i < coSupervisors.length; i++) {
       let r = -1;
       if (coSupervisors[i].isExternal === true) {
@@ -182,8 +196,8 @@ const createProposal = async (req, res) => {
     }
 
     for (var i = 0; i < keywords.length; i++) {
-      let r = await keywordsAdd(newId, keywords[i]);
-      if (r < 0) {
+      let r = await keywordsAdd(newId, keywords[i], req.session.clock.time);
+      if (r < 0){
         // abort, error!
         //logging.error(`Error inserting a keyword for the thesis ${newId}`)
         //return res.status(500).json({ msg: "Error during the insertion of the keywords." });
@@ -226,7 +240,7 @@ const getProposals = async (req, res) => {
     });
   } catch (error) {
     logger.error(error.message);
-    return res.status(500).json({ msg: "Unknown error occurred" });
+    return res.status(500).json({ msg: error.message });
   }
 };
 
@@ -295,24 +309,138 @@ const getProposalsByTeacher = async (req, res) => {
 };
 
 const updateProposal = async (req, res) => {
-  // TODO check if proposal is owned by the professor who makes the request
-  // TODO Editing is disabled if there is one accepted application!
+  // TODO: Editing is disabled if there is one accepted application!
+  // TODO: Handling update of keywords and co-supervisions
   try {
     const { proposalId } = req.params;
-    const updateFields = req.body;
 
-    const { error } = proposalSchema.validate(updateFields, {
-      allowUnknown: true,
-    });
+    const updateFields = req.body;
+    const {
+      title,
+      type,
+      description,
+      requiredKnowledge,
+      notes,
+      level,
+      programme,
+      deadline,
+      keywords,
+      coSupervisors,
+    } = req.body;
+
+    const { error } = proposalSchemaUpdate.validate(updateFields)
     if (error) {
       return res.status(400).json({ msg: error.details[0].message });
     }
 
-    // 1. Get who is the supervisor of this proposal: assert(supervisor === req.user.session.id)
+    let query = {
+      text: "SELECT supervisor_id FROM THESIS_PROPOSAL WHERE thesis_proposal.id=$1;",
+      values: [proposalId],
+    };   
 
-    const setClause = Object.entries(updateFields)
-      .filter(([key, value]) => value !== undefined && value !== "")
-      .map(([key, value], index) => `${key} = $${index + 2}`)
+    let r = await pool.query(query);
+    if(r.rowCount == 0 || !r.rows[0].supervisor_id){
+      return res.status(400).json({ msg: "Invalid proposal id." });
+    }
+
+    logger.info(r);
+
+    if(r.rows[0].supervisor_id !== req.session.user.id){
+      return res.status(401).json({ msg: "Not authorized to update this proposal." });
+    }
+
+    //2. Check if there is already an accepted application for this thesis proposal: if yes, cannot edit!
+    query = {
+      text: "SELECT id FROM THESIS_APPLICATION WHERE thesis_id=$1 AND status='accepted';",
+      values: [proposalId],
+    };   
+
+    r = await pool.query(query);
+    if(r.rowCount > 0){
+      return res.status(400).json({ msg: "Cannot modify a proposal because there already an accept application." });
+    }
+
+    //3. Is there a deadline?
+    if(deadline != undefined && new Date(deadline) < req.session.clock.time){
+      return res.status(400).json({ msg: "The deadline is passed already!" });
+    }
+
+    //4. is there a programme?
+    if(programme != undefined){
+      r = await pool.query("SELECT COD_DEGREE FROM DEGREE WHERE COD_DEGREE=$1", [
+        programme,
+      ]);
+      if (!r || !r) {
+        return res.status(400).json({ msg: "Invalid Programme/CdS provided." });
+      }
+    }
+    await pool.query('BEGIN');
+    if(coSupervisors){
+      //delete all supervisors
+      await pool.query("DELETE FROM THESIS_CO_SUPERVISION WHERE THESIS_PROPOSAL_id=$1", [
+        proposalId,
+      ]);
+
+      for (var i = 0; i < coSupervisors.length; i++) {
+        if (coSupervisors[i].external != true && coSupervisors[i]?.id === req.session?.user?.id) {
+          return res.status(400).json({ msg: "The supervisor must not be also a cosupervisor." });
+        }
+        r = -1;
+        if (coSupervisors[i].isExternal === true) {
+          //TODO: if doesn't exist it returns no error!!!!
+          r = await coSupervisorAdd(
+            proposalId,
+            coSupervisors[i].name,
+            coSupervisors[i].surname,
+            true
+          );
+        } else {
+          r = await coSupervisorAdd(
+            proposalId,
+            coSupervisors[i].name,
+            coSupervisors[i].surname,
+            false
+          );
+        }
+        if (r < 0){
+          // abort, error!
+          //logging.error(`Error inserting a cosupervisor for the thesis ${newId}`)
+          //return res.status(500).json({ msg: "Error during the insertion of the cosupervisors." });
+          throw {message: "Error during the insertion of the cosupervisors.", code: 500}
+        }
+      }
+    }
+
+    if(keywords){
+      await pool.query("DELETE FROM keywords WHERE thesisId=$1", [
+        proposalId,
+      ]);
+      for (var i = 0; i < keywords.length; i++) {
+        r = await keywordsAdd(proposalId, keywords[i]);
+        if (r < 0){
+          // abort, error!
+          //logging.error(`Error inserting a keyword for the thesis ${newId}`)
+          //return res.status(500).json({ msg: "Error during the insertion of the keywords." });
+          throw {message: "Error during the insertion of the keywords.", code: 500}
+        }
+      }
+    }
+
+    if(updateFields.requiredKnowledge){
+      updateFields.required_knowledge = updateFields.requiredKnowledge
+      delete updateFields.requiredKnowledge
+    }
+
+    const thesisRelation = Object.keys(updateFields).reduce(function(newObj, key) {
+      if (['title', 'type', 'description', 'required_knowledge', 'notes', 'level', 'programme', 'deadline'].indexOf(key) !== -1) {
+          newObj[key] = updateFields[key];
+      }
+      return newObj;
+    }, {});
+
+    const setClause = Object.entries(thesisRelation)
+      .filter(([key, value]) => value !== undefined)
+      .map(([key, value], index) => `${key} = $${index + 3}`)
       .join(", ");
 
     if (!setClause) {
@@ -321,7 +449,7 @@ const updateProposal = async (req, res) => {
         .json({ msg: "No valid fields provided for update." });
     }
 
-    const query = `
+    query = `
       UPDATE thesis_proposal
       SET ${setClause}
       WHERE id = $1 AND created_at < $2
@@ -331,12 +459,12 @@ const updateProposal = async (req, res) => {
     const values = [
       proposalId,
       req.session.clock.time,
-      ...Object.values(updateFields).filter((value) => value !== undefined),
+      ...Object.values(thesisRelation),
     ];
 
     const result = await pool.query(query, values);
 
-    if (result.rows.length === 0) {
+    if (result.rowCount === 0) {
       return res.status(404).json({ msg: "Thesis proposal not found." });
     }
     createNotification(
@@ -346,13 +474,17 @@ const updateProposal = async (req, res) => {
       `Your proposal '${result.rows.title}' has been updated successfully!`,
       true
     );
+
+    await pool.query('COMMIT');
+
     return res.status(200).json({
       msg: "Thesis proposal updated successfully",
       data: result.rows[0],
     });
   } catch (error) {
     logger.error(error);
-    return res.status(500).json({ msg: "Unknown error occurred" });
+    await pool.query('ROLLBACK');
+    return res.status(500).json({ msg: error.message });
   }
 };
 
@@ -369,13 +501,18 @@ const searchProposal = async (req, res) => {
     });
 
     const { error, value } = proposalSchema.validate(req.query);
+
+    if (error) {
+      return res.status(400).json({ msg: error.details[0].message });
+    }
+
     let { title, type, description, required_knowledge, notes, programme } =
       req.query;
-    title = title.toLowerCase();
-    type = type.toLowerCase();
-    description = description.toLowerCase();
-    required_knowledge = required_knowledge.toLowerCase();
-    notes = notes.toLowerCase();
+    title = title?.toLowerCase();
+    type = type?.toLowerCase();
+    description = description?.toLowerCase();
+    required_knowledge = required_knowledge?.toLowerCase();
+    notes = notes?.toLowerCase();
     const query = `
       SELECT * FROM thesis_proposal
       WHERE  LOWER(title) LIKE '%${title}%' OR LOWER(type) LIKE '%${type}%' OR LOWER(description) LIKE '%${description}%' OR LOWER(required_knowledge) LIKE '%${required_knowledge}%' OR LOWER(notes) LIKE '%${notes}%' OR LOWER(programme) LIKE '%${programme}%';
@@ -390,7 +527,7 @@ const searchProposal = async (req, res) => {
     });
   } catch (error) {
     logger.error(error.message);
-    return res.status(500).json({ msg: "Unknown error occurred" });
+    return res.status(500).json({ msg: error.message });
   }
 };
 
