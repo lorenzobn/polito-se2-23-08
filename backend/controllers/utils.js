@@ -43,9 +43,7 @@ const coSupervisorAdd = async (thesisId, name, surname, external) => {
 };
 
 const getExtCoSupervisors = async (req, res) => {
-  const query = `
-    SELECT name,surname FROM EXTERNAL_CO_SUPERVISOR;
-    `;
+  const query = `SELECT name,surname FROM EXTERNAL_CO_SUPERVISOR;`;
   const values = [];
   try {
     const results = await pool.query(query, values)
@@ -61,15 +59,11 @@ const getExtCoSupervisors = async (req, res) => {
 }
 
 const getCoSupervisors = async (req, res) => {
-  let query = `
-    SELECT id,name,surname FROM TEACHER;
-    `;
+  let query = `SELECT id,name,surname FROM TEACHER;`;
   let values = [];
   try {
     if (req.session?.user?.role === 'teacher') {
-      query = `
-        SELECT id,name,surname FROM TEACHER WHERE id!=$1;
-        `;
+      query = `SELECT id,name,surname FROM TEACHER WHERE id!=$1;`;
       values = [req.session.user.id];
     }
     const results = await pool.query(query, values)
@@ -85,9 +79,7 @@ const getCoSupervisors = async (req, res) => {
 }
 
 const keywordsAdd = async (thesisId, keyword, time) => {
-  const query = `
-    INSERT INTO KEYWORDS VALUES($1, $2, $3);
-    `;
+  const query = `INSERT INTO KEYWORDS VALUES($1, $2, $3);`;
   const values = [thesisId, keyword, time];
   try {
     const results = await pool.query(query, values);
@@ -99,9 +91,7 @@ const keywordsAdd = async (thesisId, keyword, time) => {
 }
 
 const getKeywords = async (thesisId) => {
-  const query = `
-    SELECT keyword FROM KEYWORDS WHERE thesisId=$1;
-    `;
+  const query = `SELECT keyword FROM KEYWORDS WHERE thesisId=$1;`;
   const values = [
     thesisId
   ];
@@ -116,9 +106,7 @@ const getKeywords = async (thesisId) => {
 
 // This function returns the internal cosupervisors for a specific thesis
 const getCoSupThesis = async (thesisId) => {
-  const query = `
-    SELECT name,surname FROM TEACHER JOIN THESIS_CO_SUPERVISION ON TEACHER.id=THESIS_CO_SUPERVISION.internal_co_supervisor_id WHERE is_external=FALSE AND thesis_proposal_id=$1;
-    `;
+  const query = `SELECT name,surname FROM TEACHER JOIN THESIS_CO_SUPERVISION ON TEACHER.id=THESIS_CO_SUPERVISION.internal_co_supervisor_id WHERE is_external=FALSE AND thesis_proposal_id=$1;`;
   const values = [
     thesisId
   ];
@@ -133,9 +121,7 @@ const getCoSupThesis = async (thesisId) => {
 
 // This function returns the external cosupervisors for a specific thesis
 const getECoSupThesis = async (thesisId) => {
-  const query = `
-    SELECT name,surname FROM EXTERNAL_CO_SUPERVISOR JOIN THESIS_CO_SUPERVISION ON EXTERNAL_CO_SUPERVISOR.id=THESIS_CO_SUPERVISION.external_co_supervisor_id WHERE is_external=TRUE AND thesis_proposal_id=$1;
-    `;
+  const query = `SELECT name,surname FROM EXTERNAL_CO_SUPERVISOR JOIN THESIS_CO_SUPERVISION ON EXTERNAL_CO_SUPERVISOR.id=THESIS_CO_SUPERVISION.external_co_supervisor_id WHERE is_external=TRUE AND thesis_proposal_id=$1;`;
   const values = [
     thesisId
   ];

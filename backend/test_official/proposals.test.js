@@ -1,6 +1,8 @@
 const { createProposal, getProposals, getProposalbyId, getProposalsByTeacher, updateProposal, searchProposal, getAllCdS, getAllGroups, getAllProgrammes } = require('../controllers/proposals');
 const pool = require("../db/connection");
 const { coSupervisorAdd, keywordsAdd, getKeywords, getCoSupThesis, getECoSupThesis} = require("../controllers/utils");
+const { createNotification } = require("../controllers/notifications");
+
 
 jest.mock('../controllers/auth', () => ({
   ...jest.requireActual('../controllers/auth'),
@@ -22,6 +24,10 @@ jest.mock('../controllers/utils', () => ({
   getCoSupThesis: jest.fn(),
   getECoSupThesis: jest.fn(),
 }));
+
+jest.mock('../controllers/notifications', () => ({
+  createNotification: jest.fn()
+}))
 
 
 
@@ -377,6 +383,7 @@ describe('T1 -- createProposal', () => {
     keywordsAdd.mockResolvedValueOnce(1);
     keywordsAdd.mockResolvedValueOnce(1);
     pool.query.mockResolvedValueOnce(null); //await pool.query('COMMIT');
+    createNotification.mockResolvedValueOnce(null)
 
     await createProposal(req, res);
 
@@ -1261,6 +1268,8 @@ describe('T5 -- updateProposal', () => {
       rowCount: 1,
     });
     pool.query.mockResolvedValueOnce(null); //COMMIT
+    createNotification.mockResolvedValueOnce(null)
+
 
     await updateProposal(req, res);
 
