@@ -226,7 +226,7 @@ function MyNavbar() {
                                 fontSize: "12px",
                                 maxWidth: "25rem",
                                 lineHeight: "1.5",
-                                whiteSpace: "wrap",
+                                whiteSpace: "normal",
                                 marginTop: "8px",
                                 marginBottom: "8px",
                               }}
