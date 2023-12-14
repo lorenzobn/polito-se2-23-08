@@ -117,7 +117,7 @@ function MyNavbar() {
             className="switch"
             onChange={store.toggleTheme}
             checked={store.theme === "dark"}
-            onColor="#00284b"
+            onColor="#031e39"
             offColor="#fc7a08"
             checkedIcon={moon}
             uncheckedIcon={sun}

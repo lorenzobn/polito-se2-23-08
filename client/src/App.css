@@ -19,14 +19,14 @@
 }
 
 [data-theme="dark"] {
-  --background: #00284b;
+  --background: #031e39;
   --text-primary: white;
   --text-secondary: #fc7a08;
   --form-bg: #008290;
-  --nav-thin: #005378;
-  --nav-center: #00284b;
+  --nav-thin: #144a76;
+  --nav-center: #7a91a5;
   --border-thesis-div: RGBA(255, 255, 255, 0.1);
-  --nav-mid: #00284b;
+  --nav-mid: #031e39;
   --view: white;
   --offcanvas: #003750;
   --form-bg: #0b5070;
@@ -82,7 +82,7 @@ body {
 
 .app {
   background-color: var(--background);
-  transition: background-color .4s ease-in-out; 
+  transition: background-color 0.4s ease-in-out;
   height: 100dvh;
 }
 

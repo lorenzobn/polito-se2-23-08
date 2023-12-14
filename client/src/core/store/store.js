@@ -71,7 +71,7 @@ export class Store {
         (document.body.style.backgroundColor = "white"))
       : ((this.theme = "dark"),
         localStorage.setItem("theme", "dark"),
-        (document.body.style.backgroundColor = "#00284b"));
+        (document.body.style.backgroundColor = "#031e39"));
   };
 
   async setVirtualClock(time) {
