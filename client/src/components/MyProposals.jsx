@@ -11,9 +11,18 @@ import {
   Tab,
 } from "react-bootstrap";
 import Button from "./Button";
-import { faHand, faPlus, faTrash } from "@fortawesome/free-solid-svg-icons";
+import {
+  faBoxArchive,
+  faHand,
+  faPlus,
+  faTrash,
+} from "@fortawesome/free-solid-svg-icons";
 import { FaEdit, FaTrashAlt, FaSyncAlt, FaCopy } from "react-icons/fa";
-import { MdOutlineEdit, MdOutlineDelete } from "react-icons/md";
+import {
+  MdOutlineEdit,
+  MdOutlineDelete,
+  MdOutlineArchive,
+} from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../core/store/Provider";
 import { FaArrowDown } from "react-icons/fa";
@@ -129,7 +138,10 @@ export default function MyProposals() {
                                 setProposalIdToArchive(e.id);
                               }}
                             >
-                              <FaArrowDown className="dropdown-icon" size={18} />
+                              <MdOutlineArchive
+                                className="dropdown-icon"
+                                size={18}
+                              />
                               Archive
                             </Dropdown.Item>
                             <Dropdown.Item
@@ -220,7 +232,7 @@ export default function MyProposals() {
                                     setShowArchiveModal(false);
                                   }}
                                   text={"ARCHIVE"}
-                                  icon={faTrash}
+                                  icon={faBoxArchive}
                                 ></Button>
                               </Modal.Footer>
                             </Modal>
@@ -246,7 +258,9 @@ export default function MyProposals() {
               </Tab>
               <Tab eventKey="Archive" title="Archived">
                 {archivedProposals.length === 0 && (
-                  <p className="ms-5 ps-3">You don't have any archived proposals yet</p>
+                  <p className="ms-5 ps-3">
+                    You don't have any archived proposals yet
+                  </p>
                 )}
                 {archivedProposals.map((e) => (
                   <div key={e.id} className="thesis-section">
@@ -278,8 +292,7 @@ export default function MyProposals() {
                               Edit
                             </Dropdown.Item>
 
-                           
-                           { /* <Dropdown.Item
+                            {/* <Dropdown.Item
                               style={{
                                 color: "#555",
                                 marginTop: "8px",
@@ -293,8 +306,7 @@ export default function MyProposals() {
                             >
                               <FaCopy className="dropdown-icon" size={18} />
                               Unarchive
-                            </Dropdown.Item>*/
-}
+                            </Dropdown.Item>*/}
                             <Dropdown.Item
                               onClick={() => {
                                 setShowDeleteModal(true);
@@ -308,7 +320,6 @@ export default function MyProposals() {
                               />
                               Delete
                             </Dropdown.Item>
-
 
                             <Modal
                               show={showDeleteModal}
@@ -384,12 +395,10 @@ export default function MyProposals() {
                                     setShowArchiveModal(false);
                                   }}
                                   text={"ARCHIVE"}
-                                  icon={faTrash}
+                                  icon={faBoxArchive}
                                 ></Button>
                               </Modal.Footer>
                             </Modal>
-
-                            
                           </Dropdown.Menu>
                         </Dropdown>
                       </h2>
