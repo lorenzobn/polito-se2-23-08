@@ -699,6 +699,201 @@ describe('T4 -- getProposalsByTeacher', () => {
   });
 });
 
+// SearchProposal
+describe('T6 -- searchProposal', () => {
+  
+  beforeEach(() => {
+    jest.clearAllMocks();
+    pool.query.mockClear();
+  });
+
+  // T6.1 - Resource not found
+  it('T6.1 - should return 400 if validation fails', async () => {
+    const req = {
+      query: {
+        // Provide search criteria
+        title: 16,
+      },
+    };
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+
+    await searchProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: '"title" must be a string' });
+  });
+
+  // T6.2 - Resource not found
+  it('T6.2 - should return 404 if resource is not found', async () => {
+    const req = {
+      query: {
+        // Provide search criteria
+        title: "Test",
+      },
+    };
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    pool.query.mockResolvedValueOnce({
+      rows: [],
+      rowCount: 0,
+    });
+
+    await searchProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(404);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'Resource not found' });
+  });
+
+  // T6.3 - Resource found correctly
+  it('T6.3 - should return 200 if if everything is fine', async () => {
+    const req = {
+      query: {
+        // Provide search criteria
+        title: "Test",
+      },
+    };
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    pool.query.mockResolvedValueOnce({
+      rows: [{example_data: "example data"}],
+      rowCount: 1,
+    });
+
+    await searchProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.json).toHaveBeenCalledWith({ msg: 'OK', data: [{example_data: "example data"}] });
+  });
+
+});
+
+//getAllCds
+describe('T7 -- getAllCdS', () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    pool.query.mockClear();
+  });
+
+  // T7.1 - should return 500 and an error message when the query fails
+  it('T7.1 -- should return 201 and the results when the query is successful', async () => {
+    const mockRows = [{ /* dati del corso di laurea 1 */ }, { /* dati del corso di laurea 2 */ }];
+    pool.query.mockResolvedValueOnce({ rows: mockRows });
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await getAllCdS({}, res);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({ data: mockRows });
+  });
+
+  // T7.2 - should return 500 and an error message when the query fails
+  it('T7.2 -- should return 500 and an error message when the query fails', async () => {
+    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await getAllCdS({}, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ msg: "Unknown error occurred" });
+  });
+});
+
+//getAllProgrammes
+describe('T8 -- getAllProgrammes', () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    pool.query.mockClear();
+  });
+
+  it('T8.1 -- should return 201 and the results when the query is successful', async () => {
+    const mockRows = [{ /* dati del programma 1 */ }, { /* dati del programma 2 */ }];
+    pool.query.mockResolvedValueOnce({ rows: mockRows });
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await getAllProgrammes({}, res);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({ data: mockRows });
+  });
+
+  it('T8.2 -- should return 500 and an error message when the query fails', async () => {
+    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await getAllProgrammes({}, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ msg: "Unknown error occurred" });
+  });
+});
+
+//getAllGroups
+describe('T9 -- getAllGroups', () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    pool.query.mockClear();
+  });
+
+  it('T9.1 -- should return 201 and the results when the query is successful', async () => {
+    const mockRows = [{ /* dati del programma 1 */ }, { /* dati del programma 2 */ }];
+    pool.query.mockResolvedValueOnce({ rows: mockRows });
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await getAllGroups({}, res);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+    expect(res.json).toHaveBeenCalledWith({ data: mockRows });
+  });
+
+  it('T9.2 -- should return 500 and an error message when the query fails', async () => {
+    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await getAllGroups({}, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ msg: "Unknown error occurred" });
+  });
+});
+
+
 //updateProposal
 //TO DO:
 // • Check if there is already an accepted application for this thesis proposal: if yes, cannot edit!
@@ -1049,7 +1244,7 @@ describe('T5 -- updateProposal', () => {
       rows: [],
       rowCount: 0,
     })
-    pool.query.mockResolvedValueOnce(null); //BEGIN
+    //pool.query.mockResolvedValueOnce(null); //BEGIN
     pool.query.mockResolvedValueOnce(null); 
 
     await updateProposal(req, res);
@@ -1097,7 +1292,7 @@ describe('T5 -- updateProposal', () => {
       rows: [],
       rowCount: 0,
     })
-    pool.query.mockResolvedValueOnce(null); //BEGIN
+    //pool.query.mockResolvedValueOnce(null); //BEGIN
     pool.query.mockResolvedValueOnce(null); 
     coSupervisorAdd.mockResolvedValueOnce(-1);
 
@@ -1147,7 +1342,7 @@ describe('T5 -- updateProposal', () => {
       rows: [],
       rowCount: 0,
     })
-    pool.query.mockResolvedValueOnce(null); //BEGIN
+    //pool.query.mockResolvedValueOnce(null); //BEGIN
     pool.query.mockResolvedValueOnce(null); 
     coSupervisorAdd.mockResolvedValueOnce(1);
     pool.query.mockResolvedValueOnce(null);
@@ -1205,7 +1400,7 @@ describe('T5 -- updateProposal', () => {
       rows: [],
       rowCount: 0,
     })
-    pool.query.mockResolvedValueOnce(null); //BEGIN
+    //pool.query.mockResolvedValueOnce(null); //BEGIN
     pool.query.mockResolvedValueOnce({
       rows: [],
       rowCount: 0,
@@ -1262,7 +1457,7 @@ describe('T5 -- updateProposal', () => {
       rows: [],
       rowCount: 0,
     })
-    pool.query.mockResolvedValueOnce(null); //BEGIN
+    //pool.query.mockResolvedValueOnce(null); //BEGIN
     pool.query.mockResolvedValueOnce({
       rows: [{id: "p123"}],
       rowCount: 1,
@@ -1279,197 +1474,4 @@ describe('T5 -- updateProposal', () => {
 
 });
 
-// SearchProposal
-describe('T6 -- searchProposal', () => {
-  
-  beforeEach(() => {
-    jest.clearAllMocks();
-    pool.query.mockClear();
-  });
-
-  // T6.1 - Resource not found
-  it('T6.1 - should return 400 if validation fails', async () => {
-    const req = {
-      query: {
-        // Provide search criteria
-        title: 16,
-      },
-    };
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-
-    await searchProposal(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(400);
-    expect(res.json).toHaveBeenCalledWith({ msg: '"title" must be a string' });
-  });
-
-  // T6.2 - Resource not found
-  it('T6.2 - should return 404 if resource is not found', async () => {
-    const req = {
-      query: {
-        // Provide search criteria
-        title: "Test",
-      },
-    };
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-    pool.query.mockResolvedValueOnce({
-      rows: [],
-      rowCount: 0,
-    });
-
-    await searchProposal(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(404);
-    expect(res.json).toHaveBeenCalledWith({ msg: 'Resource not found' });
-  });
-
-  // T6.3 - Resource found correctly
-  it('T6.3 - should return 200 if if everything is fine', async () => {
-    const req = {
-      query: {
-        // Provide search criteria
-        title: "Test",
-      },
-    };
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-    pool.query.mockResolvedValueOnce({
-      rows: [{example_data: "example data"}],
-      rowCount: 1,
-    });
-
-    await searchProposal(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.json).toHaveBeenCalledWith({ msg: 'OK', data: [{example_data: "example data"}] });
-  });
-
-});
-
-//getAllCds
-describe('T7 -- getAllCdS', () => {
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    pool.query.mockClear();
-  });
-
-  // T7.1 - should return 500 and an error message when the query fails
-  it('T7.1 -- should return 201 and the results when the query is successful', async () => {
-    const mockRows = [{ /* dati del corso di laurea 1 */ }, { /* dati del corso di laurea 2 */ }];
-    pool.query.mockResolvedValueOnce({ rows: mockRows });
-
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-    await getAllCdS({}, res);
-
-    expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith({ data: mockRows });
-  });
-
-  // T7.2 - should return 500 and an error message when the query fails
-  it('T7.2 -- should return 500 and an error message when the query fails', async () => {
-    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
-
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-    await getAllCdS({}, res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ msg: "Unknown error occurred" });
-  });
-});
-
-//getAllProgrammes
-describe('T8 -- getAllProgrammes', () => {
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    pool.query.mockClear();
-  });
-
-  it('T8.1 -- should return 201 and the results when the query is successful', async () => {
-    const mockRows = [{ /* dati del programma 1 */ }, { /* dati del programma 2 */ }];
-    pool.query.mockResolvedValueOnce({ rows: mockRows });
-
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-    await getAllProgrammes({}, res);
-
-    expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith({ data: mockRows });
-  });
-
-  it('T8.2 -- should return 500 and an error message when the query fails', async () => {
-    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
-
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-    await getAllProgrammes({}, res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ msg: "Unknown error occurred" });
-  });
-});
-
-//getAllGroups
-describe('T9 -- getAllGroups', () => {
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    pool.query.mockClear();
-  });
-
-  it('T9.1 -- should return 201 and the results when the query is successful', async () => {
-    const mockRows = [{ /* dati del programma 1 */ }, { /* dati del programma 2 */ }];
-    pool.query.mockResolvedValueOnce({ rows: mockRows });
-
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-    await getAllGroups({}, res);
-
-    expect(res.status).toHaveBeenCalledWith(201);
-    expect(res.json).toHaveBeenCalledWith({ data: mockRows });
-  });
-
-  it('T9.2 -- should return 500 and an error message when the query fails', async () => {
-    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
-
-    const res = {
-      status: jest.fn(() => res),
-      json: jest.fn(),
-    };
-
-    await getAllGroups({}, res);
-
-    expect(res.status).toHaveBeenCalledWith(500);
-    expect(res.json).toHaveBeenCalledWith({ msg: "Unknown error occurred" });
-  });
-});
 
