@@ -19,8 +19,8 @@ Committed: Overall 34
 Done: 34
 
 ##### Nr of hours planned vs. spent (as a team)  
-Planned: X 
-Spent: Y
+Planned: 110 
+Spent: 106.25
 
 
 #### Our definition of done:
@@ -38,29 +38,29 @@ We are reporting data for all stories as if we completed them
 
 | Story  | # Tasks | Points | Hours est. | Hours actual |
 |--------|---------|--------|------------|--------------|
-| _#0_   |   7 |   N/A  |   |   |
-|_#1_   |   4 | 8 |   |   |
-| _#2_|  4 | 5 | | |
-| _#3_ | 4 | 8 |  |  |
-| _#4_ | 4| 13 |  |  |
+| _#0_   |   7 |   N/A  | 23  | 22.75  |
+|_#1_   |   4 | 8 | 17  |  16 |
+| _#2_|  4 | 5 |20 | 19 |
+| _#3_ | 4 | 8 |28 | 27 |
+| _#4_ | 4| 13 |22 | 22 |
 
 
 
 ##### Points/issues that specifically emerge from comparison between hour estimation and actual:
-- 
+- We slightly overestimated our tasks to ensure that we have enough time left for continous testing and feedback. 
 
 ##### Hours per task average, standard deviation (estimate and actual):
 ##### Estimate:
-  - hours per task average:  
-  - standard deviation: 
+  - hours per task average: 4.4
+  - standard deviation: 7.071
 ##### Actual:  
-  - hours per task average:  
-  - standard deviation: 
+  - hours per task average:  4.25
+  - standard deviation: 7.9
 
 
 ##### Total task estimation error ratio: sum of total hours estimation / sum of total hours spent - 1  
 
-  - 
+  - (110/106.25 - 1) = 0.03
 
 ## QUALITY MEASURES 
 
@@ -75,8 +75,8 @@ We are reporting data for all stories as if we completed them
   - We opened a total of 11 issues out of 6 were resolved based on the priority of invalid, bugs, and then enhancement. 
              
 - Code review 
-  - Total hours estimated : 8h + 4h
-  - Total hours spent : 8h + 4h
+  - Total hours estimated : 12h
+  - Total hours spent : 12h
   
 
 ## ASSESSMENT
