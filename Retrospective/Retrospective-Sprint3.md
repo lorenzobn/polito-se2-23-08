@@ -68,8 +68,8 @@ We are reporting data for all stories as if we completed them
   - Total hours estimated: 16h
   - Total hours spent: 16h
   - Nr of automated unit test cases :88
-  - Coverage (if available): (refer to the image)
-  ![image](https://github.com/teamEightTO/polito-se2-23-08/assets/136931976/0f478af9-b219-4adf-bd5b-d614487cccd9)
+  - Coverage (if available): The coverage of all the files is 89.655%.
+  
 
 - E2E testing:
   - Total hours estimated: 4h
