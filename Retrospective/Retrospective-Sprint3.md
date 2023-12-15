@@ -10,17 +10,17 @@
 - Notify Application Decision (13 story points)
 
 ##### Number of stories  
-Committed: 4
-Done: 4
+- Committed: 4
+- Done: 4
 
 
 ##### Total points  
-Committed: Overall 34 
-Done: 34
+- Committed: Overall 34 
+- Done: 34
 
 ##### Nr of hours planned vs. spent (as a team)  
-Planned: 110 
-Spent: 106.25
+- Planned: 110 
+- Spent: 106.25
 
 
 #### Our definition of done:
