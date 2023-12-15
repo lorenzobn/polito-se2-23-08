@@ -75,6 +75,7 @@ We are reporting data for all stories as if we completed them
 
 - E2E testing:
   - Total hours estimated: 4h
+  - Total hours actual: 4h
   - We opened a total of 11 issues out of which 10 were resolved based on the priority of invalid, bugs, and then enhancement. 
              
 - Code review 
