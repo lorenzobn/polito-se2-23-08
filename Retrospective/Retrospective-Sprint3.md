@@ -69,10 +69,11 @@ We are reporting data for all stories as if we completed them
   - Total hours spent: 16h
   - Nr of automated unit test cases :88
   - Coverage (if available): (refer to the image)
+  ![image](https://github.com/teamEightTO/polito-se2-23-08/assets/136931976/0f478af9-b219-4adf-bd5b-d614487cccd9)
 
 - E2E testing:
   - Total hours estimated: 4h
-  - We opened a total of 11 issues out of 6 were resolved based on the priority of invalid, bugs, and then enhancement. 
+  - We opened a total of 11 issues out of which 10 were resolved based on the priority of invalid, bugs, and then enhancement. 
              
 - Code review 
   - Total hours estimated : 12h
@@ -95,7 +96,7 @@ We are reporting data for all stories as if we completed them
 - We completed all stories committed for this sprint according to the DOD and added two more stories towards the mid of sprint.
 
 **Which improvement goals set in the previous retrospective were you able to achieve?**
-- In the last sprint, we had an issue with not identifying components common to all stories, however in this sprint planning we had a detailed discussion on the approach for each story with varying test scenarios so we could all be on the same page. 
+- In the last sprint, we had an issue with not identifying components common to all stories (e.g. virtual clock), however in this sprint planning we had a detailed discussion on the approach for each story with varying test scenarios so we could all be on the same page. 
 
 **Which ones you were not able to achieve? Why?**
 - Not applicable.
