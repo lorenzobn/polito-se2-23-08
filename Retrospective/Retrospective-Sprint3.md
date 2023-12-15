@@ -105,7 +105,8 @@ We are reporting data for all stories as if we completed them
 - Not applicable.
 
 **Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)**
-- There are no improvement goals but we hope to achieve the same velocity as this sprint. 
+- There are no improvement goals but we hope to achieve the same velocity as this sprint.
+- We should work on decreasing the code smells in Sonar Cloud. 
 
 **One thing you are proud of as a Team!!**
 - As a team, we have improved the test coverage significantly. We also improved the design of our UI which we really like and our proud of. Moreover, the notifications that we have implemented provides notifications for all actions. 
