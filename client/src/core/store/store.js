@@ -365,7 +365,7 @@ export class Store {
       window.location.reload();
       return res.data;
     } catch (err) {
-      toast.error("Unexpected error");
+      return err;
     }
   }
 

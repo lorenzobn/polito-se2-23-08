@@ -13,7 +13,6 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { updateProposal } from "../core/API/proposals";
 
-
 const levels = [
   { value: "BSc", label: "Bachelor" },
   { value: "MSc", label: "Master" },
@@ -106,7 +105,6 @@ function EditProposal() {
     setSelectedProgram(cdss.find((e) => e.value === formData.programme));
   }, [cdss]);
 
- 
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (store.user.type === "student") {
@@ -144,7 +142,6 @@ function EditProposal() {
           position: toast.POSITION.TOP_CENTER,
         });
       } else {
-        
         const updatedProposal = await store.updateProposal(proposalId, {
           title: formData.title,
           description: formData.description,
@@ -155,36 +152,31 @@ function EditProposal() {
           level: selectedLevel.value,
           programme: selectedProgram.value,
           keywords: selectedKeywords,
-          coSupervisors: selectedInternalCoSupervisors.map((e) => { return { name: e.value.split(" ")[0], surname: e.value.split(" ")[1] } }),
+          coSupervisors: selectedInternalCoSupervisors.map((e) => {
+            return {
+              name: e.value.split(" ")[0],
+              surname: e.value.split(" ")[1],
+            };
+          }),
           /* external_co: selectedExternalCoSupervisors.map((e) => e.value), */
         });
 
-      
         setEditProposal(updatedProposal);
-        console.log(updatedProposal)
+        console.log(updatedProposal);
 
-        
-        console.log(updatedProposal.data)
+        console.log(updatedProposal.data);
 
         if (updatedProposal.data) {
           toast.success("Your proposal updated successfully!", {
             position: toast.POSITION.TOP_CENTER,
-           
           });
 
-          window.location.href = ("/thesis-proposals");
-
-         
-        }
-        else {
-          toast.error(updatedProposal.msg, {
+          window.location.href = "/thesis-proposals";
+        } else {
+          toast.error(updatedProposal.response.data.msg, {
             position: toast.POSITION.TOP_CENTER,
           });
         }
-
-      
-
-
 
         //console.log("test log:" , insertProposal.response.data.msg);
         /* if (updatedProposal.msg === "Proposal created successfully") {
@@ -211,7 +203,6 @@ function EditProposal() {
   const handleTagsChange = (tags) => {
     setSelectedKeywords(tags);
   };
-
 
   return (
     <>
