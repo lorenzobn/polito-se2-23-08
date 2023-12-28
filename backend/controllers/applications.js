@@ -7,6 +7,7 @@ const fs = require("fs");
 const path = require("path");
 const { userTypes } = require("./users.js");
 const uploadPath = "uploads/";
+const proposals = require("./proposals.js");
 
 //TO AVOID SENDING A LOT OF EMAILS DURING DEBUGGING
 const DEBUG_SEND_EMAIL = false
@@ -17,7 +18,7 @@ const createApplication = async (req, res) => {
       student_id: Joi.string().required(),
       thesis_id: Joi.number().integer().required(),
       thesis_status: Joi.string()
-        .valid("idle", "approved", "rejected")
+        .valid("idle")
         .required(),
       cv_uri: Joi.string().allow(""),
     });
@@ -66,7 +67,7 @@ const createApplication = async (req, res) => {
     ];
 
     const result = await pool.query(query, values);
-
+    
     createNotification(
       req.session.user.id,
       userTypes.student,
@@ -184,6 +185,10 @@ const updateApplication = async (req, res) => {
         if (cancellApplicationsForThesis(thesisId, thesisTitle, req.session.clock.time, applicationId) == -1){
           logger.error(`Error while trying to cancel all the applications done for ${thesisId} with Title ${thesisTitle}`)
           return res.status(500).json({ msg: "Error while trying to update application status" });
+        }
+        if (proposals.archiveProposal(thesisId, req.session.clock.time) == -1){
+          logger.error(`Error while trying to archive ${thesisId}`)
+          return res.status(500).json({ msg: "Error while trying to archive the proposal" });
         }
       }
 

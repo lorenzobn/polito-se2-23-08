@@ -569,6 +569,22 @@ const searchProposal = async (req, res) => {
   }
 };
 
+const archiveProposal = async (thesisId, time) => {
+  try{
+    let query = {
+      text: "UPDATE thesis_proposal SET status = 'archived' WHERE id=$1 AND created_at < $2",
+      values: [thesisId, time],
+    };
+    let result = await pool.query(query);
+    if(result.rowCount >= 0){
+      return 0;
+    }
+    return -1;
+  } catch(error){
+    return -1;
+  }
+}
+
 module.exports = {
   getProposals,
   getProposalsByTeacher,
@@ -582,4 +598,5 @@ module.exports = {
   getAllGroups,
   getAllProgrammes,
   deleteProposal,
+  archiveProposal,
 };
