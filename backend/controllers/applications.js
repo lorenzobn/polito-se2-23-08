@@ -6,8 +6,11 @@ const { createNotification } = require("./notifications");
 const fs = require("fs");
 const path = require("path");
 const { userTypes } = require("./users.js");
-
 const uploadPath = "uploads/";
+
+//TO AVOID SENDING A LOT OF EMAILS DURING DEBUGGING
+const DEBUG_SEND_EMAIL = false
+
 const createApplication = async (req, res) => {
   try {
     const applicationSchema = Joi.object({
@@ -39,9 +42,6 @@ const createApplication = async (req, res) => {
       return res.status(400).json({ msg: "Cannot apply to this thesis because it is not active anymore." });
     }
 
-
-
-
     const file = req.files && req.files.file;
 
     if (file) {
@@ -72,7 +72,7 @@ const createApplication = async (req, res) => {
       userTypes.student,
       "Application Sent!",
       `Your application has been sent successfully!`,
-      true
+      DEBUG_SEND_EMAIL
     );
     return res
       .status(201)
@@ -130,26 +130,7 @@ const getApplicationById = async (req, res) => {
   }
 };
 
-function getSomePromise(applicationId) {
-  return new Promise((resolve, reject) => {
-    const query = {
-      text: "SELECT supervisor_id FROM THESIS_PROPOSAL JOIN thesis_application ON thesis_proposal.id=thesis_application.thesis_id WHERE thesis_application.id=$1;",
-      values: [applicationId],
-    };
-    try {
-      const results = pool.query(query).then((result) => {
-        resolve(result.rows[0]);
-      });
-    } catch (error) {
-      logger.error(error.message);
-      reject();
-    }
-  });
-}
-
-// TODO: Only TEACHERS, in particular the SUPERVISOR of a thesis
 const updateApplication = async (req, res) => {
-  notAuthorized = true;
   try {
     const { applicationId } = req.params;
     if (req.session.user.role != userRoles.teacher) {
@@ -157,9 +138,10 @@ const updateApplication = async (req, res) => {
     } else {
       // ok, now check if the application has already been accepted/rejected
       let query = {
-        text: "SELECT thesis_application.status FROM thesis_application WHERE id=$1 AND created_at < $2",
+        text: "SELECT thesis_proposal.title, thesis_application.thesis_id, thesis_application.status FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE thesis_application.id=$1 AND thesis_application.created_at < $2",
         values: [req.params.applicationId, req.session.clock.time],
       };
+      let {thesisTitle, thesisId} = {thesisTitle: "", thesisId: -1};
       let result = await pool.query(query);
       if (result.rowCount == 0) {
         return res.status(404).json({ msg: "Application not found." });
@@ -168,6 +150,9 @@ const updateApplication = async (req, res) => {
         return res.status(400).json({
           msg: "Cannot update this application because it has already been accepted/rejected.",
         });
+      } else {
+        thesisId = result.rows[0].thesis_id;
+        thesisTitle = result.rows[0].title;
       }
 
       const updateFields = req.body;
@@ -194,6 +179,14 @@ const updateApplication = async (req, res) => {
           .json({ msg: "No valid fields provided for update." });
       }
 
+      if(req.body.status === 'accepted'){
+        //if it has been accepted, you should cancell all the other pending applications
+        if (cancellApplicationsForThesis(thesisId, thesisTitle, req.session.clock.time, applicationId) == -1){
+          logger.error(`Error while trying to cancel all the applications done for ${thesisId} with Title ${thesisTitle}`)
+          return res.status(500).json({ msg: "Error while trying to update application status" });
+        }
+      }
+
       query = `
         UPDATE thesis_application
         SET ${setClause}
@@ -216,12 +209,13 @@ const updateApplication = async (req, res) => {
         [applicationId]
       );
       const studentId = result2?.rows[0]?.student_id;
+
       createNotification(
         studentId,
         userTypes.student,
-        "Application Updated",
-        `Your application status has been updated! Please check your applications section.`, //TODO: add title of the application in this text
-        true
+        `Application Updated`,
+        `Your application status for "${thesisTitle}" has been updated! Please check your applications section.`,
+        DEBUG_SEND_EMAIL
       );
 
       return res.status(200).json({
@@ -234,6 +228,30 @@ const updateApplication = async (req, res) => {
     return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
+
+const cancellApplicationsForThesis = async (thesisId, thesisTitle, time, applicationId) => {
+  try{
+    let query = {
+      text: "UPDATE thesis_application SET status = 'cancelled' WHERE thesis_id=$1 AND created_at < $2 AND id<>$3 RETURNING *",
+      values: [thesisId, time, applicationId],
+    };
+    let result = await pool.query(query);
+    if(result.rowCount >= 0){
+      for(let i=0; i<result.rowCount; i++){
+        createNotification(
+          result.rows[i].student_id,
+          userTypes.student,
+          `Application Updated`,
+          `Your application status for "${thesisTitle}" has been updated! Please check your applications section.`,
+          DEBUG_SEND_EMAIL
+        );
+      }
+    }
+    return 0;
+  } catch(error){
+    return -1;
+  }
+}
 
 const getReceivedApplications = async (req, res) => {
   const query = {
