@@ -46,6 +46,15 @@ export const updateProposal = async (id, updates) => {
   }
 };
 
+export const deleteProposal = async (id) => {
+  try {
+    const res = await client.put("/thesis-proposals/" + id + "/deleted");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
 export const searchProposal = async (keyword) => {
   try {
     const res = await client.get("/thesis-proposals/search", {

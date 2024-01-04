@@ -10,6 +10,8 @@ const {
   getAllCdS,
   getAllGroups,
   getAllProgrammes,
+  deleteProposal,
+  archiveProposalWrap,
 } = require("./controllers/proposals.js");
 const {
   getApplications,
@@ -73,6 +75,17 @@ router.put(
   updateProposal
 );
 
+router.put(
+  "/thesis-proposals/:proposalId/deleted",
+  authorize(userRoles.teacher),
+  deleteProposal
+);
+
+router.put(
+  "/thesis-proposals/:proposalId/archived",
+  authorize(userRoles.teacher),
+  archiveProposalWrap
+);
 
 router.post(
   "/my-applications",

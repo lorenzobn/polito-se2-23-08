@@ -13,6 +13,7 @@ const {
 } = require("./utils");
 const { createNotification } = require("./notifications.js");
 const { userTypes } = require("./users.js");
+const applications = require("./applications.js");
 
 const proposalSchema = Joi.object({
   title: Joi.string().min(8).max(150).required(),
@@ -310,25 +311,44 @@ const getProposalsByTeacher = async (req, res) => {
 };
 const deleteProposal = async (req, res) => {
   const query1 = {
-    text: "SELECT * FROM thesis_proposal WHERE id=$1 AND SUPERVISOR_id=$2 AND created_at < $3",
+    text: "SELECT * FROM thesis_proposal WHERE id=$1 AND SUPERVISOR_id=$2 AND created_at < $3 AND status='active'",
     values: [
       req.params.proposalId,
       req.session.user.id,
       req.session.clock.time,
     ],
   };
+  //cannot delete a proposal with one accepted application
   const query2 = {
-    text: "DELETE FROM thesis_proposal WHERE id=$1 AND created_at < $2",
+    text: "SELECT * FROM thesis_application WHERE thesis_id=$1 AND created_at < $2 AND status='accepted'",
     values: [req.params.proposalId, req.session.clock.time],
+  }
+  const query3 = {
+    text: "UPDATE thesis_proposal SET status=$3 WHERE id=$1 AND created_at < $2",
+    values: [req.params.proposalId, req.session.clock.time, 'deleted'],
   };
   try {
-    const result = await pool.query(query1);
+    let result = await pool.query(query1);
     if (result.rows.length === 0) {
       return res
         .status(401)
-        .json({ msg: "You don't have access to this resource!" });
+        .json({ msg: "No active proposal found with the given ID." });
     }
-    await pool.query(query2);
+    result = await pool.query(query2);
+    if (result.rows.length !== 0) {
+      return res
+        .status(403)
+        .json({ msg: "Cannot delete this proposal because there is an accepted application" });
+    }
+    
+    //set other applications (the ones pending) to cancelled
+    if (applications.cancellApplicationsForThesis(req.params.proposalId, '', req.session.clock.time, -1) == -1) {
+      logger.error(`Error while trying to cancel all the applications done for ${thesisId}`)
+      return res.status(500).json({ msg: "Error while trying to update application status" });
+    }
+
+    await pool.query(query3);
+    // should check result?
     return res
       .status(200)
       .json({ msg: "Proposal has been deleted successfully!" });
@@ -518,7 +538,7 @@ const updateProposal = async (req, res) => {
     return res.status(200).json({
       msg: "Thesis proposal updated successfully",
       data: result.rows[0],
-    }); 
+    });
   } catch (error) {
     logger.error(error);
     //await pool.query('ROLLBACK');
@@ -569,18 +589,31 @@ const searchProposal = async (req, res) => {
   }
 };
 
+const archiveProposalWrap = async (req, res) => {
+  try {
+    const { proposalId } = req.params;
+    //check Pre-Conditions before archiving: 1) should be the owner
+    let resCode = archiveProposal(proposalId);
+
+    return res.status(200).json({ msg: "OK" })
+  } catch (error) {
+    logger.error(error.message);
+    return res.status(500).json({ msg: error.message });
+  }
+}
+
 const archiveProposal = async (thesisId, time) => {
-  try{
+  try {
     let query = {
       text: "UPDATE thesis_proposal SET status = 'archived' WHERE id=$1 AND created_at < $2",
       values: [thesisId, time],
     };
     let result = await pool.query(query);
-    if(result.rowCount >= 0){
+    if (result.rowCount >= 0) {
       return 0;
     }
     return -1;
-  } catch(error){
+  } catch (error) {
     return -1;
   }
 }
@@ -599,4 +632,5 @@ module.exports = {
   getAllProgrammes,
   deleteProposal,
   archiveProposal,
+  archiveProposalWrap
 };

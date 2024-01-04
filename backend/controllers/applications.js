@@ -181,7 +181,7 @@ const updateApplication = async (req, res) => {
       }
 
       if(req.body.status === 'accepted'){
-        //if it has been accepted, you should cancell all the other pending applications
+        //if it has been accepted, you should cancel all the other pending applications
         if (cancellApplicationsForThesis(thesisId, thesisTitle, req.session.clock.time, applicationId) == -1){
           logger.error(`Error while trying to cancel all the applications done for ${thesisId} with Title ${thesisTitle}`)
           return res.status(500).json({ msg: "Error while trying to update application status" });
@@ -243,13 +243,23 @@ const cancellApplicationsForThesis = async (thesisId, thesisTitle, time, applica
     let result = await pool.query(query);
     if(result.rowCount >= 0){
       for(let i=0; i<result.rowCount; i++){
-        createNotification(
-          result.rows[i].student_id,
-          userTypes.student,
-          `Application Updated`,
-          `Your application status for "${thesisTitle}" has been updated! Please check your applications section.`,
-          DEBUG_SEND_EMAIL
-        );
+        if(thesisTitle.length > 0){
+          createNotification(
+            result.rows[i].student_id,
+            userTypes.student,
+            `Application Updated`,
+            `Your application status for "${thesisTitle}" has been updated! Please check your applications section.`,
+            DEBUG_SEND_EMAIL
+          );
+        } else {
+          createNotification(
+            result.rows[i].student_id,
+            userTypes.student,
+            `Application Updated`,
+            `Your applications status has been updated! Please check your applications section.`,
+            DEBUG_SEND_EMAIL
+          );
+        }
       }
     }
     return 0;
@@ -323,4 +333,5 @@ module.exports = {
   updateApplication,
   getReceivedApplications,
   getReceivedApplicationsByThesisId,
+  cancellApplicationsForThesis,
 };

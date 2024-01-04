@@ -19,6 +19,7 @@ import {
   getAllProgrammes as getAllProgrammesAPI,
   getExternalCoSupervisors as getExtCoSupervisorsAPI,
   updateProposal as updateProposalAPI,
+  deleteProposal as deleteProposalAPI
 } from "../API/proposals";
 import {
   checkApplied as checkAppliedAPI,
@@ -371,7 +372,7 @@ export class Store {
 
   async deleteProposal(id) {
     try {
-      const res = await updateProposalAPI(id, { status: "deleted" });
+      const res = await deleteProposalAPI(id);
       window.location.reload();
       return res.data;
     } catch (err) {
