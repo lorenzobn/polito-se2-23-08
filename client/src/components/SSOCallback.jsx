@@ -17,7 +17,7 @@ const SSOCallback = () => {
       if (res) {
         setTimeout(() => {
           window.location.href = "/";
-        }, 1500);
+        }, 1000);
       } else {
       }
     };
