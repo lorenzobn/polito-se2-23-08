@@ -189,7 +189,7 @@ export class Store {
     }
   }
 
-  async getReceivedApplications(email, password) {
+  async getReceivedApplications() {
     try {
       const res = await getReceivedApplicationsAPI();
       return res.data.data;

@@ -9,12 +9,15 @@ import {
   Dropdown,
   DropdownButton,
   Form,
+  Modal,
 } from "react-bootstrap";
 import Button from "./Button";
 import {
   faCheck,
   faMagnifyingGlass,
   faX,
+  faHand,
+  faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import BadButton from "./BadButton";
 import { toast, ToastContainer } from "react-toastify";
@@ -31,19 +34,21 @@ export default function AcceptApplications() {
   const [proposal, setProposal] = useState([]);
   const [proposalDetails, setProposalDetails] = useState([]);
   const [proposalTitle, setProposalTitle] = useState("");
+  const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
     const handleEffect = async () => {
-      try {const response = await store.getReceivedApplicationsByThesisId(
-        proposalId
-      );
-      setProposal(response);
-      const details = proposal.map((p) => p.applicationstatus);
-      setProposalDetails(details);
-      setProposalTitle(response[0].title);}
-      catch (error) {
+      try {
+        const response = await store.getReceivedApplicationsByThesisId(
+          proposalId
+        );
+        setProposal(response);
+        const details = proposal.map((p) => p.applicationstatus);
+        setProposalDetails(details);
+        setProposalTitle(response[0].title);
+      } catch (error) {
         navigate("/404");
       }
     };
@@ -108,6 +113,35 @@ export default function AcceptApplications() {
             style={{ marginTop: "1px" }}
             key={index}
           >
+            <Modal show={showModal} onHide={() => setShowModal(false)}>
+              <Modal.Header closeButton>
+                <Modal.Title>Confirm Accept</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                Are you sure you want to accept the application?{" "}
+              </Modal.Body>
+              <Modal.Footer className="modal-footer d-flex justify-content-end">
+                <Button
+                  variant="grey"
+                  className="mx-2"
+                  onClick={() => {
+                    setShowModal(false);
+                  }}
+                  text={"CANCEL"}
+                  icon={faHand}
+                ></Button>
+                <Button
+                  variant="success"
+                  className="mx-2"
+                  onClick={async () => {
+                    handleAccept(index)
+                    setShowModal(false);
+                  }}
+                  text={"ACCEPT"}
+                  icon={faTrash}
+                ></Button>
+              </Modal.Footer>
+            </Modal>
             <ul>
               <li>
                 <strong>Student ID:</strong> {student.student_id},{" "}
@@ -129,7 +163,7 @@ export default function AcceptApplications() {
                       <Button
                         icon={faCheck}
                         text={"ACCEPT"}
-                        onClick={() => handleAccept(index)}
+                        onClick={() => setShowModal(true)}
                       ></Button>
                     ) : (
                       <></>

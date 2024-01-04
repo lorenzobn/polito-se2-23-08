@@ -26,11 +26,13 @@ import {
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../core/store/Provider";
 import { FaArrowDown } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 export default function MyProposals() {
   const navigate = useNavigate();
   const store = useContext(StoreContext);
   const [proposals, setProposals] = useState([]);
+  const [applications, setApplications] = useState([]);
   const [archivedProposals, setArchivedProposals] = useState([]);
   const [proposalData, setProposalData] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -38,8 +40,15 @@ export default function MyProposals() {
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [proposalIdToArchive, setProposalIdToArchive] = useState(null);
   const handleEdit = (e) => {
-    setProposalData(e);
-    navigate(`/editProposal/${e.id}`, { state: { proposalData: e } });
+    if (applications.some(app => app.thesis_id === e.id)) {
+      toast.error("You can't update the proposal if applications are submitted.", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+    }
+    else {
+      setProposalData(e);
+      navigate(`/editProposal/${e.id}`, { state: { proposalData: e } });
+    }
   };
 
   useEffect(() => {
@@ -57,11 +66,13 @@ export default function MyProposals() {
       }
       if (store.user.type === "professor") {
         const proposals = await store.getProposalsByTeacherId();
+        const applications = await store.getReceivedApplications();
         setProposals(
           proposals.filter(
             (e) => e.status === "active" || e.status === "pending"
           )
         );
+        setApplications(applications);
         setArchivedProposals(proposals.filter((e) => e.status === "archived"));
       }
     };
