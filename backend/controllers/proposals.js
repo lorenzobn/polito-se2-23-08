@@ -546,6 +546,12 @@ const updateProposal = async (req, res) => {
   }
 };
 
+const copyProposal = async (req, res) => {
+//TO DO 
+
+
+}
+
 const searchProposal = async (req, res) => {
   try {
     const proposalSchema = Joi.object({
@@ -632,5 +638,6 @@ module.exports = {
   getAllProgrammes,
   deleteProposal,
   archiveProposal,
-  archiveProposalWrap
+  archiveProposalWrap, 
+  copyProposal
 };

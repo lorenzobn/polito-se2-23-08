@@ -486,3 +486,9 @@ a.dropdown-item:hover {
 .modal-body {
   border-bottom: none;
 }
+
+
+.large-icon svg {
+  width: 30px;
+  height: 30px;
+}

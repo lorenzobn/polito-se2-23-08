@@ -16,17 +16,21 @@ import {
   faHand,
   faPlus,
   faTrash,
+  faCopy,
 } from "@fortawesome/free-solid-svg-icons";
 import { FaEdit, FaTrashAlt, FaSyncAlt, FaCopy } from "react-icons/fa";
 import {
   MdOutlineEdit,
   MdOutlineDelete,
   MdOutlineArchive,
+  MdContentCopy,
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../core/store/Provider";
 import { FaArrowDown } from "react-icons/fa";
 import { toast } from "react-toastify";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 
 export default function MyProposals() {
   const navigate = useNavigate();
@@ -39,6 +43,9 @@ export default function MyProposals() {
   const [proposalIdToDelete, setProposalIdToDelete] = useState(null);
   const [showArchiveModal, setShowArchiveModal] = useState(false);
   const [proposalIdToArchive, setProposalIdToArchive] = useState(null);
+  const [showCopyModal, setShowCopyModal] = useState(false);
+  const [proposalIdToCopy, setProposalIdToCopy] = useState(null);
+
   const handleEdit = (e) => {
     if (applications.some(app => app.thesis_id === e.id)) {
       toast.error("You can't update the proposal if applications are submitted.", {
@@ -50,6 +57,7 @@ export default function MyProposals() {
       navigate(`/editProposal/${e.id}`, { state: { proposalData: e } });
     }
   };
+
 
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
@@ -155,6 +163,72 @@ export default function MyProposals() {
                               />
                               Archive
                             </Dropdown.Item>
+
+                            <Dropdown.Item
+                            style={{
+                              color: "#555",
+                              marginTop: "8px",
+                              paddingBottom: "8px",
+                              borderBottom: "1px solid #eee",
+                            }}
+                              onClick={() => {
+                                setShowCopyModal(true);
+                                setProposalIdToCopy(e.id);
+                              }}
+                              
+                            >
+                              <MdContentCopy
+                                className="dropdown-icon"
+                                size={20}
+                              />
+                              Copy
+                            </Dropdown.Item>
+
+                            <Modal
+                              show={showCopyModal}
+                              onHide={() => setShowCopyModal(false)}
+                            >
+                              <Modal.Header closeButton>
+                                <Modal.Title>Confirm Copy</Modal.Title>
+                              </Modal.Header>
+                              <Modal.Body>
+                                Are you sure you want to Copy the proposal {" "} <strong>
+                                  {e.title}</strong> ?
+                                After doing this action the students will see a duplicated proposal.
+                                You can always
+                                archive or delete it later.
+                              </Modal.Body>
+                              <Modal.Footer className="modal-footer d-flex justify-content-end">
+                                <Button
+                                  variant="grey"
+                                  className="mx-2"
+                                  onClick={() => {
+                                    setShowCopyModal(false);
+                                    setProposalIdToCopy(null);
+                                  }}
+                                  text={"CANCEL"}
+                                  icon={faHand}
+                                ></Button>
+
+                                <Button
+                                  variant="primary"
+                                  className="mx-2"
+                                  onClick={async () => {
+                                    const res = await store.copyProposal(
+                                      proposalIdToCopy
+                                    );
+                                    setShowCopyModal(false);
+                                  }}
+                                  text={"COPY"}
+                                  
+                                  icon={faCopy}
+                                ></Button>
+                              </Modal.Footer>
+                            </Modal>
+
+
+
+
                             <Dropdown.Item
                               onClick={() => {
                                 setShowDeleteModal(true);
@@ -332,7 +406,7 @@ export default function MyProposals() {
                               Delete
                             </Dropdown.Item>
 
-                            <Modal
+             {/*             <Modal
                               show={showDeleteModal}
                               onHide={() => setShowDeleteModal(false)}
                             >
@@ -370,6 +444,7 @@ export default function MyProposals() {
                                 ></Button>
                               </Modal.Footer>
                             </Modal>
+                                */ }
 
                             <Modal
                               show={showArchiveModal}
