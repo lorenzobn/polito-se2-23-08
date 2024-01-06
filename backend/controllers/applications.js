@@ -7,7 +7,6 @@ const fs = require("fs");
 const path = require("path");
 const { userTypes } = require("./users.js");
 const uploadPath = "uploads/";
-const proposals = require("./proposals.js");
 
 //TO AVOID SENDING A LOT OF EMAILS DURING DEBUGGING
 const DEBUG_SEND_EMAIL = false
@@ -179,17 +178,24 @@ const updateApplication = async (req, res) => {
           .status(400)
           .json({ msg: "No valid fields provided for update." });
       }
-
+      //await pool.query("BEGIN");
       if(req.body.status === 'accepted'){
         //if it has been accepted, you should cancel all the other pending applications
+        logger.info("Canceling...");
         if (cancellApplicationsForThesis(thesisId, thesisTitle, req.session.clock.time, applicationId) == -1){
-          logger.error(`Error while trying to cancel all the applications done for ${thesisId} with Title ${thesisTitle}`)
-          return res.status(500).json({ msg: "Error while trying to update application status" });
+          throw {
+            code: 500,
+            message: "Error while trying to update application status"
+          }
         }
-        if (proposals.archiveProposal(thesisId, req.session.clock.time) == -1){
-          logger.error(`Error while trying to archive ${thesisId}`)
-          return res.status(500).json({ msg: "Error while trying to archive the proposal" });
+        logger.info("Done!");
+        if (archiveProposal(thesisId, req.session.clock.time) == -1){
+          throw {
+            code: 500,
+            message: "Error while trying to archive the proposal"
+          }
         }
+        
       }
 
       query = `
@@ -207,8 +213,12 @@ const updateApplication = async (req, res) => {
 
       result = await pool.query(query, values);
       if (result.rows.length === 0) {
-        return res.status(404).json({ msg: "Application not found." });
+        throw {
+          code: 404,
+          message: "Application not found." 
+        }
       }
+      //await pool.query("COMMIT");
       const result2 = await pool.query(
         "SELECT * FROM THESIS_APPLICATION WHERE id = $1",
         [applicationId]
@@ -230,7 +240,8 @@ const updateApplication = async (req, res) => {
     }
   } catch (error) {
     logger.error(error.message);
-    return res.status(500).json({ msg: "Unknown error occurred" });
+    //await pool.query("ROLLBACK");
+    return res.status(error?.code || 500).json({ msg: error.message });
   }
 };
 
@@ -324,6 +335,23 @@ const didStudentApply = async (req, res) => {
     return res.status(500).json({ msg: "Unknown error occurred" });
   }
 };
+
+//TODO: remove this from here
+const archiveProposal = async (thesisId, time) => {
+  try {
+    let query = {
+      text: "UPDATE thesis_proposal SET status = 'archived' WHERE id=$1 AND created_at < $2",
+      values: [thesisId, time],
+    };
+    let result = await pool.query(query);
+    if (result.rowCount >= 0) {
+      return 0;
+    }
+    return -1;
+  } catch (error) {
+    return -1;
+  }
+}
 
 module.exports = {
   getApplications,

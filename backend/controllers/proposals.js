@@ -311,7 +311,7 @@ const getProposalsByTeacher = async (req, res) => {
 };
 const deleteProposal = async (req, res) => {
   const query1 = {
-    text: "SELECT * FROM thesis_proposal WHERE id=$1 AND SUPERVISOR_id=$2 AND created_at < $3 AND status='active'",
+    text: "SELECT * FROM thesis_proposal WHERE id=$1 AND SUPERVISOR_id=$2 AND created_at < $3 AND status<>'deleted'",
     values: [
       req.params.proposalId,
       req.session.user.id,
@@ -331,13 +331,13 @@ const deleteProposal = async (req, res) => {
     let result = await pool.query(query1);
     if (result.rows.length === 0) {
       return res
-        .status(401)
-        .json({ msg: "No active proposal found with the given ID." });
+        .status(400)
+        .json({ msg: "No active or archived proposal found with the given ID." });
     }
     result = await pool.query(query2);
     if (result.rows.length !== 0) {
       return res
-        .status(403)
+        .status(400)
         .json({ msg: "Cannot delete this proposal because there is an accepted application" });
     }
     
@@ -599,28 +599,12 @@ const archiveProposalWrap = async (req, res) => {
   try {
     const { proposalId } = req.params;
     //check Pre-Conditions before archiving: 1) should be the owner
-    let resCode = archiveProposal(proposalId);
+    let resCode = applications.archiveProposal(proposalId);
 
     return res.status(200).json({ msg: "OK" })
   } catch (error) {
     logger.error(error.message);
     return res.status(500).json({ msg: error.message });
-  }
-}
-
-const archiveProposal = async (thesisId, time) => {
-  try {
-    let query = {
-      text: "UPDATE thesis_proposal SET status = 'archived' WHERE id=$1 AND created_at < $2",
-      values: [thesisId, time],
-    };
-    let result = await pool.query(query);
-    if (result.rowCount >= 0) {
-      return 0;
-    }
-    return -1;
-  } catch (error) {
-    return -1;
   }
 }
 
@@ -637,7 +621,6 @@ module.exports = {
   getAllGroups,
   getAllProgrammes,
   deleteProposal,
-  archiveProposal,
-  archiveProposalWrap, 
-  copyProposal
+  archiveProposalWrap,
+  copyProposal,
 };
