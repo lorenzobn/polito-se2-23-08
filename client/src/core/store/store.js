@@ -373,10 +373,10 @@ export class Store {
   async deleteProposal(id) {
     try {
       const res = await deleteProposalAPI(id);
-      window.location.reload();
+      //window.location.reload();
       return res.data;
     } catch (err) {
-      toast.error("Unexpected error");
+      return err;
     }
   }
   async archiveProposal(id) {
@@ -387,7 +387,7 @@ export class Store {
       return res.data;
     } catch (err) {
       console.log(err);
-      toast.error("Unexpected error");
+      return err;
     }
   }
   setLoading(state) {}
