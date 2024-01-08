@@ -332,7 +332,7 @@ const deleteProposal = async (req, res) => {
     if (result.rows.length === 0) {
       return res
         .status(400)
-        .json({ msg: "No active or archived proposal found with the given ID." });
+        .json({ msg: "No active proposal found with the given ID." });
     }
     result = await pool.query(query2);
     if (result.rows.length !== 0) {
