@@ -311,7 +311,7 @@ const getProposalsByTeacher = async (req, res) => {
 };
 const deleteProposal = async (req, res) => {
   const query1 = {
-    text: "SELECT * FROM thesis_proposal WHERE id=$1 AND SUPERVISOR_id=$2 AND created_at < $3 AND status<>'deleted'",
+    text: "SELECT * FROM thesis_proposal WHERE id=$1 AND SUPERVISOR_id=$2 AND created_at < $3 AND status='active'",
     values: [
       req.params.proposalId,
       req.session.user.id,
