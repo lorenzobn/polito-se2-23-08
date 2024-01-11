@@ -311,7 +311,7 @@ const getProposalsByTeacher = async (req, res) => {
 };
 const deleteProposal = async (req, res) => {
   const query1 = {
-    text: "SELECT * FROM thesis_proposal WHERE id=$1 AND SUPERVISOR_id=$2 AND created_at < $3 AND status<>'deleted'",
+    text: "SELECT * FROM thesis_proposal WHERE id=$1 AND SUPERVISOR_id=$2 AND created_at < $3 AND status='active'",
     values: [
       req.params.proposalId,
       req.session.user.id,
@@ -332,7 +332,7 @@ const deleteProposal = async (req, res) => {
     if (result.rows.length === 0) {
       return res
         .status(400)
-        .json({ msg: "No active or archived proposal found with the given ID." });
+        .json({ msg: "No active proposal found with the given ID." });
     }
     result = await pool.query(query2);
     if (result.rows.length !== 0) {
