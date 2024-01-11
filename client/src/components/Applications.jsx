@@ -47,7 +47,8 @@ export default function Applications() {
   }, [store.user.type]);
 
   useEffect(() => {
-    animate("#arrow", { rotate: isOpen ? 180 : 0 }, { duration: 0.2 });
+    if (scope.current)
+      animate("#arrow", { rotate: isOpen ? 180 : 0 }, { duration: 0.2 });
   }, [isOpen]);
 
   const handleFilter = (status) => {
@@ -83,7 +84,7 @@ export default function Applications() {
             lg={2}
             className="d-flex border-thesis-filter"
           >
-            <Stack>
+            {store.user.type === 'student' && <Stack>
               <Nav ref={scope} variant="underline" className="flex-column m-5">
                 <Nav.Item className="d-flex">
                   <Nav.Link
@@ -142,7 +143,7 @@ export default function Applications() {
                   </motion.div>
                 )}
               </Nav>
-            </Stack>
+            </Stack>}
           </Col>
           <Col lg={{ span: 8 }}>
             {applicationsFiltered.map((e) => (
