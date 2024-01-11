@@ -29,7 +29,7 @@ const createApplication = async (req, res) => {
     }
 
     let query = {
-      text: "SELECT id,status FROM THESIS_PROPOSAL WHERE thesis_proposal.id=$1;",
+      text: "SELECT thesis_proposal.id,thesis_proposal.status,thesis_proposal.title,teacher.id as teacher_id FROM THESIS_PROPOSAL JOIN TEACHER ON thesis_proposal.SUPERVISOR_ID=TEACHER.id WHERE thesis_proposal.id=$1;",
       values: [value.thesis_id],
     };
 
@@ -66,12 +66,18 @@ const createApplication = async (req, res) => {
     ];
 
     const result = await pool.query(query, values);
-    
     createNotification(
       req.session.user.id,
       userTypes.student,
       "Application Sent!",
-      `Your application has been sent successfully!`,
+      `Your application to ${r.rows[0].title} has been sent successfully!`,
+      DEBUG_SEND_EMAIL
+    );
+    createNotification(
+      r.rows[0].teacher_id,
+      userTypes.teacher,
+      "Application Received!",
+      `You received an application to '${r.rows[0].title}'.`,
       DEBUG_SEND_EMAIL
     );
     return res
