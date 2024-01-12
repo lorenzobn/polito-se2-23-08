@@ -373,7 +373,7 @@ export class Store {
   async deleteProposal(id) {
     try {
       const res = await deleteProposalAPI(id);
-      //window.location.reload();
+      window.location.reload();
       return res.data;
     } catch (err) {
       return err;
