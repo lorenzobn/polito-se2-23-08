@@ -86,9 +86,10 @@ export class Store {
   async getVirtualClockValue() {
     try {
       const res = await getVirtualClockValueAPI();
+      console.log(res);
       if (res.status === 200) {
         this.time = new Date(res.data.virtual_time);
-        console.log(this.time);
+        return new Date(res.data.virtual_time);
       }
     } catch (err) {
       toast.error("Error on login");

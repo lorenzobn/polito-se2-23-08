@@ -17,7 +17,6 @@ import {
   faPlus,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
-import { FaEdit, FaTrashAlt, FaSyncAlt, FaCopy } from "react-icons/fa";
 import {
   MdOutlineEdit,
   MdOutlineDelete,
@@ -25,7 +24,6 @@ import {
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../core/store/Provider";
-import { FaArrowDown } from "react-icons/fa";
 
 export default function MyProposals() {
   const navigate = useNavigate();
@@ -46,23 +44,35 @@ export default function MyProposals() {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
     const handleEffect = async () => {
+      const now = await store.getVirtualClockValue();
       let s = await store.fetchSelf();
       if (store.user.type === "student") {
         const proposals = await store.getProposals();
         setProposals(
           proposals.filter(
-            (e) => e.status === "active" || e.status === "pending"
+            (e) =>
+              (e.status === "active" || e.status === "pending") &&
+              new Date(e.deadline) > new Date(now)
           )
         );
       }
       if (store.user.type === "professor") {
-        const proposals = await store.getProposalsByTeacherId();
-        setProposals(
-          proposals.filter(
-            (e) => e.status === "active" || e.status === "pending"
+        const now = await store.getVirtualClockValue();
+
+        const proposalsRes = await store.getProposalsByTeacherId();
+        setArchivedProposals(
+          proposalsRes.filter(
+            (e) =>
+              e.status === "archived" || new Date(e.deadline) < new Date(now)
           )
         );
-        setArchivedProposals(proposals.filter((e) => e.status === "archived"));
+        setProposals(
+          proposalsRes.filter(
+            (e) =>
+              (e.status === "active" || e.status === "pending") &&
+              new Date(e.deadline) > new Date(now)
+          )
+        );
       }
     };
     handleEffect();
