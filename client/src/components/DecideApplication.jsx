@@ -54,11 +54,23 @@ export default function AcceptApplications() {
     };
     handleEffect();
   }, [status]);
-
+  function isDifferenceMoreThanOneHour(time) {
+    var date1 = new Date(time);
+    var date2 = new Date();
+    var difference = Math.abs(date1 - date2);
+    var hoursDifference = difference / (1000 * 60 * 60);
+    return hoursDifference > 1;
+  }
   const handleAccept = async (index) => {
     const selectedForm = proposal[index];
-    //console.log("Accepted form at index", index, selectedForm.student_id);
-    // console.log("test:" , selectedForm.applicationid);
+    const clock = await store.getVirtualClockValue();
+    if (isDifferenceMoreThanOneHour(clock)) {
+      toast.error(
+        "You cannot perform this action since you are in a virtual time!"
+      );
+      return;
+    }
+
     const response = await store.applicationDecision(
       selectedForm.applicationid,
       "accepted"
@@ -79,6 +91,14 @@ export default function AcceptApplications() {
   };
 
   const handleReject = async (index) => {
+    const clock = await store.getVirtualClockValue();
+
+    if (isDifferenceMoreThanOneHour(clock)) {
+      toast.error(
+        "You cannot perform this action since you are in a virtual time!"
+      );
+      return;
+    }
     const selectedForm = proposal[index];
     //console.log("Rejected form at index", index, selectedForm);
     const response = await store.applicationDecision(
@@ -134,7 +154,7 @@ export default function AcceptApplications() {
                   variant="success"
                   className="mx-2"
                   onClick={async () => {
-                    handleAccept(index)
+                    handleAccept(index);
                     setShowModal(false);
                   }}
                   text={"ACCEPT"}
