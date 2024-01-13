@@ -5,6 +5,7 @@ const {
   getExtCoSupervisors,
   getCoSupervisors,
   createProposal,
+  copyProposal,
   updateProposal,
   searchProposal,
   getAllCdS,
@@ -74,6 +75,13 @@ router.put(
   authorize(userRoles.teacher),
   updateProposal
 );
+
+
+router.post("/thesis-proposals/:proposalId/copy",
+ authorize(userRoles.teacher),
+  copyProposal);
+
+
 
 router.put(
   "/thesis-proposals/:proposalId/deleted",

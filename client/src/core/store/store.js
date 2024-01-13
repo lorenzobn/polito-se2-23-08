@@ -20,6 +20,7 @@ import {
   getExternalCoSupervisors as getExtCoSupervisorsAPI,
   updateProposal as updateProposalAPI,
   deleteProposal as deleteProposalAPI,
+  copyProposal as copyProposalAPI,
 } from "../API/proposals";
 import {
   checkApplied as checkAppliedAPI,
@@ -62,6 +63,7 @@ export class Store {
       markNotificationAsSeen: action,
       deleteProposal: action,
       archiveProposal: action,
+      
     });
   }
 
@@ -256,6 +258,36 @@ export class Store {
     } catch (err) {
       return [];
     }
+  }
+
+
+  async copyProposal(proposalId ){
+    console.log("sono in copy proposal. proposal id:" , proposalId);
+    try {
+      const response = await getProposalAPI(proposalId);
+      console.log("response: ", response.data.data[0]) //for debugging
+      const proposal = response.data.data[0];
+      
+      const res = await copyProposalAPI(
+        proposal.title,
+        proposal.type,
+        proposal.description,
+        proposal.requiredKnowledge,
+        proposal.notes,
+        proposal.level,
+        proposal.programme,
+        proposal.deadline,
+        proposal.keywords,
+        proposal.coSupervisors
+      );
+      
+      return res.data;
+    } catch (error) {
+
+      console.log("errore in copy proposal: ", error.message);
+      
+    }
+
   }
 
   async getAllGroups() {
