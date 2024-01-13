@@ -106,7 +106,7 @@ const tokenVerification = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    await req.session.destroy();
+    req.session.user = undefined;
     res.status(200).send();
   } catch (error) {
     console.log(error);
