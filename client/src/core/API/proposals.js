@@ -66,6 +66,8 @@ export const updateProposal = async (id, updates) => {
 */
 
 export const copyProposal = async (
+  
+  
   title,
   type,
   description,
@@ -78,7 +80,9 @@ export const copyProposal = async (
   coSupervisors
 ) => {
   try {
-    const res = await client.post("/thesis-proposals/" + proposalId + "/copy", {
+    
+    const res = await client.post("/thesis-proposals/" + proposalId , {
+      proposalId,
       title,
       type,
       description,
@@ -90,9 +94,13 @@ export const copyProposal = async (
       keywords,
       coSupervisors,
     });
+    
     return res;
+    
   } catch (err) {
+  console.log(err.message);
     throw err;
+
   }
 };
 

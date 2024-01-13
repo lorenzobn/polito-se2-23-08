@@ -232,8 +232,8 @@ const createProposal = async (req, res) => {
 
 const copyProposal = async (req, res) => {
 
-
-  
+;
+  console.log("id della proposal è", +req.params.proposalId);
 
 
   const query = {

@@ -269,6 +269,7 @@ export class Store {
       const proposal = response.data.data[0];
       
       const res = await copyProposalAPI(
+       
         proposal.title,
         proposal.type,
         proposal.description,

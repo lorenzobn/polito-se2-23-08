@@ -77,7 +77,7 @@ router.put(
 );
 
 
-router.post("/thesis-proposals/:proposalId/copy",
+router.post("/thesis-proposals/:proposalId",
  authorize(userRoles.teacher),
   copyProposal);
 
