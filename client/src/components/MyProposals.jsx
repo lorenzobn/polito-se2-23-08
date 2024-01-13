@@ -77,10 +77,7 @@ export default function MyProposals() {
       }
       if (store.user.type === "professor") {
         const proposalsRes = await store.getProposalsByTeacherId();
-        console.log(
-          proposalsRes,
-          new Date(proposalsRes[1].deadline) < new Date(now)
-        );
+
         const applications = await store.getReceivedApplications();
         setProposals(
           proposalsRes.filter(
