@@ -77,19 +77,24 @@ export default function MyProposals() {
       }
       if (store.user.type === "professor") {
         const proposalsRes = await store.getProposalsByTeacherId();
-        console.log(proposalsRes);
+        console.log(
+          proposalsRes,
+          new Date(proposalsRes[1].deadline) < new Date(now)
+        );
         const applications = await store.getReceivedApplications();
         setProposals(
           proposalsRes.filter(
             (e) =>
-              e.status === "active" ||
-              (e.status === "pending" && new Date(e.deadline) < new Date(now))
+              (e.status === "active" || e.status === "pending") &&
+              new Date(e.deadline) > new Date(now)
           )
         );
         setApplications(applications);
         setArchivedProposals(
-          proposalsRes.filter((e) => e.status === "archived") ||
-            new Date(e.deadline) < new Date(now)
+          proposalsRes.filter(
+            (e) =>
+              e.status === "archived" || new Date(e.deadline) < new Date(now)
+          )
         );
       }
     };
