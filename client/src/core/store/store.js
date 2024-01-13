@@ -19,7 +19,7 @@ import {
   getAllProgrammes as getAllProgrammesAPI,
   getExternalCoSupervisors as getExtCoSupervisorsAPI,
   updateProposal as updateProposalAPI,
-  deleteProposal as deleteProposalAPI
+  deleteProposal as deleteProposalAPI,
 } from "../API/proposals";
 import {
   checkApplied as checkAppliedAPI,
@@ -89,7 +89,7 @@ export class Store {
       const res = await getVirtualClockValueAPI();
       if (res.status === 200) {
         this.time = new Date(res.data.virtual_time);
-        console.log(this.time);
+        return new Date(res.data.virtual_time);
       }
     } catch (err) {
       toast.error("Error on login");

@@ -63,25 +63,34 @@ export default function MyProposals() {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
     const handleEffect = async () => {
-      let s = await store.fetchSelf();
+      let now = await store.getVirtualClockValue();
       if (store.user.type === "student") {
-        const proposals = await store.getProposals();
+        const proposalsRes = await store.getProposals();
+
         setProposals(
-          proposals.filter(
-            (e) => e.status === "active" || e.status === "pending"
+          proposalsRes.filter(
+            (e) =>
+              (e.status === "active" || e.status === "pending") &&
+              new Date(e.deadline) > new Date(now)
           )
         );
       }
       if (store.user.type === "professor") {
-        const proposals = await store.getProposalsByTeacherId();
+        const proposalsRes = await store.getProposalsByTeacherId();
+        console.log(proposalsRes);
         const applications = await store.getReceivedApplications();
         setProposals(
-          proposals.filter(
-            (e) => e.status === "active" || e.status === "pending"
+          proposalsRes.filter(
+            (e) =>
+              e.status === "active" ||
+              (e.status === "pending" && new Date(e.deadline) < new Date(now))
           )
         );
         setApplications(applications);
-        setArchivedProposals(proposals.filter((e) => e.status === "archived"));
+        setArchivedProposals(
+          proposalsRes.filter((e) => e.status === "archived") ||
+            new Date(e.deadline) < new Date(now)
+        );
       }
     };
     handleEffect();
@@ -268,9 +277,12 @@ export default function MyProposals() {
                                     const res = await store.deleteProposal(
                                       proposalIdToDelete
                                     );
-                                    toast.success(`Your proposal "${e.title}" has been deleted successfully!`, {
-                                      position: toast.POSITION.TOP_CENTER,
-                                    });
+                                    toast.success(
+                                      `Your proposal "${e.title}" has been deleted successfully!`,
+                                      {
+                                        position: toast.POSITION.TOP_CENTER,
+                                      }
+                                    );
                                     console.log(res);
                                     setShowDeleteModal(false);
                                   }}
