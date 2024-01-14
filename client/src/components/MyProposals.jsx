@@ -308,6 +308,7 @@ export default function MyProposals() {
                                       );
                                     }
                                     setShowDeleteModal(false);
+                                    window.location.href ="/thesis-proposals";
                                   }}
                                   text={"DELETE"}
                                   icon={faTrash}
@@ -490,6 +491,7 @@ export default function MyProposals() {
                                     });
                                     console.log(res);
                                     setShowDeleteModal(false);
+                                    window.location.href ="/thesis-proposals";
                                   }}
                                   text={"DELETE"}
                                   icon={faTrash}
