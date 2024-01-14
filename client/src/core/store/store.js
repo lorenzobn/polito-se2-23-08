@@ -28,6 +28,7 @@ import {
   getReceivedApplicationsByThesisId as getReceivedApplicationsByThesisIdAPI,
   putApplicationStatus as putApplicationStatusAPI,
   checkApplication as checkApplicationAPI,
+  downloadCV as downloadCVAPI,
 } from "../API/applications";
 import {
   getVirtualClockValue as getVirtualClockValueAPI,
@@ -63,7 +64,6 @@ export class Store {
       markNotificationAsSeen: action,
       deleteProposal: action,
       archiveProposal: action,
-      
     });
   }
 
@@ -219,6 +219,26 @@ export class Store {
       return [];
     }
   }
+  async downloadCV(applicationId) {
+    try {
+      const res = await downloadCVAPI(applicationId);
+      console.log(res);
+      const blob = new Blob([res.data]);
+      const downloadUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = downloadUrl;
+      a.download = "resume.pdf";
+      document.body.appendChild(a);
+      a.click();
+
+      URL.revokeObjectURL(downloadUrl);
+      document.body.removeChild(a);
+    } catch (err) {
+      console.error("Error in downloading file: ", err);
+      return [];
+    }
+  }
 
   async postProposals(
     title,
@@ -260,16 +280,14 @@ export class Store {
     }
   }
 
-
-  async copyProposal(proposalId ){
-    console.log("sono in copy proposal. proposal id:" , proposalId);
+  async copyProposal(proposalId) {
+    console.log("sono in copy proposal. proposal id:", proposalId);
     try {
       const response = await getProposalAPI(proposalId);
-      console.log("response: ", response.data.data[0]) //for debugging
+      console.log("response: ", response.data.data[0]); //for debugging
       const proposal = response.data.data[0];
-      
+
       const res = await copyProposalAPI(
-       
         proposal.title,
         proposal.type,
         proposal.description,
@@ -281,14 +299,11 @@ export class Store {
         proposal.keywords,
         proposal.coSupervisors
       );
-      
+
       return res.data;
     } catch (error) {
-
       console.log("errore in copy proposal: ", error.message);
-      
     }
-
   }
 
   async getAllGroups() {

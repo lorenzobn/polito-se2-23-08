@@ -22,7 +22,6 @@ export default function Applications() {
   const store = useContext(StoreContext);
   const [applications, setApplications] = useState([]);
   const [applicationsFiltered, setApplicationsFiltered] = useState([]);
-  const [filter, setFilter] = useState("All");
   const [isOpen, setIsOpen] = useState(false);
   const [scope, animate] = useAnimate();
 

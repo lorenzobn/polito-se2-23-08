@@ -37,11 +37,9 @@ const createApplication = async (req, res) => {
     }
 
     if (r.rows[0].status !== "active") {
-      return res
-        .status(400)
-        .json({
-          msg: "Cannot apply to this thesis because it is not active anymore.",
-        });
+      return res.status(400).json({
+        msg: "Cannot apply to this thesis because it is not active anymore.",
+      });
     }
 
     const file = req.files && req.files.file;
@@ -86,6 +84,32 @@ const createApplication = async (req, res) => {
     return res
       .status(201)
       .json({ msg: "Application created successfully", data: result.rows[0] });
+  } catch (error) {
+    logger.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
+  }
+};
+
+const downloadCV = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const query = {
+      text: "SELECT cv_uri FROM thesis_application WHERE id=$1 AND created_at < $2",
+      values: [applicationId, req.session.clock.time],
+    };
+  
+    const result = await pool.query(query);
+    if (result.rowCount == 0) {
+      return res.status(404).json({ msg: "Resource not found" });
+    }
+    const filePath = result.rows[0].cv_uri;
+    if (!filePath) {
+      return res.status(404).json({ msg: "Resource not found" });
+    }
+
+    res.setHeader("Content-Type", "application/pdf");
+
+    res.download(filePath);
   } catch (error) {
     logger.error(error.message);
     return res.status(500).json({ msg: "Unknown error occurred" });
@@ -382,4 +406,5 @@ module.exports = {
   getReceivedApplications,
   getReceivedApplicationsByThesisId,
   cancellApplicationsForThesis,
+  downloadCV,
 };
