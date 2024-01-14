@@ -18,7 +18,6 @@ import {
   faTrash,
   faCopy,
 } from "@fortawesome/free-solid-svg-icons";
-import { FaEdit, FaTrashAlt, FaSyncAlt, FaCopy } from "react-icons/fa";
 import {
   MdOutlineEdit,
   MdOutlineDelete,
@@ -27,9 +26,7 @@ import {
 } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { StoreContext } from "../core/store/Provider";
-import { FaArrowDown } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function MyProposals() {
   const navigate = useNavigate();
@@ -279,13 +276,21 @@ export default function MyProposals() {
                                     const res = await store.deleteProposal(
                                       proposalIdToDelete
                                     );
-                                    toast.success(
-                                      `Your proposal "${e.title}" has been deleted successfully!`,
-                                      {
-                                        position: toast.POSITION.TOP_CENTER,
-                                      }
-                                    );
-                                    console.log(res);
+                                    if(res.data){
+                                      toast.success(
+                                        `Your proposal "${e.title}" has been deleted successfully!`,
+                                        {
+                                          position: toast.POSITION.TOP_CENTER,
+                                        }
+                                      );
+                                    } else {
+                                      toast.error(
+                                        `${res.msg}`,
+                                        {
+                                          position: toast.POSITION.TOP_CENTER,
+                                        }
+                                      );
+                                    }
                                     setShowDeleteModal(false);
                                   }}
                                   text={"DELETE"}
@@ -326,6 +331,21 @@ export default function MyProposals() {
                                     const res = await store.archiveProposal(
                                       proposalIdToArchive
                                     );
+                                    if(res.data){
+                                      toast.success(
+                                        `Your proposal "${e.title}" has been archived successfully!`,
+                                        {
+                                          position: toast.POSITION.TOP_CENTER,
+                                        }
+                                      );
+                                    } else {
+                                      toast.error(
+                                        `${res.msg}`,
+                                        {
+                                          position: toast.POSITION.TOP_CENTER,
+                                        }
+                                      );
+                                    }
                                     setShowArchiveModal(false);
                                   }}
                                   text={"ARCHIVE"}

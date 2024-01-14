@@ -38,7 +38,6 @@ export const getMyApplications = async () => {
 
 export const updateProposal = async (id, updates) => {
   try {
-    console.log("/thesis-proposals/" + id);
     const res = await client.put("/thesis-proposals/" + id, updates);
     return res;
   } catch (err) {
@@ -48,7 +47,28 @@ export const updateProposal = async (id, updates) => {
 
 export const deleteProposal = async (id) => {
   try {
-    const res = await client.put("/thesis-proposals/" + id + "/deleted");
+    const res = await client.put("/thesis-proposals/" + id + "/deleted")
+      .then((response) => {
+      return response
+      })
+      .catch((reason) => {
+        return {code: reason.response.status, msg: reason.response.data.msg}
+      });
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const archiveProposal = async (id) => {
+  try {
+    const res = await client.put("/thesis-proposals/" + id + "/archived")
+      .then((response) => {
+      return response
+      })
+      .catch((reason) => {
+        return {code: reason.response.status, msg: reason.response.data.msg}
+      });
     return res;
   } catch (err) {
     throw err;

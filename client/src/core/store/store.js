@@ -20,6 +20,7 @@ import {
   getExternalCoSupervisors as getExtCoSupervisorsAPI,
   updateProposal as updateProposalAPI,
   deleteProposal as deleteProposalAPI,
+  archiveProposal as archiveProposalAPI,
 } from "../API/proposals";
 import {
   checkApplied as checkAppliedAPI,
@@ -373,20 +374,16 @@ export class Store {
   async deleteProposal(id) {
     try {
       const res = await deleteProposalAPI(id);
-      //window.location.reload();
-      return res.data;
+      return res;
     } catch (err) {
       return err;
     }
   }
   async archiveProposal(id) {
     try {
-      const res = await updateProposalAPI(id, { status: "archived" });
-      console.log(res);
-      window.location.reload();
-      return res.data;
+      const res = await archiveProposalAPI(id)
+      return res;
     } catch (err) {
-      console.log(err);
       return err;
     }
   }

@@ -144,15 +144,14 @@ const updateApplication = async (req, res) => {
     } else {
       // ok, now check if the application has already been accepted/rejected
       let query = {
-        text: "SELECT thesis_proposal.title, thesis_application.thesis_id, thesis_application.status FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE thesis_application.id=$1 AND thesis_application.created_at < $2",
+        text: "SELECT thesis_proposal.title, thesis_proposal.status as prop_status, thesis_application.thesis_id, thesis_application.status FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE thesis_application.id=$1 AND thesis_application.created_at < $2 AND thesis_proposal.status='active'",
         values: [req.params.applicationId, req.session.clock.time],
       };
       let {thesisTitle, thesisId} = {thesisTitle: "", thesisId: -1};
       let result = await pool.query(query);
       if (result.rowCount == 0) {
-        return res.status(404).json({ msg: "Application not found." });
+        return res.status(404).json({ msg: "Application or valid proposal not found." });
       } else if (result.rows[0]?.status !== "idle") {
-        logger.info("400 - cannot update");
         return res.status(400).json({
           msg: "Cannot update this application because it has already been accepted/rejected.",
         });
@@ -160,7 +159,6 @@ const updateApplication = async (req, res) => {
         thesisId = result.rows[0].thesis_id;
         thesisTitle = result.rows[0].title;
       }
-
       const updateFields = req.body;
       const applicationSchema = Joi.object({
         status: Joi.string().valid("accepted", "rejected").required(),
@@ -368,4 +366,5 @@ module.exports = {
   getReceivedApplications,
   getReceivedApplicationsByThesisId,
   cancellApplicationsForThesis,
+  archiveProposal,
 };

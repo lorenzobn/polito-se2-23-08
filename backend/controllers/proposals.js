@@ -598,10 +598,28 @@ const searchProposal = async (req, res) => {
 const archiveProposalWrap = async (req, res) => {
   try {
     const { proposalId } = req.params;
-    //check Pre-Conditions before archiving: 1) should be the owner
-    let resCode = applications.archiveProposal(proposalId);
-
-    return res.status(200).json({ msg: "OK" })
+    const query1 = {
+      text: "SELECT * FROM thesis_proposal WHERE id=$1 AND SUPERVISOR_id=$2 AND created_at < $3 AND status='active'",
+      values: [
+        proposalId,
+        req.session.user.id,
+        req.session.clock.time,
+      ],
+    };
+    let result = await pool.query(query1);
+    if (result.rows.length === 0) {
+      return res
+        .status(400)
+        .json({ msg: "No active proposal found with the given ID." });
+    }
+    let resCode = await applications.archiveProposal(proposalId, req.session.clock.time);
+    if (resCode === -1){
+      throw {
+        message: "Error while archiving a proposal",
+        code: 500,
+      };
+    }
+    return res.status(200).json({ msg: "OK" }) 
   } catch (error) {
     logger.error(error.message);
     return res.status(500).json({ msg: error.message });

@@ -124,9 +124,7 @@ router.get(
   didStudentApply
 );
 
-//TODO: authorize all these routes
 router.get("/ext-cosupervisors", getExtCoSupervisors);
-
 router.get("/cosupervisors", getCoSupervisors);
 router.get("/programmes", getAllProgrammes);
 router.get("/cds", getAllCdS);
