@@ -87,7 +87,7 @@ export default function Applications() {
         <Row className="border-thesis-div">
           <Col
             style={{ minWidth: "200px" }}
-            xs={2}
+            xs={12}
             lg={2}
             className="d-flex border-thesis-filter"
           >
@@ -158,7 +158,7 @@ export default function Applications() {
               </Stack>
             )}
           </Col>
-          <Col lg={{ span: 8 }}>
+          <Col xs={8} sm={8} lg={8}>
             {applicationsFiltered.map((e) => (
               <div key={e.thesis_id} className="thesis-section">
                 <header>
