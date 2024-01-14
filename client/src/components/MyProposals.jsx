@@ -203,7 +203,7 @@ export default function MyProposals() {
                                 <strong>{e.title}</strong> ? After doing this
                                 action the students will see a duplicated
                                 proposal. You can always archive or delete it
-                                later.
+                                later. {e.id}
                               </Modal.Body>
                               <Modal.Footer className="modal-footer d-flex justify-content-end">
                                 <Button
@@ -223,6 +223,11 @@ export default function MyProposals() {
                                   onClick={async () => {
                                     const res = await store.copyProposal(
                                       proposalIdToCopy
+                                    );
+                                    toast.success(`Your proposal "${e.title} has been copied successfully!`,
+                                    {
+                                      position: toast.POSITION.TOP_CENTER, 
+                                    }
                                     );
                                     setShowCopyModal(false);
                                   }}

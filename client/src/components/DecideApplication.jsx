@@ -14,13 +14,12 @@ import {
 import Button from "./Button";
 import {
   faCheck,
-  faMagnifyingGlass,
   faX,
   faHand,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import BadButton from "./BadButton";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { StoreContext } from "../core/store/Provider";
 
@@ -166,6 +165,13 @@ export default function AcceptApplications() {
               <li>
                 <strong>Student ID:</strong> {student.student_id},{" "}
                 <strong>Application Status:</strong> {student.applicationstatus}
+                <a
+                  className="mt-2 d-block "
+                  style={{ cursor: "pointer", color: "rgb(0, 126, 168)" }}
+                  href={`http://localhost:3000/api/v1.0//received-applications/${student.applicationid}/cv`}
+                >
+                  Download CV
+                </a>
                 <div className="row">
                   <div className="col text-start mt-4">
                     {student.applicationstatus === "idle" ? (

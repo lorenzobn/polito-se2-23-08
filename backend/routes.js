@@ -5,6 +5,7 @@ const {
   getExtCoSupervisors,
   getCoSupervisors,
   createProposal,
+  copyProposal,
   updateProposal,
   searchProposal,
   getAllCdS,
@@ -21,6 +22,7 @@ const {
   createApplication,
   updateApplication,
   didStudentApply,
+  downloadCV,
 } = require("./controllers/applications.js");
 
 const {
@@ -75,6 +77,12 @@ router.put(
   updateProposal
 );
 
+router.post(
+  "/thesis-proposals/:proposalId",
+  authorize(userRoles.teacher),
+  copyProposal
+);
+
 router.put(
   "/thesis-proposals/:proposalId/deleted",
   authorize(userRoles.teacher),
@@ -117,6 +125,7 @@ router.put(
   authorize(userRoles.teacher),
   updateApplication
 );
+router.get("/received-applications/:applicationId/cv", downloadCV);
 
 router.get(
   "/check-application/:thesisId",

@@ -9,16 +9,14 @@ const { userTypes } = require("./users.js");
 const uploadPath = "uploads/";
 
 //TO AVOID SENDING A LOT OF EMAILS DURING DEBUGGING
-const DEBUG_SEND_EMAIL = false
+const DEBUG_SEND_EMAIL = false;
 
 const createApplication = async (req, res) => {
   try {
     const applicationSchema = Joi.object({
       student_id: Joi.string().required(),
       thesis_id: Joi.number().integer().required(),
-      thesis_status: Joi.string()
-        .valid("idle")
-        .required(),
+      thesis_status: Joi.string().valid("idle").required(),
       cv_uri: Joi.string().allow(""),
     });
 
@@ -38,8 +36,10 @@ const createApplication = async (req, res) => {
       return res.status(400).json({ msg: "Invalid proposal id." });
     }
 
-    if (r.rows[0].status !== 'active'){
-      return res.status(400).json({ msg: "Cannot apply to this thesis because it is not active anymore." });
+    if (r.rows[0].status !== "active") {
+      return res.status(400).json({
+        msg: "Cannot apply to this thesis because it is not active anymore.",
+      });
     }
 
     const file = req.files && req.files.file;
@@ -73,6 +73,7 @@ const createApplication = async (req, res) => {
       `Your application to ${r.rows[0].title} has been sent successfully!`,
       DEBUG_SEND_EMAIL
     );
+    console.log(r.rows[0]);
     createNotification(
       r.rows[0].teacher_id,
       userTypes.teacher,
@@ -83,6 +84,32 @@ const createApplication = async (req, res) => {
     return res
       .status(201)
       .json({ msg: "Application created successfully", data: result.rows[0] });
+  } catch (error) {
+    logger.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
+  }
+};
+
+const downloadCV = async (req, res) => {
+  try {
+    const { applicationId } = req.params;
+    const query = {
+      text: "SELECT cv_uri FROM thesis_application WHERE id=$1 AND created_at < $2",
+      values: [applicationId, req.session.clock.time],
+    };
+  
+    const result = await pool.query(query);
+    if (result.rowCount == 0) {
+      return res.status(404).json({ msg: "Resource not found" });
+    }
+    const filePath = result.rows[0].cv_uri;
+    if (!filePath) {
+      return res.status(404).json({ msg: "Resource not found" });
+    }
+
+    res.setHeader("Content-Type", "application/pdf");
+
+    res.download(filePath);
   } catch (error) {
     logger.error(error.message);
     return res.status(500).json({ msg: "Unknown error occurred" });
@@ -147,7 +174,7 @@ const updateApplication = async (req, res) => {
         text: "SELECT thesis_proposal.title, thesis_proposal.status as prop_status, thesis_application.thesis_id, thesis_application.status FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE thesis_application.id=$1 AND thesis_application.created_at < $2 AND thesis_proposal.status='active'",
         values: [req.params.applicationId, req.session.clock.time],
       };
-      let {thesisTitle, thesisId} = {thesisTitle: "", thesisId: -1};
+      let { thesisTitle, thesisId } = { thesisTitle: "", thesisId: -1 };
       let result = await pool.query(query);
       if (result.rowCount == 0) {
         return res.status(404).json({ msg: "Application or valid proposal not found." });
@@ -183,23 +210,29 @@ const updateApplication = async (req, res) => {
           .json({ msg: "No valid fields provided for update." });
       }
       //await pool.query("BEGIN");
-      if(req.body.status === 'accepted'){
+      if (req.body.status === "accepted") {
         //if it has been accepted, you should cancel all the other pending applications
         logger.info("Canceling...");
-        if (cancellApplicationsForThesis(thesisId, thesisTitle, req.session.clock.time, applicationId) == -1){
+        if (
+          cancellApplicationsForThesis(
+            thesisId,
+            thesisTitle,
+            req.session.clock.time,
+            applicationId
+          ) == -1
+        ) {
           throw {
             code: 500,
-            message: "Error while trying to update application status"
-          }
+            message: "Error while trying to update application status",
+          };
         }
         logger.info("Done!");
-        if (archiveProposal(thesisId, req.session.clock.time) == -1){
+        if (archiveProposal(thesisId, req.session.clock.time) == -1) {
           throw {
             code: 500,
-            message: "Error while trying to archive the proposal"
-          }
+            message: "Error while trying to archive the proposal",
+          };
         }
-        
       }
 
       query = `
@@ -219,8 +252,8 @@ const updateApplication = async (req, res) => {
       if (result.rows.length === 0) {
         throw {
           code: 404,
-          message: "Application not found." 
-        }
+          message: "Application not found.",
+        };
       }
       //await pool.query("COMMIT");
       const result2 = await pool.query(
@@ -249,16 +282,21 @@ const updateApplication = async (req, res) => {
   }
 };
 
-const cancellApplicationsForThesis = async (thesisId, thesisTitle, time, applicationId) => {
-  try{
+const cancellApplicationsForThesis = async (
+  thesisId,
+  thesisTitle,
+  time,
+  applicationId
+) => {
+  try {
     let query = {
       text: "UPDATE thesis_application SET status = 'cancelled' WHERE thesis_id=$1 AND created_at < $2 AND id<>$3 RETURNING *",
       values: [thesisId, time, applicationId],
     };
     let result = await pool.query(query);
-    if(result.rowCount >= 0){
-      for(let i=0; i<result.rowCount; i++){
-        if(thesisTitle.length > 0){
+    if (result.rowCount >= 0) {
+      for (let i = 0; i < result.rowCount; i++) {
+        if (thesisTitle.length > 0) {
           createNotification(
             result.rows[i].student_id,
             userTypes.student,
@@ -278,10 +316,10 @@ const cancellApplicationsForThesis = async (thesisId, thesisTitle, time, applica
       }
     }
     return 0;
-  } catch(error){
+  } catch (error) {
     return -1;
   }
-}
+};
 
 const getReceivedApplications = async (req, res) => {
   const query = {
@@ -355,7 +393,7 @@ const archiveProposal = async (thesisId, time) => {
   } catch (error) {
     return -1;
   }
-}
+};
 
 module.exports = {
   getApplications,
@@ -367,4 +405,5 @@ module.exports = {
   getReceivedApplicationsByThesisId,
   cancellApplicationsForThesis,
   archiveProposal,
+  downloadCV,
 };
