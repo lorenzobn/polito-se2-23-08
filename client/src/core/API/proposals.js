@@ -1,3 +1,4 @@
+
 import { client } from "./api";
 
 
@@ -51,8 +52,8 @@ export const updateProposal = async (id, updates) => {
 };
 
 
-
-/*export const copyProposal = async (proposalId) => {
+/*
+export const copyProposal = async (proposalId) => {
   try {
     console.log("ciao");
     const res = await client.post("/thesis-proposals/" + proposalId + "/copy");
@@ -66,7 +67,7 @@ export const updateProposal = async (id, updates) => {
 
 export const copyProposal = async (
   
-  
+  proposalId,
   title,
   type,
   description,
@@ -81,8 +82,8 @@ export const copyProposal = async (
   try {
     
     const res = await client.post("/thesis-proposals/" + proposalId , {
-      proposalId,
-      title,
+      
+     title,
       type,
       description,
       requiredKnowledge,
@@ -91,7 +92,7 @@ export const copyProposal = async (
       programme,
       deadline,
       keywords,
-      coSupervisors,
+      coSupervisors, 
     });
     
     return res;
@@ -102,6 +103,7 @@ export const copyProposal = async (
 
   }
 };
+
 
 
 

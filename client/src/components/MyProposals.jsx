@@ -24,7 +24,7 @@ import {
   MdOutlineArchive,
   MdContentCopy,
 } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import { StoreContext } from "../core/store/Provider";
 import { toast } from "react-toastify";
 
@@ -224,12 +224,23 @@ export default function MyProposals() {
                                     const res = await store.copyProposal(
                                       proposalIdToCopy
                                     );
-                                    toast.success(`Your proposal "${e.title} has been copied successfully!`,
+
+
+                                   
+                                    toast.success(`Your proposal "${e.title} " has been copied successfully!`,
                                     {
                                       position: toast.POSITION.TOP_CENTER, 
                                     }
                                     );
+                                    
                                     setShowCopyModal(false);
+                                    window.location.href ="/thesis-proposals";
+
+                                  
+                                  
+                                    
+                                    
+                                    
                                   }}
                                   text={"COPY"}
                                   icon={faCopy}

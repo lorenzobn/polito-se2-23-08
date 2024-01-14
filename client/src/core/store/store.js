@@ -1,3 +1,4 @@
+
 import { makeObservable, observable, action } from "mobx";
 import {
   login as loginAPI,
@@ -41,6 +42,8 @@ import {
 } from "../API/notifications";
 import { toast } from "react-toastify";
 export class Store {
+
+  
   constructor() {
     this.theme = localStorage.getItem("theme");
     this.time = new Date();
@@ -282,6 +285,7 @@ export class Store {
   }
 
   async copyProposal(proposalId) {
+    
     console.log("sono in copy proposal. proposal id:", proposalId);
     try {
       const response = await getProposalAPI(proposalId);
@@ -289,6 +293,7 @@ export class Store {
       const proposal = response.data.data[0];
 
       const res = await copyProposalAPI(
+        proposalId,
         proposal.title,
         proposal.type,
         proposal.description,
@@ -300,8 +305,9 @@ export class Store {
         proposal.keywords,
         proposal.coSupervisors
       );
-
+      
       return res.data;
+      
     } catch (error) {
       console.log("errore in copy proposal: ", error.message);
     }

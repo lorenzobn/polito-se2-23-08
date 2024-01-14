@@ -232,7 +232,7 @@ const createProposal = async (req, res) => {
 
 const copyProposal = async (req, res) => {
 
-;
+
   console.log("id della proposal è", +req.params.proposalId);
 
 
@@ -252,32 +252,7 @@ const copyProposal = async (req, res) => {
 
 
   const proposalToCopy = result.rows[0];
-
-
-  /*
-  const query = `
-      INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, COD_GROUP, description, required_knowledge, notes, level, programme, deadline, status, created_at)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-      RETURNING *;
-    `;
-
-    const values = [
-      title,
-      SUPERVISOR_id,
-      type,
-      cod_group,
-      description,
-      requiredKnowledge,
-      notes,
-      level,
-      programme,
-      deadline,
-      activeStatus,
-      req.session.clock.time,
-    ];
-
-
-  */
+    console.log("ciao", proposalToCopy);
 
     const insertQuery = 
     `INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, COD_GROUP, description, required_knowledge, notes, level, programme, deadline, status, created_at)
@@ -287,9 +262,9 @@ const copyProposal = async (req, res) => {
 
     const values = [
       proposalToCopy.title,
-      proposalToCopy.SUPERVISOR_id,
+      proposalToCopy.supervisor_id,
       proposalToCopy.type,
-      proposalToCopy.COD_GROUP,
+      proposalToCopy.cod_group,
       proposalToCopy.description,
       proposalToCopy.required_knowledge,
       proposalToCopy.notes,
@@ -301,7 +276,7 @@ const copyProposal = async (req, res) => {
     ];
 
       
-    
+    console.log("values", values);
 
     await pool.query(insertQuery, values);
 
