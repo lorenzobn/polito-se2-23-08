@@ -323,7 +323,7 @@ const cancellApplicationsForThesis = async (
 
 const getReceivedApplications = async (req, res) => {
   const query = {
-    text: "SELECT COUNT(*) AS num_applications, title, description, deadline, thesis_id FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 AND thesis_application.created_at < $2 GROUP BY thesis_id, title, description, deadline",
+    text: "SELECT COUNT(*) AS num_applications, title, description, deadline, thesis_id, thesis_application.status FROM thesis_application JOIN thesis_proposal ON thesis_application.thesis_id=thesis_proposal.id WHERE supervisor_id=$1 AND thesis_application.created_at < $2 GROUP BY thesis_id, title, description, deadline, thesis_application.status",
     values: [req.session.user.id, req.session.clock.time],
   };
   try {

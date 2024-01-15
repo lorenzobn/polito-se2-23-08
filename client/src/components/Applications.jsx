@@ -44,7 +44,7 @@ export default function Applications() {
         let applicationsRes = await store.getReceivedApplications();
         const now = await store.getVirtualClockValue();
         applicationsRes = applicationsRes.filter(
-          (a) => new Date(a.deadline) > new Date(now)
+          (a) => new Date(a.deadline) > new Date(now) && a.status !== "cancelled"
         );
         setApplications(applicationsRes);
         setApplicationsFiltered(applicationsRes);
