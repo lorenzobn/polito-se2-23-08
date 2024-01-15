@@ -152,6 +152,14 @@ export default function Applications() {
                           Rejected
                         </Nav.Link>
                       </Nav.Item>
+                      <Nav.Item className="d-flex">
+                        <Nav.Link
+                          className="filter-decoration"
+                          onClick={() => handleFilter("cancelled")}
+                        >
+                          Cancelled
+                        </Nav.Link>
+                      </Nav.Item>
                     </motion.div>
                   )}
                 </Nav>
