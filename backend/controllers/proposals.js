@@ -13,7 +13,7 @@ const {
 } = require("./utils");
 const { createNotification } = require("./notifications.js");
 const { userTypes } = require("./users.js");
-const applications = require("./applications.js");
+const {cancellApplicationsForThesis} = require("./applications.js");
 
 const proposalSchema = Joi.object({
   title: Joi.string().min(8).max(150).required(),
@@ -554,7 +554,7 @@ const deleteProposal = async (req, res) => {
     }
     
     //set other applications (the ones pending) to cancelled
-    if (applications.cancellApplicationsForThesis(req.params.proposalId, '', req.session.clock.time, -1) == -1) {
+    if (cancellApplicationsForThesis(req.params.proposalId, '', req.session.clock.time, -1) == -1) {
       logger.error(`Error while trying to cancel all the applications done for ${thesisId}`)
       return res.status(500).json({ msg: "Error while trying to update application status" });
     }
@@ -565,7 +565,7 @@ const deleteProposal = async (req, res) => {
       .status(200)
       .json({ msg: "Proposal has been deleted successfully!" });
   } catch (error) {
-    errorMsg = "";
+    let errorMsg = "";
     switch (error.code) {
       case "22P02":
         errorMsg = "Invalid data provided";
@@ -575,7 +575,7 @@ const deleteProposal = async (req, res) => {
         break;
     }
     console.log(error);
-    return res.status(500).json({ msg: errorMsg });
+    return res.status(500).json({ msg: error.message });
   }
 };
 
