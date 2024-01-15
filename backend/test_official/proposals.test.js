@@ -1,7 +1,8 @@
-const { createProposal, getProposals, getProposalbyId, getProposalsByTeacher, updateProposal, searchProposal, getAllCdS, getAllGroups, getAllProgrammes } = require('../controllers/proposals');
+const { createProposal, getProposals, getProposalbyId, getProposalsByTeacher, updateProposal, searchProposal, getAllCdS, getAllGroups, getAllProgrammes, deleteProposal } = require('../controllers/proposals');
 const pool = require("../db/connection");
 const { coSupervisorAdd, keywordsAdd, getKeywords, getCoSupThesis, getECoSupThesis} = require("../controllers/utils");
 const { createNotification } = require("../controllers/notifications");
+const { cancellApplicationsForThesis } = require("../controllers/applications");
 
 
 jest.mock('../controllers/auth', () => ({
@@ -23,6 +24,12 @@ jest.mock('../controllers/utils', () => ({
   getKeywords: jest.fn(),
   getCoSupThesis: jest.fn(),
   getECoSupThesis: jest.fn(),
+}));
+
+jest.mock('../controllers/applications', () => ({
+  ...jest.requireActual('../controllers/applications'),
+
+  cancellApplicationsForThesis: jest.fn()
 }));
 
 jest.mock('../controllers/notifications', () => ({
@@ -893,6 +900,222 @@ describe('T9 -- getAllGroups', () => {
   });
 });
 
+//deleteProposal
+describe('T10 -- deleteProposal', () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    pool.query.mockClear();
+  });
+
+  // T10.1 - query error
+  it('T10.1 - should return 500 if query errors', async () => {
+    pool.query.mockRejectedValueOnce(new Error('Unknown error'));
+
+    const req = {
+      params: {
+        proposalId: 16, //invalid format
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          time: new Date(),
+        },
+      },
+    };
+
+
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    await deleteProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(500);
+    expect(res.json).toHaveBeenCalledWith({ msg: "Unknown error" });
+  });
+
+  // T10.2 - Id of the proposal is invalid
+  it('T10.2 - should return 400 if no active proposal found with the given ID', async () => {
+    const req = {
+      params: {
+        proposalId: 16, //invalid format
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          time: new Date(),
+        },
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [],
+      rowCount: 0,
+    });
+
+    await deleteProposal(req, res);
+
+    //expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: "No active proposal found with the given ID."});
+  });
+
+  // T10.3 - the session user is not authorized to delete the proposal
+  it('T10.3 - should return 401 if cannot delete this proposal because there is an accepted application', async () => {
+    const req = {
+      params: {
+        proposalId: 16, //invalid format
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          time: new Date(),
+        },
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [
+        { 
+          supervisor_id: "t124"
+        }
+      ],
+      rowCount: 1,
+    });
+
+    pool.query.mockResolvedValueOnce({
+      rows: [
+        { 
+          supervisor_id: "t124"
+        }
+      ],
+      rowCount: 0,
+    });
+
+    await deleteProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: "Cannot delete this proposal because there is an accepted application" });
+  }
+  
+  );
+
+  /*
+    // T10.4 - Error while trying to update application status
+  it('T10.4 - should return 401 if cannot delete this proposal because there is an accepted application', async () => {
+
+      const req = {
+        params: {
+          proposalId: 16, //invalid format
+        },
+        session: {
+          user: {
+            id: 't123',
+          },
+          clock: {
+            time: new Date(),
+          },
+        },
+      };
+  
+      const res = {
+        status: jest.fn(() => res),
+        json: jest.fn(),
+      };
+  
+      //Mocking functions
+      pool.query.mockResolvedValueOnce({
+        rows: [
+          { 
+            supervisor_id: "t124"
+          }
+        ],
+        rowCount: 1,
+      });
+  
+      pool.query.mockResolvedValueOnce({
+        rows: [],
+        rowCount: 0,
+      });
+
+      cancellApplicationsForThesis.mockResolvedValueOnce(-1);
+
+      await deleteProposal(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(500);
+      expect(res.json).toHaveBeenCalledWith({ msg: "Error while trying to update application status"});
+  });
+  */
+
+  
+  // T10.5 - success
+  it('T10.5 - should return 200 if successfull', async () => {
+        const req = {
+          params: {
+            proposalId: 16, //invalid format
+          },
+          session: {
+            user: {
+              id: 't123',
+            },
+            clock: {
+              time: new Date(),
+            },
+          },
+        };
+    
+        const res = {
+          status: jest.fn(() => res),
+          json: jest.fn(),
+        };
+    
+        //Mocking functions
+        pool.query.mockResolvedValueOnce({
+          rows: [
+            { 
+              supervisor_id: "t124"
+            }
+          ],
+          rowCount: 1,
+        });
+    
+        pool.query.mockResolvedValueOnce({
+          rows: [],
+          rowCount: 1,
+        });
+  
+        cancellApplicationsForThesis.mockResolvedValueOnce(1);
+    
+        await deleteProposal(req, res);
+    
+        expect(res.status).toHaveBeenCalledWith(200);
+
+    });
+
+
+
+});
+
 
 //updateProposal
 //TO DO:
@@ -1473,5 +1696,7 @@ describe('T5 -- updateProposal', () => {
   });
 
 });
+
+
 
 
