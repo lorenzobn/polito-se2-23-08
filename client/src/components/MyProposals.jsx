@@ -308,6 +308,7 @@ export default function MyProposals() {
                                       );
                                     }
                                     setShowDeleteModal(false);
+                                    setApplications(applications => applications.filter(app => app.thesis_id !== proposalIdToDelete));
                                     window.location.href ="/thesis-proposals";
                                   }}
                                   text={"DELETE"}
