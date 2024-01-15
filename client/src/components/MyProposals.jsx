@@ -463,8 +463,8 @@ export default function MyProposals() {
                                 <Modal.Title>Confirm Delete</Modal.Title>
                               </Modal.Header>
                               <Modal.Body>
-                                Are you sure you want to delete the proposal{" "}
-                                <strong>{e.title}</strong>?
+                               You can not delete an archived proposal{" "}
+                                <strong>{e.title}</strong> because some students involved on this thesis.
                               </Modal.Body>
                               <Modal.Footer className="modal-footer d-flex justify-content-end">
                                 <Button
@@ -474,27 +474,8 @@ export default function MyProposals() {
                                     setShowDeleteModal(false);
                                     setProposalIdToDelete(null);
                                   }}
-                                  text={"KEEP"}
+                                  text={"OK"}
                                   icon={faHand}
-                                ></Button>
-
-                                <Button
-                                  variant="danger"
-                                  className="mx-2"
-                                  onClick={async () => {
-                                    const res = await store.deleteProposal(
-                                      proposalIdToDelete
-                                    );
-                                    console.log(res);
-                                    toast.error(res.response.data.msg, {
-                                      position: toast.POSITION.TOP_CENTER,
-                                    });
-                                    console.log(res);
-                                    setShowDeleteModal(false);
-                                    window.location.href ="/thesis-proposals";
-                                  }}
-                                  text={"DELETE"}
-                                  icon={faTrash}
                                 ></Button>
                               </Modal.Footer>
                             </Modal>
