@@ -22,7 +22,6 @@ export default function Applications() {
   const store = useContext(StoreContext);
   const [applications, setApplications] = useState([]);
   const [applicationsFiltered, setApplicationsFiltered] = useState([]);
-  const [filter, setFilter] = useState("All");
   const [isOpen, setIsOpen] = useState(false);
   const [scope, animate] = useAnimate();
 
@@ -33,14 +32,22 @@ export default function Applications() {
     const handleEffect = async () => {
       let s = await store.fetchSelf();
       if (store.user.type === "student") {
-        const applications = await store.getMyApplications();
-        setApplications(applications);
-        setApplicationsFiltered(applications);
+        let applicationsRes = await store.getMyApplications();
+        const now = await store.getVirtualClockValue();
+        applicationsRes = applicationsRes.filter(
+          (a) => new Date(a.deadline) > new Date(now)
+        );
+        setApplications(applicationsRes);
+        setApplicationsFiltered(applicationsRes);
       }
       if (store.user.type === "professor") {
-        const applications = await store.getReceivedApplications();
-        setApplications(applications);
-        setApplicationsFiltered(applications);
+        let applicationsRes = await store.getReceivedApplications();
+        const now = await store.getVirtualClockValue();
+        applicationsRes = applicationsRes.filter(
+          (a) => new Date(a.deadline) > new Date(now)
+        );
+        setApplications(applicationsRes);
+        setApplicationsFiltered(applicationsRes);
       }
     };
     handleEffect();
@@ -80,72 +87,78 @@ export default function Applications() {
         <Row className="border-thesis-div">
           <Col
             style={{ minWidth: "200px" }}
-            xs={2}
+            xs={12}
             lg={2}
             className="d-flex border-thesis-filter"
           >
-            {store.user.type === 'student' && <Stack>
-              <Nav ref={scope} variant="underline" className="flex-column m-5">
-                <Nav.Item className="d-flex">
-                  <Nav.Link
-                    className="wrap-degree"
-                    onClick={() => setIsOpen(!isOpen)}
-                  >
-                    Filter By
-                    <div className="angle-degree">
-                      <FontAwesomeIcon
-                        id="arrow"
-                        icon={faAngleDown}
-                      ></FontAwesomeIcon>
-                    </div>
-                  </Nav.Link>
-                </Nav.Item>
-                {isOpen && (
-                  <motion.div
-                    style={{ paddingLeft: "1.5rem" }}
-                    animate={{ opacity: 1 }}
-                    initial={{ opacity: 0 }}
-                    transition={{ duration: 0.2, delay: 0.2 }}
-                    exit={{ opacity: 0 }}
-                  >
-                    <Nav.Item className="d-flex">
-                      <Nav.Link
-                        className="filter-decoration"
-                        onClick={() => handleFilter("All")}
-                      >
-                        All
-                      </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item className="d-flex">
-                      <Nav.Link
-                        className="filter-decoration"
-                        onClick={() => handleFilter("accepted")}
-                      >
-                        Accepted
-                      </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item className="d-flex">
-                      <Nav.Link
-                        className="filter-decoration"
-                        onClick={() => handleFilter("idle")}
-                      >
-                        Pending
-                      </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item className="d-flex">
-                      <Nav.Link
-                        className="filter-decoration"
-                        onClick={() => handleFilter("rejected")}
-                      >
-                        Rejected
-                      </Nav.Link>
-                    </Nav.Item>
-                  </motion.div>
-                )}
-              </Nav>
-            </Stack>}
+            {store.user.type === "student" && (
+              <Stack>
+                <Nav
+                  ref={scope}
+                  variant="underline"
+                  className="flex-column m-5"
+                >
+                  <Nav.Item className="d-flex">
+                    <Nav.Link
+                      className="wrap-degree"
+                      onClick={() => setIsOpen(!isOpen)}
+                    >
+                      Filter By
+                      <div className="angle-degree">
+                        <FontAwesomeIcon
+                          id="arrow"
+                          icon={faAngleDown}
+                        ></FontAwesomeIcon>
+                      </div>
+                    </Nav.Link>
+                  </Nav.Item>
+                  {isOpen && (
+                    <motion.div
+                      style={{ paddingLeft: "1.5rem" }}
+                      animate={{ opacity: 1 }}
+                      initial={{ opacity: 0 }}
+                      transition={{ duration: 0.2, delay: 0.2 }}
+                      exit={{ opacity: 0 }}
+                    >
+                      <Nav.Item className="d-flex">
+                        <Nav.Link
+                          className="filter-decoration"
+                          onClick={() => handleFilter("All")}
+                        >
+                          All
+                        </Nav.Link>
+                      </Nav.Item>
+                      <Nav.Item className="d-flex">
+                        <Nav.Link
+                          className="filter-decoration"
+                          onClick={() => handleFilter("accepted")}
+                        >
+                          Accepted
+                        </Nav.Link>
+                      </Nav.Item>
+                      <Nav.Item className="d-flex">
+                        <Nav.Link
+                          className="filter-decoration"
+                          onClick={() => handleFilter("idle")}
+                        >
+                          Pending
+                        </Nav.Link>
+                      </Nav.Item>
+                      <Nav.Item className="d-flex">
+                        <Nav.Link
+                          className="filter-decoration"
+                          onClick={() => handleFilter("rejected")}
+                        >
+                          Rejected
+                        </Nav.Link>
+                      </Nav.Item>
+                    </motion.div>
+                  )}
+                </Nav>
+              </Stack>
+            )}
           </Col>
-          <Col lg={{ span: 8 }}>
+          <Col xs={8} sm={8} lg={8}>
             {applicationsFiltered.map((e) => (
               <div key={e.thesis_id} className="thesis-section">
                 <header>

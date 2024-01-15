@@ -1,4 +1,10 @@
+
 import { client } from "./api";
+
+
+
+
+
 
 export const getProposals = async () => {
   try {
@@ -38,7 +44,6 @@ export const getMyApplications = async () => {
 
 export const updateProposal = async (id, updates) => {
   try {
-    console.log("/thesis-proposals/" + id);
     const res = await client.put("/thesis-proposals/" + id, updates);
     return res;
   } catch (err) {
@@ -46,9 +51,90 @@ export const updateProposal = async (id, updates) => {
   }
 };
 
+
+/*
+export const copyProposal = async (proposalId) => {
+  try {
+    console.log("ciao");
+    const res = await client.post("/thesis-proposals/" + proposalId + "/copy");
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
+*/
+
+export const copyProposal = async (
+  
+  proposalId,
+  title,
+  type,
+  description,
+  requiredKnowledge,
+  notes,
+  level,
+  programme,
+  deadline,
+  keywords,
+  coSupervisors
+) => {
+  try {
+    
+    const res = await client.post("/thesis-proposals/" + proposalId , {
+      
+     title,
+      type,
+      description,
+      requiredKnowledge,
+      notes,
+      level,
+      programme,
+      deadline,
+      keywords,
+      coSupervisors, 
+    });
+    
+    return res;
+    
+  } catch (err) {
+  console.log(err.message);
+    throw err;
+
+  }
+};
+
+
+
+
+
+
+
+
 export const deleteProposal = async (id) => {
   try {
-    const res = await client.put("/thesis-proposals/" + id + "/deleted");
+    const res = await client.put("/thesis-proposals/" + id + "/deleted")
+      .then((response) => {
+      return response
+      })
+      .catch((reason) => {
+        return {code: reason.response.status, msg: reason.response.data.msg}
+      });
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
+
+export const archiveProposal = async (id) => {
+  try {
+    const res = await client.put("/thesis-proposals/" + id + "/archived")
+      .then((response) => {
+      return response
+      })
+      .catch((reason) => {
+        return {code: reason.response.status, msg: reason.response.data.msg}
+      });
     return res;
   } catch (err) {
     throw err;

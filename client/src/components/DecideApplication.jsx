@@ -14,13 +14,12 @@ import {
 import Button from "./Button";
 import {
   faCheck,
-  faMagnifyingGlass,
   faX,
   faHand,
   faTrash,
 } from "@fortawesome/free-solid-svg-icons";
 import BadButton from "./BadButton";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { StoreContext } from "../core/store/Provider";
 
@@ -54,11 +53,23 @@ export default function AcceptApplications() {
     };
     handleEffect();
   }, [status]);
-
+  function isDifferenceMoreThanOneHour(time) {
+    var date1 = new Date(time);
+    var date2 = new Date();
+    var difference = Math.abs(date1 - date2);
+    var hoursDifference = difference / (1000 * 60 * 60);
+    return hoursDifference > 1;
+  }
   const handleAccept = async (index) => {
     const selectedForm = proposal[index];
-    //console.log("Accepted form at index", index, selectedForm.student_id);
-    // console.log("test:" , selectedForm.applicationid);
+    const clock = await store.getVirtualClockValue();
+    if (isDifferenceMoreThanOneHour(clock)) {
+      toast.error(
+        "You cannot perform this action since you are in a virtual time!"
+      );
+      return;
+    }
+
     const response = await store.applicationDecision(
       selectedForm.applicationid,
       "accepted"
@@ -79,6 +90,14 @@ export default function AcceptApplications() {
   };
 
   const handleReject = async (index) => {
+    const clock = await store.getVirtualClockValue();
+
+    if (isDifferenceMoreThanOneHour(clock)) {
+      toast.error(
+        "You cannot perform this action since you are in a virtual time!"
+      );
+      return;
+    }
     const selectedForm = proposal[index];
     //console.log("Rejected form at index", index, selectedForm);
     const response = await store.applicationDecision(
@@ -134,7 +153,7 @@ export default function AcceptApplications() {
                   variant="success"
                   className="mx-2"
                   onClick={async () => {
-                    handleAccept(index)
+                    handleAccept(index);
                     setShowModal(false);
                   }}
                   text={"ACCEPT"}
@@ -146,6 +165,13 @@ export default function AcceptApplications() {
               <li>
                 <strong>Student ID:</strong> {student.student_id},{" "}
                 <strong>Application Status:</strong> {student.applicationstatus}
+                <a
+                  className="mt-2 d-block "
+                  style={{ cursor: "pointer", color: "rgb(0, 126, 168)" }}
+                  href={`http://localhost:3000/api/v1.0//received-applications/${student.applicationid}/cv`}
+                >
+                  Download CV
+                </a>
                 <div className="row">
                   <div className="col text-start mt-4">
                     {student.applicationstatus === "idle" ? (

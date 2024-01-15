@@ -1,3 +1,4 @@
+
 import { makeObservable, observable, action } from "mobx";
 import {
   login as loginAPI,
@@ -19,7 +20,9 @@ import {
   getAllProgrammes as getAllProgrammesAPI,
   getExternalCoSupervisors as getExtCoSupervisorsAPI,
   updateProposal as updateProposalAPI,
-  deleteProposal as deleteProposalAPI
+  deleteProposal as deleteProposalAPI,
+  archiveProposal as archiveProposalAPI,
+  copyProposal as copyProposalAPI,
 } from "../API/proposals";
 import {
   checkApplied as checkAppliedAPI,
@@ -27,6 +30,7 @@ import {
   getReceivedApplicationsByThesisId as getReceivedApplicationsByThesisIdAPI,
   putApplicationStatus as putApplicationStatusAPI,
   checkApplication as checkApplicationAPI,
+  downloadCV as downloadCVAPI,
 } from "../API/applications";
 import {
   getVirtualClockValue as getVirtualClockValueAPI,
@@ -38,6 +42,8 @@ import {
 } from "../API/notifications";
 import { toast } from "react-toastify";
 export class Store {
+
+  
   constructor() {
     this.theme = localStorage.getItem("theme");
     this.time = new Date();
@@ -89,7 +95,7 @@ export class Store {
       const res = await getVirtualClockValueAPI();
       if (res.status === 200) {
         this.time = new Date(res.data.virtual_time);
-        console.log(this.time);
+        return new Date(res.data.virtual_time);
       }
     } catch (err) {
       toast.error("Error on login");
@@ -217,6 +223,26 @@ export class Store {
       return [];
     }
   }
+  async downloadCV(applicationId) {
+    try {
+      const res = await downloadCVAPI(applicationId);
+      console.log(res);
+      const blob = new Blob([res.data]);
+      const downloadUrl = URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = downloadUrl;
+      a.download = "resume.pdf";
+      document.body.appendChild(a);
+      a.click();
+
+      URL.revokeObjectURL(downloadUrl);
+      document.body.removeChild(a);
+    } catch (err) {
+      console.error("Error in downloading file: ", err);
+      return [];
+    }
+  }
 
   async postProposals(
     title,
@@ -255,6 +281,35 @@ export class Store {
       return res.data;
     } catch (err) {
       return [];
+    }
+  }
+
+  async copyProposal(proposalId) {
+    
+    console.log("sono in copy proposal. proposal id:", proposalId);
+    try {
+      const response = await getProposalAPI(proposalId);
+      console.log("response: ", response.data.data[0]); //for debugging
+      const proposal = response.data.data[0];
+
+      const res = await copyProposalAPI(
+        proposalId,
+        proposal.title,
+        proposal.type,
+        proposal.description,
+        proposal.requiredKnowledge,
+        proposal.notes,
+        proposal.level,
+        proposal.programme,
+        proposal.deadline,
+        proposal.keywords,
+        proposal.coSupervisors
+      );
+      
+      return res.data;
+      
+    } catch (error) {
+      console.log("errore in copy proposal: ", error.message);
     }
   }
 
@@ -373,20 +428,16 @@ export class Store {
   async deleteProposal(id) {
     try {
       const res = await deleteProposalAPI(id);
-      window.location.reload();
-      return res.data;
+      return res;
     } catch (err) {
       return err;
     }
   }
   async archiveProposal(id) {
     try {
-      const res = await updateProposalAPI(id, { status: "archived" });
-      console.log(res);
-      window.location.reload();
-      return res.data;
+      const res = await archiveProposalAPI(id)
+      return res;
     } catch (err) {
-      console.log(err);
       return err;
     }
   }

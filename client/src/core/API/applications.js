@@ -24,14 +24,22 @@ export const getReceivedApplicationsByThesisId = async (proposalId) => {
 
 export const putApplicationStatus = async (proposalId, status) => {
   try {
-    const res = await client.put(`/received-applications/${proposalId}` , {
+    const res = await client.put(`/received-applications/${proposalId}`, {
       status: status,
     });
     return res;
-  } catch(err){
+  } catch (err) {
     return err;
   }
-}
+};
+export const downloadCV = async (applicationId) => {
+  try {
+    const res = await client.get(`/received-applications/${applicationId}/cv`);
+    return res;
+  } catch (err) {
+    return err;
+  }
+};
 
 export const checkApplication = async (thesisId) => {
   try {

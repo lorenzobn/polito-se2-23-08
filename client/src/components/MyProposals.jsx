@@ -18,18 +18,15 @@ import {
   faTrash,
   faCopy,
 } from "@fortawesome/free-solid-svg-icons";
-import { FaEdit, FaTrashAlt, FaSyncAlt, FaCopy } from "react-icons/fa";
 import {
   MdOutlineEdit,
   MdOutlineDelete,
   MdOutlineArchive,
   MdContentCopy,
 } from "react-icons/md";
-import { useNavigate } from "react-router-dom";
+import { useNavigate} from "react-router-dom";
 import { StoreContext } from "../core/store/Provider";
-import { FaArrowDown } from "react-icons/fa";
 import { toast } from "react-toastify";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function MyProposals() {
   const navigate = useNavigate();
@@ -63,25 +60,36 @@ export default function MyProposals() {
     // since the handler function of useEffect can't be async directly
     // we need to define it separately and run it
     const handleEffect = async () => {
-      let s = await store.fetchSelf();
+      let now = await store.getVirtualClockValue();
       if (store.user.type === "student") {
-        const proposals = await store.getProposals();
+        const proposalsRes = await store.getProposals();
+
         setProposals(
-          proposals.filter(
-            (e) => e.status === "active" || e.status === "pending"
+          proposalsRes.filter(
+            (e) =>
+              (e.status === "active" || e.status === "pending") &&
+              new Date(e.deadline) > new Date(now)
           )
         );
       }
       if (store.user.type === "professor") {
-        const proposals = await store.getProposalsByTeacherId();
+        const proposalsRes = await store.getProposalsByTeacherId();
+
         const applications = await store.getReceivedApplications();
         setProposals(
-          proposals.filter(
-            (e) => e.status === "active" || e.status === "pending"
+          proposalsRes.filter(
+            (e) =>
+              (e.status === "active" || e.status === "pending") &&
+              new Date(e.deadline) > new Date(now)
           )
         );
         setApplications(applications);
-        setArchivedProposals(proposals.filter((e) => e.status === "archived"));
+        setArchivedProposals(
+          proposalsRes.filter(
+            (e) =>
+              e.status === "archived" || new Date(e.deadline) < new Date(now)
+          )
+        );
       }
     };
     handleEffect();
@@ -195,7 +203,7 @@ export default function MyProposals() {
                                 <strong>{e.title}</strong> ? After doing this
                                 action the students will see a duplicated
                                 proposal. You can always archive or delete it
-                                later.
+                                later. {e.id}
                               </Modal.Body>
                               <Modal.Footer className="modal-footer d-flex justify-content-end">
                                 <Button
@@ -216,7 +224,23 @@ export default function MyProposals() {
                                     const res = await store.copyProposal(
                                       proposalIdToCopy
                                     );
+
+
+                                   
+                                    toast.success(`Your proposal "${e.title} " has been copied successfully!`,
+                                    {
+                                      position: toast.POSITION.TOP_CENTER, 
+                                    }
+                                    );
+                                    
                                     setShowCopyModal(false);
+                                    window.location.href ="/thesis-proposals";
+
+                                  
+                                  
+                                    
+                                    
+                                    
                                   }}
                                   text={"COPY"}
                                   icon={faCopy}
@@ -268,11 +292,23 @@ export default function MyProposals() {
                                     const res = await store.deleteProposal(
                                       proposalIdToDelete
                                     );
-                                    toast.success(`Your proposal "${e.title}" has been deleted successfully!`, {
-                                      position: toast.POSITION.TOP_CENTER,
-                                    });
-                                    console.log(res);
+                                    if(res.data){
+                                      toast.success(
+                                        `Your proposal "${e.title}" has been deleted successfully!`,
+                                        {
+                                          position: toast.POSITION.TOP_CENTER,
+                                        }
+                                      );
+                                    } else {
+                                      toast.error(
+                                        `${res.msg}`,
+                                        {
+                                          position: toast.POSITION.TOP_CENTER,
+                                        }
+                                      );
+                                    }
                                     setShowDeleteModal(false);
+                                    window.location.href ="/thesis-proposals";
                                   }}
                                   text={"DELETE"}
                                   icon={faTrash}
@@ -312,6 +348,21 @@ export default function MyProposals() {
                                     const res = await store.archiveProposal(
                                       proposalIdToArchive
                                     );
+                                    if(res.data){
+                                      toast.success(
+                                        `Your proposal "${e.title}" has been archived successfully!`,
+                                        {
+                                          position: toast.POSITION.TOP_CENTER,
+                                        }
+                                      );
+                                    } else {
+                                      toast.error(
+                                        `${res.msg}`,
+                                        {
+                                          position: toast.POSITION.TOP_CENTER,
+                                        }
+                                      );
+                                    }
                                     setShowArchiveModal(false);
                                   }}
                                   text={"ARCHIVE"}
@@ -440,6 +491,7 @@ export default function MyProposals() {
                                     });
                                     console.log(res);
                                     setShowDeleteModal(false);
+                                    window.location.href ="/thesis-proposals";
                                   }}
                                   text={"DELETE"}
                                   icon={faTrash}
