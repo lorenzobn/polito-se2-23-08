@@ -112,7 +112,7 @@ const downloadCV = async (req, res) => {
     res.download(filePath);
   } catch (error) {
     logger.error(error.message);
-    return res.status(500).json({ msg: "Unknown error occurred" });
+    return res.status(500).json({ msg: error.message });
   }
 };
 
