@@ -283,7 +283,7 @@ const copyProposal = async (req, res) => {
     res.status(201).json({ msg: "Proposal copied successfully." });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ msg: "Server error." });
+    res.status(500).json({ msg: err.message });
   }
 };
 

@@ -1,4 +1,4 @@
-const { createProposal, getProposals, getProposalbyId, getProposalsByTeacher, updateProposal, searchProposal, getAllCdS, getAllGroups, getAllProgrammes, deleteProposal } = require('../controllers/proposals');
+const { createProposal, getProposals, getProposalbyId, getProposalsByTeacher, updateProposal, searchProposal, getAllCdS, getAllGroups, getAllProgrammes, deleteProposal, copyProposal } = require('../controllers/proposals');
 const pool = require("../db/connection");
 const { coSupervisorAdd, keywordsAdd, getKeywords, getCoSupThesis, getECoSupThesis} = require("../controllers/utils");
 const { createNotification } = require("../controllers/notifications");
@@ -1113,6 +1113,117 @@ describe('T10 -- deleteProposal', () => {
     });
 
 
+
+});
+
+//copyProposal
+
+describe('T11 -- copyProposal', () => {
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    pool.query.mockClear();
+  });
+
+  // T11.1 - ID invalid
+  it('T11.1 - should return 400 if no active proposal found with the given ID', async () => {
+    
+    const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+        title: 16, //invalid format
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        notes: 'Test Notes',
+        level: 'BSc',
+        programme: 'LM-32',
+        deadline: new Date(),
+
+        keywords: [],
+        coSupervisors: [{id: "t125", external: false}]
+      },
+      params: {
+        proposalId: "p123"
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    pool.query.mockResolvedValueOnce({
+      rows: [],
+    });
+
+    await copyProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(400);
+    expect(res.json).toHaveBeenCalledWith({ msg: "No active proposal found with the given ID." });
+  });
+
+  // T11.2 - success
+  it('T11.2 - success', async () => {
+    const req = {
+      body: {
+        // Crea un oggetto proposta di prova
+        title: 'Test Proposal 2',
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        type: "science",
+        notes: 'Test Notes',
+        level: 'BSc',
+        programme: 'LM-32',
+        deadline: new Date(),
+
+        keywords: [],
+        coSupervisors: [{id: "t125", external: false}]
+      },
+      params: {
+        proposalId: "p123"
+      },
+      session: {
+        user: {
+          id: 't123',
+        },
+        clock: {
+          time: new Date(),
+        },
+      },
+    };
+
+    const res = {
+      status: jest.fn(() => res),
+      json: jest.fn(),
+    };
+
+    //Mocking functions
+    pool.query.mockResolvedValueOnce({
+      rows: [{ 
+        title: 'Test Proposal 2',
+        supervisor_id: 't123',
+        cod_group: 'AAA1',
+        description: 'Test Description',
+        requiredKnowledge: 'Test Knowledge',
+        type: "science",
+        notes: 'Test Notes',
+        level: 'BSc',
+        programme: 'LM-32',
+        deadline: new Date(),
+        status: 'active',
+      }],
+      rowCount: 1,
+    });
+
+    await copyProposal(req, res);
+
+    expect(res.status).toHaveBeenCalledWith(201);
+  });
 
 });
 
