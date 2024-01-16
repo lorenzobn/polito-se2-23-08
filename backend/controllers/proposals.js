@@ -13,7 +13,7 @@ const {
 } = require("./utils");
 const { createNotification } = require("./notifications.js");
 const { userTypes } = require("./users.js");
-const {cancellApplicationsForThesis} = require("./applications.js");
+const {cancellApplicationsForThesis, archiveProposal} = require("./applications.js");
 
 const proposalSchema = Joi.object({
   title: Joi.string().min(8).max(150).required(),
@@ -820,7 +820,7 @@ const archiveProposalWrap = async (req, res) => {
         .status(400)
         .json({ msg: "No active proposal found with the given ID." });
     }
-    let resCode = await applications.archiveProposal(proposalId, req.session.clock.time);
+    let resCode = await archiveProposal(proposalId, req.session.clock.time);
     if (resCode === -1){
       throw {
         message: "Error while archiving a proposal",

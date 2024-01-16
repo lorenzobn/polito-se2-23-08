@@ -1,8 +1,8 @@
-const { createProposal, getProposals, getProposalbyId, getProposalsByTeacher, updateProposal, searchProposal, getAllCdS, getAllGroups, getAllProgrammes, deleteProposal, copyProposal } = require('../controllers/proposals');
+const { createProposal, getProposals, getProposalbyId, getProposalsByTeacher, updateProposal, searchProposal, getAllCdS, getAllGroups, getAllProgrammes, deleteProposal, copyProposal, archiveProposalWrap } = require('../controllers/proposals');
 const pool = require("../db/connection");
 const { coSupervisorAdd, keywordsAdd, getKeywords, getCoSupThesis, getECoSupThesis} = require("../controllers/utils");
 const { createNotification } = require("../controllers/notifications");
-const { cancellApplicationsForThesis } = require("../controllers/applications");
+const { cancellApplicationsForThesis, archiveProposal } = require("../controllers/applications");
 
 
 jest.mock('../controllers/auth', () => ({
@@ -29,10 +29,13 @@ jest.mock('../controllers/utils', () => ({
 jest.mock('../controllers/applications', () => ({
   ...jest.requireActual('../controllers/applications'),
 
-  cancellApplicationsForThesis: jest.fn()
+  cancellApplicationsForThesis: jest.fn(),
+  archiveProposal: jest.fn()
+
 }));
 
 jest.mock('../controllers/notifications', () => ({
+
   createNotification: jest.fn()
 }))
 
@@ -1117,7 +1120,6 @@ describe('T10 -- deleteProposal', () => {
 });
 
 //copyProposal
-
 describe('T11 -- copyProposal', () => {
 
   beforeEach(() => {
@@ -1224,8 +1226,122 @@ describe('T11 -- copyProposal', () => {
 
     expect(res.status).toHaveBeenCalledWith(201);
   });
+});
+
+//archiveProposal
+describe('T12 -- archiveProposal', () => {
+  
+    beforeEach(() => {
+      jest.clearAllMocks();
+      pool.query.mockClear();
+    });
+  
+    // T12.1 - ID invalid
+    it('T12.1 - should return 400 if no active proposal found with the given ID', async () => {
+      
+      const req = {
+        params: {
+          proposalId: "p123"
+        },
+        session: {
+          user: {
+            id: 't123',
+          },
+          clock: {
+            time: new Date(),
+          },
+        },
+      };
+  
+      const res = {
+        status: jest.fn(() => res),
+        json: jest.fn(),
+      };
+  
+      pool.query.mockResolvedValueOnce({
+        rows: [],
+      });
+  
+      await archiveProposalWrap(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(400);
+      expect(res.json).toHaveBeenCalledWith({ msg: "No active proposal found with the given ID." });
+    });
+  
+    // T12.2 - Error while archiving a proposal
+    it('T12.2 - Error while archiving a proposal', async () => {
+      const req = {
+        params: {
+          proposalId: "p123"
+        },
+        session: {
+          user: {
+            id: 't123',
+          },
+          clock: {
+            time: new Date(),
+          },
+        },
+      };
+  
+      const res = {
+        status: jest.fn(() => res),
+        json: jest.fn(),
+      };
+  
+      //Mocking functions
+      pool.query.mockResolvedValueOnce({
+        rows: [{ 
+          title: 'Test Proposal 2',
+        }],
+        rowCount: 1,
+      });
+
+      archiveProposal.mockResolvedValueOnce(-1);
+  
+      await archiveProposalWrap(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(500);
+    });
+
+    // T12.3 - success
+    it('T12.3 - success', async () => {
+      const req = {
+        params: {
+          proposalId: "p123"
+        },
+        session: {
+          user: {
+            id: 't123',
+          },
+          clock: {
+            time: new Date(),
+          },
+        },
+      };
+  
+      const res = {
+        status: jest.fn(() => res),
+        json: jest.fn(),
+      };
+  
+      //Mocking functions
+      pool.query.mockResolvedValueOnce({
+        rows: [{ 
+          title: 'Test Proposal 2',
+        }],
+        rowCount: 1,
+      });
+
+      archiveProposal.mockResolvedValueOnce(1);
+  
+      await archiveProposalWrap(req, res);
+  
+      expect(res.status).toHaveBeenCalledWith(200);
+    });
 
 });
+
 
 
 //updateProposal
