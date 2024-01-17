@@ -38,7 +38,7 @@ export default function Applications() {
           (a) => new Date(a.deadline) > new Date(now)
         );
         setApplications(applicationsRes);
-        setApplicationsFiltered(applicationsRes);
+        setApplicationsFiltered(applicationsRes.filter(e => e.proposalstatus !== "archived"));
       }
       if (store.user.type === "professor") {
         let applicationsRes = await store.getReceivedApplications();
@@ -49,7 +49,7 @@ export default function Applications() {
         );
 
         setApplications(applicationsRes);
-        setApplicationsFiltered(applicationsRes);
+        setApplicationsFiltered(applicationsRes.filter(e => a.thesis_status !== "archived"));
       }
     };
     handleEffect();

@@ -69,7 +69,7 @@ function ThesisList(props) {
           }
         });
       });
-      setProposals(filteredProposals);
+      setProposals(filteredProposals.filter(e => e.status !== 'archived'));
     };
     filterFun();
   }, [filterTags]);
