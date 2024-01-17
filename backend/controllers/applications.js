@@ -133,14 +133,24 @@ const getApplications = async (req, res) => {
 
 const getStudentCareer = async (req, res) => {
   const query = {
-    text: "SELECT * from career where student_id=$1",
+    text: "SELECT * from student where id=$1",
     values: [req.params.studentId],
   };
   try {
-    await pool.query(query).then((result) => {
-      return res.status(200).json({ msg: "OK", data: result.rows });
+    pool.query(query).then((student) => {
+      const query = {
+        text: "SELECT * from career where student_id=$1",
+        values: [req.params.studentId],
+      };
+      pool.query(query).then((careers) => {
+        return res.status(200).json({
+          msg: "OK",
+          data: { student: student.rows[0], careers: careers.rows },
+        });
+      });
     });
   } catch (error) {
+    console.log(error);
     logger.error(error.message);
     return res.status(500).json({ msg: "Unknown error occurred" });
   }
