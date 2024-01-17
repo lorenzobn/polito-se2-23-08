@@ -233,7 +233,19 @@ const createProposal = async (req, res) => {
 const copyProposal = async (req, res) => {
 
 
-  console.log("id della proposal è", +req.params.proposalId);
+  const {
+    
+    title,
+    type,
+    description,
+    requiredKnowledge,
+    notes,
+    level,
+    programme,
+    deadline,
+    keywords,
+    coSupervisors,
+  } = req.body;
 
 
   const query = {
@@ -248,12 +260,8 @@ const copyProposal = async (req, res) => {
         .json({ msg: "No active proposal found with the given ID." });
     }
   
-  
-
-
   const proposalToCopy = result.rows[0];
-    console.log("ciao", proposalToCopy);
-
+  
     const insertQuery = 
     `INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, COD_GROUP, description, required_knowledge, notes, level, programme, deadline, status, created_at)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
@@ -275,104 +283,12 @@ const copyProposal = async (req, res) => {
       req.session.clock.time,
     ];
 
-      
-    console.log("values", values);
-
-    await pool.query(insertQuery, values);
-
-    res.status(201).json({ msg: "Proposal copied successfully." });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ msg: err.message });
-  }
-};
 
 
+   const r= await pool.query(insertQuery, values);
 
-  /*
-  try {
-    let SUPERVISOR_id = req.session.user.id;
-    const { error, value } = proposalSchema.validate(req.body);
-    if (error) {
-      return res.status(400).json({ msg: error.details[0].message });
-    }
+   const newId=r.rows[0].id;
 
-    //parameters proposal
-    const {
-      title,
-      type,
-      description,
-      requiredKnowledge,
-      notes,
-      level,
-      programme,
-      deadline,
-      keywords,
-      coSupervisors,
-    } = req.body;
-
-    for (var i = 0; i < coSupervisors.length; i++) {
-      if (
-        coSupervisors[i].external != true &&
-        coSupervisors[i]?.id === req.session?.user?.id
-      ) {
-        return res
-          .status(400)
-          .json({ msg: "The supervisor must not be also a cosupervisor." });
-      }
-    }
-
-    let r = await pool.query(
-      "SELECT COD_DEGREE FROM DEGREE WHERE COD_DEGREE=$1",
-      [programme]
-    );
-    if (!r || !r) {
-      return res.status(400).json({ msg: "Invalid Programme/CdS provided." });
-    }
-
-    r = await pool.query("SELECT COD_GROUP FROM TEACHER WHERE id=$1", [
-      SUPERVISOR_id,
-    ]);
-    if (!r || !r) {
-      return res.status(400).json({ msg: "Invalid supervisor provided." });
-    }
-
-    const cod_group = r.rows[0].cod_group;
-    let activeStatus = "active";
-
-    if (new Date(deadline) < req.session.clock.time) {
-      return res.status(400).json({ msg: "The deadline is passed already!" });
-    }
-
-    await pool.query("BEGIN");
-
-    const query = `
-      INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, COD_GROUP, description, required_knowledge, notes, level, programme, deadline, status, created_at)
-      VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
-      RETURNING *;
-    `;
-
-    const values = [
-      title,
-      SUPERVISOR_id,
-      type,
-      cod_group,
-      description,
-      requiredKnowledge,
-      notes,
-      level,
-      programme,
-      deadline,
-      activeStatus,
-      req.session.clock.time,
-    ];
-
-    const result = await pool.query(query, values);
-    if (!result || !result.rows) {
-      return res.status(500).json({ msg: "Error inserting the proposal." });
-    }
-
-    const newId = result.rows[0].id;
     for (var i = 0; i < coSupervisors.length; i++) {
       let r = -1;
       if (coSupervisors[i].isExternal === true) {
@@ -413,28 +329,14 @@ const copyProposal = async (req, res) => {
         };
       }
     }
-    await pool.query("COMMIT");
-    createNotification(
-      SUPERVISOR_id,
-      userTypes.teacher,
-      "Proposal Created",
-      `Your proposal '${title}' has been created successfully!`,
-      true
-    );
-    return res
-      .status(201)
-      .json({ msg: "Proposal created successfully", data: result.rows[0] });
-  } catch (error) {
-    logger.error(error.message);
-    await pool.query("ROLLBACK");
-    return res.status(500).json({ msg: error.message });
+
+
+    res.status(201).json({ msg: "Proposal copied successfully." });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ msg: err.message });
   }
-
-  */
-
-
-
-
+};
 
 
 

@@ -282,7 +282,20 @@ export class Store {
     }
   }
 
-  async copyProposal(proposalId) {
+  async copyProposal(
+    proposalId,
+    title,
+    type,
+    description,
+    requiredKnowledge,
+    notes,
+    level,
+    programme,
+    deadline,
+    keywords,
+    coSupervisors
+    )
+     {
     console.log("sono in copy proposal. proposal id:", proposalId);
     try {
       const response = await getProposalAPI(proposalId);
@@ -291,16 +304,17 @@ export class Store {
 
       const res = await copyProposalAPI(
         proposalId,
-        proposal.title,
-        proposal.type,
-        proposal.description,
-        proposal.requiredKnowledge,
-        proposal.notes,
-        proposal.level,
-        proposal.programme,
-        proposal.deadline,
-        proposal.keywords,
-        proposal.coSupervisors
+        title,
+        type,
+        description,
+        requiredKnowledge,
+        notes,
+        level,
+        programme,
+        deadline,
+        keywords,
+        coSupervisors
+        
       );
 
       return res.data;

@@ -182,6 +182,7 @@ export default function MyProposals() {
                               onClick={() => {
                                 setShowCopyModal(true);
                                 setProposalIdToCopy(e.id);
+                                setProposalData(e);
                               }}
                             >
                               <MdContentCopy
@@ -200,10 +201,10 @@ export default function MyProposals() {
                               </Modal.Header>
                               <Modal.Body>
                                 Are you sure you want to Copy the proposal{" "}
-                                <strong>{e.title}</strong> ? After doing this
+                                <strong>{e.title} </strong> ? After doing this
                                 action the students will see a duplicated
                                 proposal. You can always archive or delete it
-                                later. {e.id}
+                                later. 
                               </Modal.Body>
                               <Modal.Footer className="modal-footer d-flex justify-content-end">
                                 <Button
@@ -221,8 +222,20 @@ export default function MyProposals() {
                                   variant="primary"
                                   className="mx-2"
                                   onClick={async () => {
+                                  
                                     const res = await store.copyProposal(
-                                      proposalIdToCopy
+                                      proposalIdToCopy,
+                                      e.title,
+                                      e.type,
+                                      e.description,
+                                      e.requiredKnowledge,
+                                      e.notes,
+                                      e.level,
+                                      e.programme,
+                                      e.deadline,
+                                      e.keywords,
+                                      e.coSupervisors
+
                                     );
 
 
