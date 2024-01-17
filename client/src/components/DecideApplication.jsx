@@ -66,19 +66,17 @@ export default function AcceptApplications() {
     handleEffect();
   }, [status]);
 
-  useEffect(() => {
-    // since the handler function of useEffect can't be async directly
-    // we need to define it separately and run it
-    const handleEffect = async () => {
-      setCareer(proposal[0].career.careers);
-      for (let index = 1; index < proposal.length; index++) {
-        setCareer(...[proposal[index].career.careers]);
-      }
-      setApplicationDetails(proposal);
-      console.log("22:", career);
-    };
-    handleEffect();
-  }, [proposal, career]);
+  // useEffect(() => {
+  //   // since the handler function of useEffect can't be async directly
+  //   // we need to define it separately and run it
+  //   const handleEffect = async () => {
+  //     setCareer(proposal[0].career.careers);
+  //     for (let index = 1; index < proposal.length; index++) {
+  //       setCareer(...[proposal[index].career.careers]);
+  //     }
+  //   };
+  //   handleEffect();
+  // }, [proposal, career]);
 
   function isDifferenceMoreThanOneHour(time) {
     var date1 = new Date(time);
@@ -116,7 +114,7 @@ export default function AcceptApplications() {
     }
   };
 
-      console.log("33:", career);
+  console.log("33:", proposal);
 
   const handleReject = async (index) => {
     const clock = await store.getVirtualClockValue();
@@ -209,14 +207,12 @@ export default function AcceptApplications() {
                         </tr>
                       </thead>
                       <tbody>
-                        {career.filter(course => course.student_id === student.student_id).map((course, index) => (
                           <tr key={index}>
-                            <td>{course.cod_course}</td>
-                            <td>{course.title_course}</td>
-                            <td>{course.cfu}</td>
-                            <td>{course.grade}</td>
+                            <td>{student?.career?.careers?.cod_course}</td>
+                            <td>{student?.career?.careers?.title_course}</td>
+                            <td>{student?.career?.careers?.cfu}</td>
+                            <td>{student?.career?.careers?.grade}</td>
                           </tr>
-                        ))}
                       </tbody>
                     </table>
                     {student.cv_uri && (
