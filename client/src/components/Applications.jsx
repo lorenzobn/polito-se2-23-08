@@ -37,7 +37,7 @@ export default function Applications() {
         applicationsRes = applicationsRes.filter(
           (a) => new Date(a.deadline) > new Date(now)
         );
-        setApplications(applicationsRes);
+        setApplications(applicationsRes.filter(e => e.proposalstatus !== "archived"));
         setApplicationsFiltered(applicationsRes.filter(e => e.proposalstatus !== "archived"));
       }
       if (store.user.type === "professor") {
@@ -48,8 +48,8 @@ export default function Applications() {
             new Date(a.deadline) > new Date(now) && a.status !== "cancelled"
         );
 
-        setApplications(applicationsRes);
-        setApplicationsFiltered(applicationsRes.filter(e => a.thesis_status !== "archived"));
+        setApplications(applicationsRes.filter(a => a.thesis_status !== "archived"));
+        setApplicationsFiltered(applicationsRes.filter(a => a.thesis_status !== "archived"));
       }
     };
     handleEffect();
