@@ -23,6 +23,7 @@ const {
   updateApplication,
   didStudentApply,
   downloadCV,
+  getStudentCareer,
 } = require("./controllers/applications.js");
 
 const {
@@ -148,6 +149,12 @@ router.get(
   "/notifications",
   authorize(userRoles.any),
   getNotificationsByUserId
+);
+
+router.get(
+  "/students/:studentId/career",
+  authorize(userRoles.teacher),
+  getStudentCareer
 );
 
 router.put(

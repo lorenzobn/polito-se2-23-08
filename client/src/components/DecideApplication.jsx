@@ -53,6 +53,7 @@ export default function AcceptApplications() {
     };
     handleEffect();
   }, [status]);
+
   function isDifferenceMoreThanOneHour(time) {
     var date1 = new Date(time);
     var date2 = new Date();

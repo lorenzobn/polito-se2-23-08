@@ -97,7 +97,7 @@ const downloadCV = async (req, res) => {
       text: "SELECT cv_uri FROM thesis_application WHERE id=$1 AND created_at < $2",
       values: [applicationId, req.session.clock.time],
     };
-  
+
     const result = await pool.query(query);
     if (result.rowCount == 0) {
       return res.status(404).json({ msg: "Resource not found" });
@@ -123,6 +123,21 @@ const getApplications = async (req, res) => {
   };
   try {
     const results = await pool.query(query).then((result) => {
+      return res.status(200).json({ msg: "OK", data: result.rows });
+    });
+  } catch (error) {
+    logger.error(error.message);
+    return res.status(500).json({ msg: "Unknown error occurred" });
+  }
+};
+
+const getStudentCareer = async (req, res) => {
+  const query = {
+    text: "SELECT * from career where student_id=$1",
+    values: [req.params.studentId],
+  };
+  try {
+    await pool.query(query).then((result) => {
       return res.status(200).json({ msg: "OK", data: result.rows });
     });
   } catch (error) {
@@ -177,7 +192,9 @@ const updateApplication = async (req, res) => {
       let { thesisTitle, thesisId } = { thesisTitle: "", thesisId: -1 };
       let result = await pool.query(query);
       if (result.rowCount == 0) {
-        return res.status(404).json({ msg: "Application or valid proposal not found." });
+        return res
+          .status(404)
+          .json({ msg: "Application or valid proposal not found." });
       } else if (result.rows[0]?.status !== "idle") {
         return res.status(400).json({
           msg: "Cannot update this application because it has already been accepted/rejected.",
@@ -405,5 +422,6 @@ module.exports = {
   getReceivedApplicationsByThesisId,
   cancellApplicationsForThesis,
   archiveProposal,
+  getStudentCareer,
   downloadCV,
 };

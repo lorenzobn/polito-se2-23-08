@@ -22,6 +22,14 @@ export const getReceivedApplicationsByThesisId = async (proposalId) => {
   }
 };
 
+export const getStudentCareer = async (studentId) => {
+  try {
+    const res = await client.get(`/students/${studentId}/career`);
+    return res;
+  } catch (err) {
+    throw err;
+  }
+};
 export const putApplicationStatus = async (proposalId, status) => {
   try {
     const res = await client.put(`/received-applications/${proposalId}`, {

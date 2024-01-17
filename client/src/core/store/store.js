@@ -1,4 +1,3 @@
-
 import { makeObservable, observable, action } from "mobx";
 import {
   login as loginAPI,
@@ -31,6 +30,7 @@ import {
   putApplicationStatus as putApplicationStatusAPI,
   checkApplication as checkApplicationAPI,
   downloadCV as downloadCVAPI,
+  getStudentCareer as getStudentCareerAPI,
 } from "../API/applications";
 import {
   getVirtualClockValue as getVirtualClockValueAPI,
@@ -42,8 +42,6 @@ import {
 } from "../API/notifications";
 import { toast } from "react-toastify";
 export class Store {
-
-  
   constructor() {
     this.theme = localStorage.getItem("theme");
     this.time = new Date();
@@ -285,7 +283,6 @@ export class Store {
   }
 
   async copyProposal(proposalId) {
-    
     console.log("sono in copy proposal. proposal id:", proposalId);
     try {
       const response = await getProposalAPI(proposalId);
@@ -305,9 +302,8 @@ export class Store {
         proposal.keywords,
         proposal.coSupervisors
       );
-      
+
       return res.data;
-      
     } catch (error) {
       console.log("errore in copy proposal: ", error.message);
     }
@@ -376,12 +372,20 @@ export class Store {
     }
   }
 
+  async getStudentCareer(proposalId) {
+    try {
+      const res = await getStudentCareerAPI(proposalId);
+      return res.data.data;
+    } catch (err) {
+      return [];
+    }
+  }
+
   async applicationDecision(proposalId, status) {
     try {
       const res = await putApplicationStatusAPI(proposalId, status);
       return res;
     } catch (err) {
-      console.log(err);
       return [];
     }
   }
@@ -435,7 +439,7 @@ export class Store {
   }
   async archiveProposal(id) {
     try {
-      const res = await archiveProposalAPI(id)
+      const res = await archiveProposalAPI(id);
       return res;
     } catch (err) {
       return err;
