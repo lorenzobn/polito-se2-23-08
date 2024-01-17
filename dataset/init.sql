@@ -845,3 +845,105 @@ INSERT INTO THESIS_APPLICATION(
     cv_uri
   )
 VALUES ('s126', 6, 'idle', '');
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's126',
+    '02CDRU',
+    'Cloud Computing',
+    '6',
+    '27',
+    '2023-07-15'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's126',
+    '01BGTR',
+    'Big Data',
+    '6',
+    '27',
+    '2023-07-15'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's126',
+    '01SDPR',
+    'Systems Device and Programming',
+    '10',
+    '25',
+    '2023-07-14'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's126',
+    '02TWYSM',
+    'Database and Data science',
+    '8',
+    '29',
+    '2023-01-22'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's126',
+    '02GUP',
+    'Web Application II',
+    '6',
+    '25',
+    '2023-07-11'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's126',
+    '03TRV',
+    'Computer Networks',
+    '6',
+    '21',
+    '2023-01-18'
+  );
