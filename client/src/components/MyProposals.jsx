@@ -34,6 +34,7 @@ export default function MyProposals() {
   const [proposals, setProposals] = useState([]);
   const [applications, setApplications] = useState([]);
   const [archivedProposals, setArchivedProposals] = useState([]);
+  const[isArchived, setArchived] = useState(false);
   const [proposalData, setProposalData] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [proposalIdToDelete, setProposalIdToDelete] = useState(null);
@@ -93,7 +94,7 @@ export default function MyProposals() {
       }
     };
     handleEffect();
-  }, [store.user.type]);
+  }, [store.user.type, isArchived]);
 
   return (
     <>
@@ -356,6 +357,7 @@ export default function MyProposals() {
                                           position: toast.POSITION.TOP_CENTER,
                                         }
                                       );
+                                      setArchived(true);
                                     } else {
                                       toast.error(
                                         `${res.msg}`,
