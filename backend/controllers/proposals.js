@@ -287,8 +287,104 @@ const copyProposal = async (req, res) => {
 
    const r= await pool.query(insertQuery, values);
 
-   const newId=r.rows[0].id;
 
+    //getting the keywords from the proposal id
+
+    const queryKeywords = `SELECT keyword FROM keywords WHERE thesisId=$1`;
+    const valuesKeywords = [req.params.proposalId];
+    const resultKeywords = await pool.query(queryKeywords, valuesKeywords);
+    const keywords = resultKeywords.rows.map((row) => row.keyword);
+    console.log(keywords);
+
+    const newId=r.rows[0].id;
+    for (var i = 0; i < keywords.length; i++) {
+      let r = await keywordsAdd(newId, keywords[i], req.session.clock.time);
+      if (r < 0) {
+        // abort, error!
+        //logging.error(`Error inserting a keyword for the thesis ${newId}`)
+        //return res.status(500).json({ msg: "Error during the insertion of the keywords." });
+        throw {
+          message: "Error during the insertion of the keywords.",
+          code: 500,
+        };
+      }
+    }
+
+ 
+
+
+   //getting the supervisors from the proposal id
+
+  querySupervisors = `SELECT * FROM thesis_co_supervision WHERE thesis_proposal_id=$1`;
+  valuesSupervisors = [req.params.proposalId];
+  resultSupervisors = await pool.query(querySupervisors, valuesSupervisors);
+  const coSupervisorsIds = resultSupervisors.rows.map((row) => row);
+  console.log(coSupervisorsIds);
+  console.log(coSupervisorsIds.length);
+  console.log("cosup 1", coSupervisorsIds[1]);
+
+ 
+
+
+  //getting the names of cosups from cosup ids
+
+  
+  for (var i = 0; i < coSupervisorsIds.length; i++) {
+
+    let r=-1;
+
+    if(coSupervisorsIds[i].is_external===false){
+    console.log("fin qui titto ok");
+    const queryCoSupervisors1 = `SELECT * FROM teacher WHERE id=$1`;
+    const valuesCoSupervisors1 = [coSupervisorsIds[i].internal_co_supervisor_id];
+    const resultCoSupervisors1 = await pool.query(queryCoSupervisors1, valuesCoSupervisors1);
+    const coSupervisor1 = resultCoSupervisors1.rows.map((row) => row);
+    console.log(coSupervisor1);
+    console.log(newId);
+    console.log("name", coSupervisor1.name);
+    console.log("surname", coSupervisor1.surname);
+    
+    r = await coSupervisorAdd(
+      newId,
+      coSupervisor1[0].name,
+      coSupervisor1[0].surname,
+      false
+    );
+
+
+
+  } else if(coSupervisorsIds[i].is_external===true){
+    const queryCoSupervisors2 = `SELECT * FROM external_co_supervisor WHERE id=$1`;
+    const valuesCoSupervisors2 = [coSupervisorsIds[i].external_co_supervisor_id];
+    const resultCoSupervisors2 = await pool.query(queryCoSupervisors2, valuesCoSupervisors2);
+    const coSupervisor2 = resultCoSupervisors2.rows.map((row) => row);
+   console.log(coSupervisor2);
+   console.log(newId);
+    r = await coSupervisorAdd(
+      newId,
+      coSupervisor2[0].name,
+      coSupervisor2[0].surname,
+      true
+    );
+  }
+console.log("r è" , r);
+  if (r < 0) {
+    // abort, error!
+    //logging.error(`Error inserting a cosupervisor for the thesis ${newId}`)
+    //return res.status(500).json({ msg: "Error during the insertion of the cosupervisors." });
+    throw {
+      message: "Error during the insertion of the cosupervisors.",
+      code: 500,
+    };
+  }
+
+}
+
+
+
+
+
+/*
     for (var i = 0; i < coSupervisors.length; i++) {
       let r = -1;
       if (coSupervisors[i].isExternal === true) {
@@ -317,18 +413,9 @@ const copyProposal = async (req, res) => {
       }
     }
 
-    for (var i = 0; i < keywords.length; i++) {
-      let r = await keywordsAdd(newId, keywords[i], req.session.clock.time);
-      if (r < 0) {
-        // abort, error!
-        //logging.error(`Error inserting a keyword for the thesis ${newId}`)
-        //return res.status(500).json({ msg: "Error during the insertion of the keywords." });
-        throw {
-          message: "Error during the insertion of the keywords.",
-          code: 500,
-        };
-      }
-    }
+
+   
+*/
 
 
     res.status(201).json({ msg: "Proposal copied successfully." });

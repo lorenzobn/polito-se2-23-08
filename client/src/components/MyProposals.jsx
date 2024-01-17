@@ -226,16 +226,7 @@ export default function MyProposals() {
                                   
                                     const res = await store.copyProposal(
                                       proposalIdToCopy,
-                                      e.title,
-                                      e.type,
-                                      e.description,
-                                      e.requiredKnowledge,
-                                      e.notes,
-                                      e.level,
-                                      e.programme,
-                                      e.deadline,
-                                      e.keywords,
-                                      e.coSupervisors
+                                     
 
                                     );
 
