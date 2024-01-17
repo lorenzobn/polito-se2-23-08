@@ -33,6 +33,7 @@ export default function AcceptApplications() {
   const [proposal, setProposal] = useState([]);
   const [proposalDetails, setProposalDetails] = useState([]);
   const [proposalTitle, setProposalTitle] = useState("");
+  const [studentCareer, setStudentCareer] = useState([]);
   const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
@@ -120,6 +121,13 @@ export default function AcceptApplications() {
     }
   };
 
+  const student_career = async (student_id) => {
+    const career_response = await store.getStudentCareer(student_id);
+    setStudentCareer(career_response);
+    console.log("TEST RESPONSE:", career_response);
+    console.log("SECOND TEST: ", studentCareer);
+  };
+
   return (
     <>
       <MyNavbar />
@@ -175,6 +183,29 @@ export default function AcceptApplications() {
                     Download CV
                   </a>
                 )}
+                <div>
+                  <h4>Careers Information</h4>
+                  <table className="table container mt-3 p-4 rounded shadow mt-10">
+                    <thead>
+                      <tr>
+                        <th>Course Code</th>
+                        <th>Course Title</th>
+                        <th>CFU</th>
+                        <th>Grade</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {studentCareer.map((course, index) => (
+                        <tr key={index}>
+                          <td>{course.cod_course}</td>
+                          <td>{course.title_course}</td>
+                          <td>{course.cfu}</td>
+                          <td>{course.grade}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
                 <div className="row">
                   <div className="col text-start mt-4">
                     {student.applicationstatus === "idle" ? (
