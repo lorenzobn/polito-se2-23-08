@@ -33,8 +33,9 @@ export default function AcceptApplications() {
   const [proposal, setProposal] = useState([]);
   const [proposalDetails, setProposalDetails] = useState([]);
   const [proposalTitle, setProposalTitle] = useState("");
-  const [studentCareer, setStudentCareer] = useState([]);
+  const [applicationDetails, setApplicationDetails] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [career, setCareer] = useState([]);
 
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
@@ -64,6 +65,20 @@ export default function AcceptApplications() {
     };
     handleEffect();
   }, [status]);
+
+  useEffect(() => {
+    // since the handler function of useEffect can't be async directly
+    // we need to define it separately and run it
+    const handleEffect = async () => {
+      setCareer(proposal[0].career.careers);
+      for (let index = 1; index < proposal.length; index++) {
+        setCareer(...[proposal[index].career.careers]);
+      }
+      setApplicationDetails(proposal);
+      console.log("22:", career);
+    };
+    handleEffect();
+  }, [proposal, career]);
 
   function isDifferenceMoreThanOneHour(time) {
     var date1 = new Date(time);
@@ -101,6 +116,8 @@ export default function AcceptApplications() {
     }
   };
 
+      console.log("33:", career);
+
   const handleReject = async (index) => {
     const clock = await store.getVirtualClockValue();
 
@@ -129,13 +146,6 @@ export default function AcceptApplications() {
         }
       );
     }
-  };
-
-  const student_career = async (student_id) => {
-    const career_response = await store.getStudentCareer(student_id);
-    setStudentCareer(career_response);
-    console.log("TEST RESPONSE:", career_response);
-    console.log("SECOND TEST: ", studentCareer);
   };
 
   return (
@@ -186,17 +196,9 @@ export default function AcceptApplications() {
                   <strong>Student ID:</strong> {student.student_id},{" "}
                   <strong>Application Status:</strong>{" "}
                   {student.applicationstatus}
-                  {student.cv_uri && (
-                    <a
-                      className="mt-2 d-block "
-                      style={{ cursor: "pointer", color: "rgb(0, 126, 168)" }}
-                      href={`http://localhost:3000/api/v1.0//received-applications/${student.applicationid}/cv`}
-                    >
-                      Download CV
-                    </a>
-                  )}
+                  
                   <div>
-                    <h4>Careers Information</h4>
+                    <p>Careers Information:</p>
                     <table className="table container mt-3 p-4 rounded shadow mt-10">
                       <thead>
                         <tr>
@@ -207,7 +209,7 @@ export default function AcceptApplications() {
                         </tr>
                       </thead>
                       <tbody>
-                        {studentCareer.map((course, index) => (
+                        {career.filter(course => course.student_id === student.student_id).map((course, index) => (
                           <tr key={index}>
                             <td>{course.cod_course}</td>
                             <td>{course.title_course}</td>
@@ -217,6 +219,15 @@ export default function AcceptApplications() {
                         ))}
                       </tbody>
                     </table>
+                    {student.cv_uri && (
+                    <a
+                      className="mt-2 d-block "
+                      style={{ cursor: "pointer", color: "rgb(0, 126, 168)" }}
+                      href={`http://localhost:3000/api/v1.0//received-applications/${student.applicationid}/cv`}
+                    >
+                      Download CV
+                    </a>
+                  )}
                   </div>
                   <div className="row">
                     <div className="col text-start mt-4">
