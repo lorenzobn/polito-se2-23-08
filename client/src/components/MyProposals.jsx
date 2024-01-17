@@ -470,8 +470,8 @@ export default function MyProposals() {
                                 <Modal.Title>Confirm Delete</Modal.Title>
                               </Modal.Header>
                               <Modal.Body>
-                               You can not delete an archived proposal{" "}
-                                <strong>{e.title}</strong> because some students involved on this thesis.
+                               You cannot delete this archived proposal{" "}
+                                <strong>{e.title}</strong> because some students are involved on this thesis.
                               </Modal.Body>
                               <Modal.Footer className="modal-footer d-flex justify-content-end">
                                 <Button
