@@ -1,7 +1,8 @@
 const pool = require("../db/connection");
-const { createApplication, downloadCV, getApplications, getApplicationById, updateApplication, cancellApplicationsForThesis, getReceivedApplications, getReceivedApplicationsByThesisId, didStudentApply, archiveProposal } = require("../controllers/applications");
+const { createApplication, downloadCV, getApplications, getApplicationById, updateApplication, cancellApplicationsForThesis, getReceivedApplications, getReceivedApplicationsByThesisId, didStudentApply, archiveProposal, getStudentCareer } = require("../controllers/applications");
 const { createNotification } = require("../controllers/notifications");
 const { userRoles } = require("../controllers/auth");
+
 
 
 jest.mock('../controllers/auth', () => ({
@@ -454,6 +455,40 @@ describe("getApplicationById", () => {
         expect(res.status).toHaveBeenCalledWith(200);
 
     });
+
+    // T5.3 - error
+    it('T5.3 - error', async () => {
+        const req = {
+        params: {
+            app_id: 1,
+        },
+        session: {
+            user: {
+            id: 's123',
+            },
+            clock: {
+            time: new Date(),
+            },
+        },
+        clock: {
+            time: new Date(),
+        },
+        };
+
+        const res = {
+            status: jest.fn(() => res),
+            json: jest.fn(),
+            setHeader: jest.fn(),
+            download: jest.fn(),
+        };
+
+        pool.query.mockRejectedValueOnce(new Error("error"));   
+
+        await getApplicationById(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+
+    });
 });
 
 //updateApplication
@@ -658,17 +693,44 @@ describe("cancellApplicationForThesis", () => {
             pool.query.mockClear();
         });
     
-        //T.7.1 - Unauthorized
-        it('T7.1 - should return 401 if user is unauthorized', async () => {
+        //T.7.1 - success
+        it('T7.1 - success', async () => {
 
             pool.query.mockResolvedValueOnce({
-                rows: [{ status: 'idle', thesos_id: 1, title: 'Title'}],
+                rows: [{ status: 'idle', thesis_id: 1, title: 'Title'}],
                 rowCount: 1,
             });
+
+            createNotification.mockResolvedValueOnce(null);
     
             let res = await cancellApplicationsForThesis("t1", "Title", new Date(), "123");
     
             expect(res).toEqual(0);
+        });
+
+        //T.7.2 - success (2)
+        it('T7.2 - success (2)', async () => {
+
+            pool.query.mockResolvedValueOnce({
+                rows: [{ status: 'idle', thesis_id: 1, title: 'Title'}],
+                rowCount: 1,
+            });
+
+            createNotification.mockResolvedValueOnce(null);
+    
+            let res = await cancellApplicationsForThesis("t1", "", new Date(), "123");
+    
+            expect(res).toEqual(0);
+        });
+
+        //T.7.3 - error
+        it('T7.3 - error', async () => {
+
+            pool.query.mockRejectedValueOnce(new Error("error"));
+    
+            let res = await cancellApplicationsForThesis("t1", "", new Date(), "123");
+    
+            expect(res).toEqual(-1);
         });
 });
 
@@ -713,6 +775,38 @@ describe("getReceivedApplications", () => {
         expect(res.status).toHaveBeenCalledWith(200);
 
     });
+
+    //T.8.2 - error
+    it('T8.2 - error', async () => {
+        const req = {
+        params: {
+            app_id: 1,
+        },
+        session: {
+            user: {
+            id: 's123',
+            role: userRoles.teacher,
+            },
+            clock: {
+            time: new Date(),
+            },
+        },
+        };
+
+        const res = {
+            status: jest.fn(() => res),
+            json: jest.fn(),
+            setHeader: jest.fn(),
+            download: jest.fn(),
+        };
+
+        pool.query.mockRejectedValueOnce(new Error("error"));
+
+        await getReceivedApplications(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+
+    });
 });
 
 //getReceivedApplicationsByThesisId
@@ -751,9 +845,40 @@ describe("getReceivedApplicationsByThesisId", () => {
             rowCount: 1,
         });
 
-        await getReceivedApplications(req, res);
+        await getReceivedApplicationsByThesisId(req, res);
 
         expect(res.status).toHaveBeenCalledWith(200);
+    });
+
+    //T.9.2 - error
+    it('T9.2 - error', async () => {
+        const req = {
+        params: {
+            app_id: 1,
+        },
+        session: {
+            user: {
+            id: 's123',
+            role: userRoles.teacher,
+            },
+            clock: {
+            time: new Date(),
+            },
+        },
+        };
+
+        const res = {
+            status: jest.fn(() => res),
+            json: jest.fn(),
+            setHeader: jest.fn(),
+            download: jest.fn(),
+        };
+
+        pool.query.mockRejectedValueOnce(new Error("error"));
+
+        await getReceivedApplicationsByThesisId(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
     });
 });
 
@@ -793,9 +918,74 @@ describe("didStudentApply", () => {
             rowCount: 1,
         });
 
-        await getReceivedApplications(req, res);
+        await didStudentApply(req, res);
 
         expect(res.status).toHaveBeenCalledWith(200);
+    });
+
+    //T.10.2 - success
+    it('T10.2 - success (2)', async () => {
+        const req = {
+        params: {
+            app_id: 1,
+        },
+        session: {
+            user: {
+            id: 's123',
+            role: userRoles.teacher,
+            },
+            clock: {
+            time: new Date(),
+            },
+        },
+        };
+
+        const res = {
+            status: jest.fn(() => res),
+            json: jest.fn(),
+            setHeader: jest.fn(),
+            download: jest.fn(),
+        };
+
+        pool.query.mockResolvedValueOnce({
+            rows: [],
+            rowCount: 0,
+        });
+
+        await didStudentApply(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(200);
+    });
+
+    //T.10.1 - error
+    it('T10.1 - error', async () => {
+        const req = {
+        params: {
+            app_id: 1,
+        },
+        session: {
+            user: {
+            id: 's123',
+            role: userRoles.teacher,
+            },
+            clock: {
+            time: new Date(),
+            },
+        },
+        };
+
+        const res = {
+            status: jest.fn(() => res),
+            json: jest.fn(),
+            setHeader: jest.fn(),
+            download: jest.fn(),
+        };
+
+        pool.query.mockRejectedValueOnce(new Error("error"));
+
+        await didStudentApply(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
     });
 });
 
@@ -819,6 +1009,78 @@ describe("archiveProposal", () => {
 
         expect(res).toEqual(0);
     });
+
+    //T.11.2 - not success
+    it('T11.2 - not success', async () => {
+
+
+        pool.query.mockResolvedValueOnce({
+            rows: [],
+            rowCount: -1,
+        });
+
+        let res = await archiveProposal("t123", new Date());
+
+        expect(res).toEqual(-1);
+    });
+
+
+    //T.11.3 - error
+    it('T11.3 - error', async () => {
+
+
+        pool.query.mockRejectedValueOnce(new Error("error"));
+
+        let res = await archiveProposal("t123", new Date());
+
+        expect(res).toEqual(-1);
+    });
+
+
+
 });
 
+/*
+//getStudentCareer
+describe("getStudentCareer", () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+        pool.query.mockClear();
+    });
+
+    //T.12.1 - error
+    it('T12.1 - error', async () => {
+                const req = {
+        body: {
+            status: 'accepted',
+        },
+        params: {
+            applicationId: 1,
+        },
+        session: {
+            user: {
+            id: 's123',
+            role: userRoles.student,
+            },
+            clock: {
+            time: new Date(),
+            },
+        },
+        };
+
+        const res = {
+            status: jest.fn(() => res),
+            json: jest.fn(),
+        };
+
+        pool.query.mockRejectedValueOnce(new Error("error"));
+
+        await getStudentCareer(req, res);
+
+        expect(res.status).toHaveBeenCalledWith(500);
+    });
+
+
+    });
+*/
 

@@ -174,7 +174,7 @@ const getApplicationById = async (req, res) => {
       }
     });
   } catch (error) {
-    errorMsg = "";
+    let errorMsg = "";
     switch (error.code) {
       case "22P02":
         errorMsg = "Invalid data provided.";
