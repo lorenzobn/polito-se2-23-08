@@ -48,6 +48,16 @@ export default function AcceptApplications() {
         const details = proposal.map((p) => p.applicationstatus);
         setProposalDetails(details);
         setProposalTitle(response[0].title);
+        response.forEach(async (r, i) => {
+          const career = await store.getStudentCareer(r.student_id);
+          setProposal((proposal) => {
+            const newArray = [...proposal];
+            const element = newArray[i];
+            element.career = career;
+            newArray[i] = element;
+            return newArray;
+          });
+        });
       } catch (error) {
         navigate("/404");
       }
@@ -135,106 +145,109 @@ export default function AcceptApplications() {
         <p className=" h2 text-center mt-5 ">{proposalTitle}</p>
       </strong>
       <div>
-        {proposal.map((student, index) => (
-          <form
-            className="container form-proposal mt-3 p-4 rounded shadow mt-10"
-            style={{ marginTop: "1px" }}
-            key={index}
-          >
-            <Modal show={showModal} onHide={() => setShowModal(false)}>
-              <Modal.Header closeButton>
-                <Modal.Title>Confirm Accept</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                Are you sure you want to accept the application?{" "}
-              </Modal.Body>
-              <Modal.Footer className="modal-footer d-flex justify-content-end">
-                <Button
-                  variant="grey"
-                  className="mx-2"
-                  onClick={() => {
-                    setShowModal(false);
-                  }}
-                  text={"CANCEL"}
-                  icon={faHand}
-                ></Button>
-                <Button
-                  variant="success"
-                  className="mx-2"
-                  onClick={async () => {
-                    handleAccept(index);
-                    setShowModal(false);
-                  }}
-                  text={"ACCEPT"}
-                  icon={faTrash}
-                ></Button>
-              </Modal.Footer>
-            </Modal>
-            <ul>
-              <li>
-                <strong>Student ID:</strong> {student.student_id},{" "}
-                <strong>Application Status:</strong> {student.applicationstatus}
-                {student.cv_uri && (
-                  <a
-                    className="mt-2 d-block "
-                    style={{ cursor: "pointer", color: "rgb(0, 126, 168)" }}
-                    href={`http://localhost:3000/api/v1.0//received-applications/${student.applicationid}/cv`}
-                  >
-                    Download CV
-                  </a>
-                )}
-                <div>
-                  <h4>Careers Information</h4>
-                  <table className="table container mt-3 p-4 rounded shadow mt-10">
-                    <thead>
-                      <tr>
-                        <th>Course Code</th>
-                        <th>Course Title</th>
-                        <th>CFU</th>
-                        <th>Grade</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {studentCareer.map((course, index) => (
-                        <tr key={index}>
-                          <td>{course.cod_course}</td>
-                          <td>{course.title_course}</td>
-                          <td>{course.cfu}</td>
-                          <td>{course.grade}</td>
+        {proposal.map((student, index) => {
+          return (
+            <form
+              className="container form-proposal mt-3 p-4 rounded shadow mt-10"
+              style={{ marginTop: "1px" }}
+              key={index}
+            >
+              <Modal show={showModal} onHide={() => setShowModal(false)}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Confirm Accept</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  Are you sure you want to accept the application?{" "}
+                </Modal.Body>
+                <Modal.Footer className="modal-footer d-flex justify-content-end">
+                  <Button
+                    variant="grey"
+                    className="mx-2"
+                    onClick={() => {
+                      setShowModal(false);
+                    }}
+                    text={"CANCEL"}
+                    icon={faHand}
+                  ></Button>
+                  <Button
+                    variant="success"
+                    className="mx-2"
+                    onClick={async () => {
+                      handleAccept(index);
+                      setShowModal(false);
+                    }}
+                    text={"ACCEPT"}
+                    icon={faTrash}
+                  ></Button>
+                </Modal.Footer>
+              </Modal>
+              <ul>
+                <li>
+                  <strong>Student ID:</strong> {student.student_id},{" "}
+                  <strong>Application Status:</strong>{" "}
+                  {student.applicationstatus}
+                  {student.cv_uri && (
+                    <a
+                      className="mt-2 d-block "
+                      style={{ cursor: "pointer", color: "rgb(0, 126, 168)" }}
+                      href={`http://localhost:3000/api/v1.0//received-applications/${student.applicationid}/cv`}
+                    >
+                      Download CV
+                    </a>
+                  )}
+                  <div>
+                    <h4>Careers Information</h4>
+                    <table className="table container mt-3 p-4 rounded shadow mt-10">
+                      <thead>
+                        <tr>
+                          <th>Course Code</th>
+                          <th>Course Title</th>
+                          <th>CFU</th>
+                          <th>Grade</th>
                         </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-                <div className="row">
-                  <div className="col text-start mt-4">
-                    {student.applicationstatus === "idle" ? (
-                      <BadButton
-                        icon={faX}
-                        text={"REJECT"}
-                        onClick={() => handleReject(index)}
-                      ></BadButton>
-                    ) : (
-                      <></>
-                    )}
+                      </thead>
+                      <tbody>
+                        {studentCareer.map((course, index) => (
+                          <tr key={index}>
+                            <td>{course.cod_course}</td>
+                            <td>{course.title_course}</td>
+                            <td>{course.cfu}</td>
+                            <td>{course.grade}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
                   </div>
-                  <div className="col text-end mt-4">
-                    {student.applicationstatus === "idle" ? (
-                      <Button
-                        icon={faCheck}
-                        text={"ACCEPT"}
-                        onClick={() => setShowModal(true)}
-                      ></Button>
-                    ) : (
-                      <></>
-                    )}
+                  <div className="row">
+                    <div className="col text-start mt-4">
+                      {student.applicationstatus === "idle" ? (
+                        <BadButton
+                          icon={faX}
+                          text={"REJECT"}
+                          onClick={() => handleReject(index)}
+                        ></BadButton>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
+                    <div className="col text-end mt-4">
+                      {student.applicationstatus === "idle" ? (
+                        <Button
+                          icon={faCheck}
+                          text={"ACCEPT"}
+                          onClick={() => setShowModal(true)}
+                        ></Button>
+                      ) : (
+                        <></>
+                      )}
+                    </div>
                   </div>
-                </div>
-              </li>
-              {/* Add other form fields based on your object properties */}
-            </ul>
-          </form>
-        ))}
+                </li>
+                {/* Add other form fields based on your object properties */}
+              </ul>
+            </form>
+          );
+        })}
       </div>
     </>
   );
