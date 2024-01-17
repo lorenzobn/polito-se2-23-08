@@ -820,6 +820,21 @@ const archiveProposalWrap = async (req, res) => {
         .status(400)
         .json({ msg: "No active proposal found with the given ID." });
     }
+
+    if (
+      cancellApplicationsForThesis(
+        proposalId,
+        '',
+        req.session.clock.time,
+        -1
+      ) == -1
+    ) {
+      throw {
+        code: 500,
+        message: "Error while trying to update application status",
+      };
+    }
+
     let resCode = await archiveProposal(proposalId, req.session.clock.time);
     if (resCode === -1){
       throw {
