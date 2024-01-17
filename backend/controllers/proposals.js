@@ -249,8 +249,8 @@ const copyProposal = async (req, res) => {
 
 
   const query = {
-    text: "SELECT * FROM thesis_proposal WHERE id=$1 ",
-    values: [req.params.proposalId] 
+    text: "SELECT * FROM thesis_proposal WHERE id=$1 AND SUPERVISOR_id=$2 AND created_at < $3 AND status='active' ",
+    values: [req.params.proposalId, req.session.user.id, req.session.clock.time] 
   };
   try {
     let result = await pool.query(query);
@@ -380,42 +380,6 @@ console.log("r è" , r);
 
 }
 
-
-
-
-
-/*
-    for (var i = 0; i < coSupervisors.length; i++) {
-      let r = -1;
-      if (coSupervisors[i].isExternal === true) {
-        r = await coSupervisorAdd(
-          newId,
-          coSupervisors[i].name,
-          coSupervisors[i].surname,
-          true
-        );
-      } else {
-        r = await coSupervisorAdd(
-          newId,
-          coSupervisors[i].name,
-          coSupervisors[i].surname,
-          false
-        );
-      }
-      if (r < 0) {
-        // abort, error!
-        //logging.error(`Error inserting a cosupervisor for the thesis ${newId}`)
-        //return res.status(500).json({ msg: "Error during the insertion of the cosupervisors." });
-        throw {
-          message: "Error during the insertion of the cosupervisors.",
-          code: 500,
-        };
-      }
-    }
-
-
-   
-*/
 
 
     res.status(201).json({ msg: "Proposal copied successfully." });
