@@ -20,7 +20,7 @@ let cdss = [];
 let internal_co_supervisors = [];
 let external_co_supervisors = [];
 
-function InsertProposal({proposalData}) {
+function InsertProposal({ proposalData }) {
   const [selectedKeywords, setSelectedKeywords] = useState([]);
   const [selectedLevel, setSelectedLevel] = useState("");
   const [selectedProgram, setSelectedProgram] = useState("");
@@ -34,7 +34,9 @@ function InsertProposal({proposalData}) {
     notes: "",
     type: "",
   });
-
+  useEffect(() => {
+    console.log(selectedProgram);
+  }, [selectedProgram]);
   const [selectedInternalCoSupervisors, setSelectedInternalCoSupervisors] =
     useState([]);
 
@@ -176,7 +178,6 @@ function InsertProposal({proposalData}) {
           co_supervisor
         );
         setInsertProposals(insertProposal);
-        //console.log("test log:" , insertProposal.response.data.msg);
         if (insertProposal.msg === "Proposal created successfully") {
           toast.success("Your proposal submitted successfully!", {
             position: toast.POSITION.TOP_CENTER,
