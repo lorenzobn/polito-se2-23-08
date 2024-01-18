@@ -40,22 +40,26 @@ function ThesisList(props) {
 
   useEffect(() => {
     const handleEffect = async () => {
-      const proposals = await store.getProposals();
-      setProposals(proposals);
-    };
-    /* const enterAnimation = async () => {
-      await animate(
-        ".thesis-section",
-        { opacity: [0, 1] },
-        { duration: 0.4, delay: stagger(0.4) }
+      const proposalsRes = await store.getProposals();
+      console.log(proposalsRes);
+      setProposals(
+        proposalsRes.filter(
+          (e) =>
+            (e.status === "active" || e.status === "pending") &&
+            new Date(e.deadline) > new Date(now)
+        )
       );
-    }; */
+    };
+
     handleEffect();
   }, []);
 
   useEffect(() => {
     const filterFun = async () => {
+      let now = await store.getVirtualClockValue();
+
       const proposals = await store.getProposals();
+
       const filteredProposals = proposals.filter((e) => {
         return filterTags.every((cond) => {
           if (cond.type === "Research Group") {
@@ -69,7 +73,11 @@ function ThesisList(props) {
           }
         });
       });
-      setProposals(filteredProposals.filter(e => e.status !== 'archived'));
+      setProposals(
+        filteredProposals.filter(
+          (e) => e.status !== "deleted" && new Date(e.deadline) > new Date(now)
+        )
+      );
     };
     filterFun();
   }, [filterTags]);
