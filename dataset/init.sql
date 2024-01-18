@@ -410,7 +410,7 @@ INSERT INTO CAREER (
     ddate
   )
 VALUES (
-    's124',
+    's123',
     '01TYM',
     'Information Security System',
     '6',
@@ -426,7 +426,7 @@ INSERT INTO CAREER (
     ddate
   )
 VALUES (
-    's124',
+    's123',
     '02TWYSM',
     'Database and Data science',
     '8',
@@ -442,7 +442,7 @@ INSERT INTO CAREER (
     ddate
   )
 VALUES (
-    's124',
+    's123',
     '03TRV',
     'Computer Networks',
     '6',
@@ -458,7 +458,7 @@ INSERT INTO CAREER (
     ddate
   )
 VALUES (
-    's124',
+    's123',
     '01GUV',
     'Web Application I',
     '6',
@@ -474,7 +474,7 @@ INSERT INTO CAREER (
     ddate
   )
 VALUES (
-    's124',
+    's123',
     '02GUP',
     'Web Application II',
     '6',
@@ -490,7 +490,7 @@ INSERT INTO CAREER (
     ddate
   )
 VALUES (
-    's124',
+    's123',
     '01SDPR',
     'Systems Device and Programming',
     '10',
@@ -506,7 +506,7 @@ INSERT INTO CAREER (
     ddate
   )
 VALUES (
-    's124',
+    's123',
     '02CDRU',
     'Cloud Computing',
     '6',
@@ -522,7 +522,7 @@ INSERT INTO CAREER (
     ddate
   )
 VALUES (
-    's124',
+    's123',
     '01BGTR',
     'Big Data',
     '6',
