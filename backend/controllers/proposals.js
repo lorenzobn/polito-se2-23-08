@@ -13,7 +13,7 @@ const {
 } = require("./utils");
 const { createNotification } = require("./notifications.js");
 const { userTypes } = require("./users.js");
-const {cancellApplicationsForThesis, archiveProposal} = require("./applications.js");
+const { cancellApplicationsForThesis, archiveProposal } = require("./applications.js");
 
 const proposalSchema = Joi.object({
   title: Joi.string().min(8).max(150).required(),
@@ -86,9 +86,9 @@ const getAllGroups = async (req, res) => {
 };
 
 const createProposal = async (req, res) => {
- 
+
   try {
-    
+
     let SUPERVISOR_id = req.session.user.id;
     const { error, value } = proposalSchema.validate(req.body);
     if (error) {
@@ -231,10 +231,7 @@ const createProposal = async (req, res) => {
 
 
 const copyProposal = async (req, res) => {
-
-
   const {
-    
     title,
     type,
     description,
@@ -246,11 +243,11 @@ const copyProposal = async (req, res) => {
     keywords,
     coSupervisors,
   } = req.body;
-
+  let SUPERVISOR_id = req.session.user.id;
 
   const query = {
     text: "SELECT * FROM thesis_proposal WHERE id=$1 AND SUPERVISOR_id=$2 AND created_at < $3 AND status='active' ",
-    values: [req.params.proposalId, req.session.user.id, req.session.clock.time] 
+    values: [req.params.proposalId, req.session.user.id, req.session.clock.time]
   };
   try {
     let result = await pool.query(query);
@@ -259,18 +256,18 @@ const copyProposal = async (req, res) => {
         .status(400)
         .json({ msg: "No active proposal found with the given ID." });
     }
-  
-  const proposalToCopy = result.rows[0];
-  
-    const insertQuery = 
-    `INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, COD_GROUP, description, required_knowledge, notes, level, programme, deadline, status, created_at)
+
+    const proposalToCopy = result.rows[0];
+    await pool.query("BEGIN");
+    const insertQuery =
+      `INSERT INTO thesis_proposal (title, SUPERVISOR_id, type, COD_GROUP, description, required_knowledge, notes, level, programme, deadline, status, created_at)
     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
     RETURNING *;
     `;
 
     const values = [
       proposalToCopy.title,
-      proposalToCopy.supervisor_id,
+      SUPERVISOR_id,
       proposalToCopy.type,
       proposalToCopy.cod_group,
       proposalToCopy.description,
@@ -279,24 +276,19 @@ const copyProposal = async (req, res) => {
       proposalToCopy.level,
       proposalToCopy.programme,
       proposalToCopy.deadline,
-      proposalToCopy.status,
+      'active',
       req.session.clock.time,
     ];
 
-
-
-   const r= await pool.query(insertQuery, values);
-
+    const r = await pool.query(insertQuery, values);
 
     //getting the keywords from the proposal id
-
     const queryKeywords = `SELECT keyword FROM keywords WHERE thesisId=$1`;
     const valuesKeywords = [req.params.proposalId];
     const resultKeywords = await pool.query(queryKeywords, valuesKeywords);
     const keywords = resultKeywords.rows.map((row) => row.keyword);
-    console.log(keywords);
 
-    const newId=r.rows[0].id;
+    const newId = r.rows[0].id;
     for (var i = 0; i < keywords.length; i++) {
       let r = await keywordsAdd(newId, keywords[i], req.session.clock.time);
       if (r < 0) {
@@ -310,81 +302,63 @@ const copyProposal = async (req, res) => {
       }
     }
 
- 
+    //getting the supervisors from the proposal id
+    querySupervisors = `SELECT * FROM thesis_co_supervision WHERE thesis_proposal_id=$1`;
+    valuesSupervisors = [req.params.proposalId];
+    resultSupervisors = await pool.query(querySupervisors, valuesSupervisors);
+    const coSupervisorsIds = resultSupervisors.rows.map((row) => row);
 
+    //getting the names of cosups from cosup ids
+    for (var i = 0; i < coSupervisorsIds.length; i++) {
+      let r = -1;
+      if (coSupervisorsIds[i].is_external === false) {
+        const queryCoSupervisors1 = `SELECT * FROM teacher WHERE id=$1`;
+        const valuesCoSupervisors1 = [coSupervisorsIds[i].internal_co_supervisor_id];
+        const resultCoSupervisors1 = await pool.query(queryCoSupervisors1, valuesCoSupervisors1);
+        const coSupervisor1 = resultCoSupervisors1.rows.map((row) => row);
 
-   //getting the supervisors from the proposal id
+        r = await coSupervisorAdd(
+          newId,
+          coSupervisor1[0].name,
+          coSupervisor1[0].surname,
+          false
+        );
 
-  querySupervisors = `SELECT * FROM thesis_co_supervision WHERE thesis_proposal_id=$1`;
-  valuesSupervisors = [req.params.proposalId];
-  resultSupervisors = await pool.query(querySupervisors, valuesSupervisors);
-  const coSupervisorsIds = resultSupervisors.rows.map((row) => row);
-  console.log(coSupervisorsIds);
-  console.log(coSupervisorsIds.length);
-  console.log("cosup 1", coSupervisorsIds[1]);
+      } else if (coSupervisorsIds[i].is_external === true) {
+        const queryCoSupervisors2 = `SELECT * FROM external_co_supervisor WHERE id=$1`;
+        const valuesCoSupervisors2 = [coSupervisorsIds[i].external_co_supervisor_id];
+        const resultCoSupervisors2 = await pool.query(queryCoSupervisors2, valuesCoSupervisors2);
+        const coSupervisor2 = resultCoSupervisors2.rows.map((row) => row);
+        r = await coSupervisorAdd(
+          newId,
+          coSupervisor2[0].name,
+          coSupervisor2[0].surname,
+          true
+        );
+      }
+      if (r < 0) {
+        // abort, error!
+        //logging.error(`Error inserting a cosupervisor for the thesis ${newId}`)
+        //return res.status(500).json({ msg: "Error during the insertion of the cosupervisors." });
+        throw {
+          message: "Error during the insertion of the cosupervisors.",
+          code: 500,
+        };
+      }
 
- 
-
-
-  //getting the names of cosups from cosup ids
-
-  
-  for (var i = 0; i < coSupervisorsIds.length; i++) {
-
-    let r=-1;
-
-    if(coSupervisorsIds[i].is_external===false){
-    console.log("fin qui titto ok");
-    const queryCoSupervisors1 = `SELECT * FROM teacher WHERE id=$1`;
-    const valuesCoSupervisors1 = [coSupervisorsIds[i].internal_co_supervisor_id];
-    const resultCoSupervisors1 = await pool.query(queryCoSupervisors1, valuesCoSupervisors1);
-    const coSupervisor1 = resultCoSupervisors1.rows.map((row) => row);
-    console.log(coSupervisor1);
-    console.log(newId);
-    console.log("name", coSupervisor1.name);
-    console.log("surname", coSupervisor1.surname);
-    
-    r = await coSupervisorAdd(
-      newId,
-      coSupervisor1[0].name,
-      coSupervisor1[0].surname,
-      false
-    );
-
-
-
-  } else if(coSupervisorsIds[i].is_external===true){
-    const queryCoSupervisors2 = `SELECT * FROM external_co_supervisor WHERE id=$1`;
-    const valuesCoSupervisors2 = [coSupervisorsIds[i].external_co_supervisor_id];
-    const resultCoSupervisors2 = await pool.query(queryCoSupervisors2, valuesCoSupervisors2);
-    const coSupervisor2 = resultCoSupervisors2.rows.map((row) => row);
-   console.log(coSupervisor2);
-   console.log(newId);
-    r = await coSupervisorAdd(
-      newId,
-      coSupervisor2[0].name,
-      coSupervisor2[0].surname,
+    }
+    await pool.query("COMMIT");
+    createNotification(
+      SUPERVISOR_id,
+      userTypes.teacher,
+      "Proposal Created",
+      `Your proposal '${proposalToCopy.title}' has been created successfully!`,
       true
     );
-  }
-console.log("r è" , r);
-  if (r < 0) {
-    // abort, error!
-    //logging.error(`Error inserting a cosupervisor for the thesis ${newId}`)
-    //return res.status(500).json({ msg: "Error during the insertion of the cosupervisors." });
-    throw {
-      message: "Error during the insertion of the cosupervisors.",
-      code: 500,
-    };
-  }
-
-}
-
-
-
     res.status(201).json({ msg: "Proposal copied successfully." });
   } catch (err) {
-    console.error(err);
+    logger.error(err);
+    await pool.query("ROLLBACK");
     res.status(500).json({ msg: err.message });
   }
 };
@@ -505,7 +479,7 @@ const deleteProposal = async (req, res) => {
         .status(400)
         .json({ msg: "Cannot delete this proposal because there is an accepted application" });
     }
-    
+
     //set other applications (the ones pending) to cancelled
     if (cancellApplicationsForThesis(req.params.proposalId, '', req.session.clock.time, -1) == -1) {
       logger.error(`Error while trying to cancel all the applications done for ${thesisId}`)
@@ -789,13 +763,13 @@ const archiveProposalWrap = async (req, res) => {
     }
 
     let resCode = await archiveProposal(proposalId, req.session.clock.time);
-    if (resCode === -1){
+    if (resCode === -1) {
       throw {
         message: "Error while archiving a proposal",
         code: 500,
       };
     }
-    return res.status(200).json({ msg: "OK" }) 
+    return res.status(200).json({ msg: "OK" })
   } catch (error) {
     logger.error(error.message);
     return res.status(500).json({ msg: error.message });
