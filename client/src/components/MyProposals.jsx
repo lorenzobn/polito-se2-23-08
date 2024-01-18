@@ -448,7 +448,7 @@ export default function MyProposals() {
                               <FaCopy className="dropdown-icon" size={18} />
                               Unarchive
                             </Dropdown.Item>*/}
-                            <Dropdown.Item
+                            {/* <Dropdown.Item
                               onClick={() => {
                                 setShowDeleteModal(true);
                                 setProposalIdToDelete(e.id);
@@ -485,7 +485,7 @@ export default function MyProposals() {
                                   icon={faHand}
                                 ></Button>
                               </Modal.Footer>
-                            </Modal>
+                            </Modal> */}
 
                             <Modal
                               show={showArchiveModal}
