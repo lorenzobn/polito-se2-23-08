@@ -277,7 +277,6 @@ function InsertProposal({ proposalData }) {
                 defaultValue={selectedProgram}
                 onChange={setSelectedProgram}
                 options={cdss}
-                isMulti
               />
             </div>
 
