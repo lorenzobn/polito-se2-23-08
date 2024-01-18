@@ -179,7 +179,7 @@ export default function AcceptApplications() {
                 </Modal.Footer>
               </Modal>
               <div>
-                <h5>Application Status: {student.applicationstatus}</h5>
+                <p>Application Status: {student.applicationstatus}</p>
                 <div>
                   <strong className="mb-4">Personal Information:</strong>
                   <small className="d-block">
