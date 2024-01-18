@@ -36,7 +36,7 @@ const coSupervisorAdd = async (thesisId, name, surname, external) => {
       return -1;
     }
   } catch (error) {
-    logger.error(error);
+    logger.error(error.message);
     return -1;
   }
   return 0;

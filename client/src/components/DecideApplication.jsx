@@ -1,16 +1,7 @@
 import React, { useState, useEffect, useContext } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
 import MyNavbar from "./Navbar";
-import {
-  Row,
-  Col,
-  Nav,
-  Container,
-  Dropdown,
-  DropdownButton,
-  Form,
-  Modal,
-} from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import Button from "./Button";
 import {
   faCheck,
@@ -33,8 +24,9 @@ export default function AcceptApplications() {
   const [proposal, setProposal] = useState([]);
   const [proposalDetails, setProposalDetails] = useState([]);
   const [proposalTitle, setProposalTitle] = useState("");
-  const [studentCareer, setStudentCareer] = useState([]);
+  const [applicationDetails, setApplicationDetails] = useState([]);
   const [showModal, setShowModal] = useState(false);
+  const [career, setCareer] = useState([]);
 
   useEffect(() => {
     // since the handler function of useEffect can't be async directly
@@ -55,6 +47,7 @@ export default function AcceptApplications() {
             const element = newArray[i];
             element.career = career;
             newArray[i] = element;
+
             return newArray;
           });
         });
@@ -64,6 +57,18 @@ export default function AcceptApplications() {
     };
     handleEffect();
   }, [status]);
+
+  // useEffect(() => {
+  //   // since the handler function of useEffect can't be async directly
+  //   // we need to define it separately and run it
+  //   const handleEffect = async () => {
+  //     setCareer(proposal[0].career.careers);
+  //     for (let index = 1; index < proposal.length; index++) {
+  //       setCareer(...[proposal[index].career.careers]);
+  //     }
+  //   };
+  //   handleEffect();
+  // }, [proposal, career]);
 
   function isDifferenceMoreThanOneHour(time) {
     var date1 = new Date(time);
@@ -111,7 +116,6 @@ export default function AcceptApplications() {
       return;
     }
     const selectedForm = proposal[index];
-    //console.log("Rejected form at index", index, selectedForm);
     const response = await store.applicationDecision(
       selectedForm.applicationid,
       "rejected"
@@ -129,13 +133,6 @@ export default function AcceptApplications() {
         }
       );
     }
-  };
-
-  const student_career = async (student_id) => {
-    const career_response = await store.getStudentCareer(student_id);
-    setStudentCareer(career_response);
-    console.log("TEST RESPONSE:", career_response);
-    console.log("SECOND TEST: ", studentCareer);
   };
 
   return (
@@ -181,11 +178,48 @@ export default function AcceptApplications() {
                   ></Button>
                 </Modal.Footer>
               </Modal>
-              <ul>
-                <li>
-                  <strong>Student ID:</strong> {student.student_id},{" "}
-                  <strong>Application Status:</strong>{" "}
-                  {student.applicationstatus}
+              <div>
+                <h5>Application Status: {student.applicationstatus}</h5>
+                <div>
+                  <strong className="mb-4">Personal Information:</strong>
+                  <small className="d-block">
+                    Student ID: {student?.career?.student?.id}
+                  </small>
+                  <small className="d-block">
+                    Name:{" "}
+                    {student?.career?.student?.name +
+                      " " +
+                      student?.career?.student?.surname}
+                  </small>
+                  <small className="d-block">
+                    Degree Code: {student?.career?.student?.cod_degree}
+                  </small>
+                  <small className="d-block">
+                    Enrollment Year: {student?.career?.student?.enrollment_year}
+                  </small>
+                  <strong className="py-4">Careers Information:</strong>
+                  <table className="table container mt-3 p-4 rounded  mt-10">
+                    <thead>
+                      <tr>
+                        <th>Course Code</th>
+                        <th>Course Title</th>
+                        <th>CFU</th>
+                        <th>Grade</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {student?.career?.careers?.map((c, i) => {
+                        return (
+                          <tr key={i}>
+                            <td>{c?.cod_course}</td>
+                            <td>{c?.title_course}</td>
+                            <td>{c?.cfu}</td>
+                            <td>{c?.grade}</td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
                   {student.cv_uri && (
                     <a
                       className="mt-2 d-block "
@@ -195,56 +229,33 @@ export default function AcceptApplications() {
                       Download CV
                     </a>
                   )}
-                  <div>
-                    <h4>Careers Information</h4>
-                    <table className="table container mt-3 p-4 rounded shadow mt-10">
-                      <thead>
-                        <tr>
-                          <th>Course Code</th>
-                          <th>Course Title</th>
-                          <th>CFU</th>
-                          <th>Grade</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {studentCareer.map((course, index) => (
-                          <tr key={index}>
-                            <td>{course.cod_course}</td>
-                            <td>{course.title_course}</td>
-                            <td>{course.cfu}</td>
-                            <td>{course.grade}</td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                </div>
+                <div className="row">
+                  <div className="col text-start mt-4">
+                    {student.applicationstatus === "idle" ? (
+                      <BadButton
+                        icon={faX}
+                        text={"REJECT"}
+                        onClick={() => handleReject(index)}
+                      ></BadButton>
+                    ) : (
+                      <></>
+                    )}
                   </div>
-                  <div className="row">
-                    <div className="col text-start mt-4">
-                      {student.applicationstatus === "idle" ? (
-                        <BadButton
-                          icon={faX}
-                          text={"REJECT"}
-                          onClick={() => handleReject(index)}
-                        ></BadButton>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
-                    <div className="col text-end mt-4">
-                      {student.applicationstatus === "idle" ? (
-                        <Button
-                          icon={faCheck}
-                          text={"ACCEPT"}
-                          onClick={() => setShowModal(true)}
-                        ></Button>
-                      ) : (
-                        <></>
-                      )}
-                    </div>
+                  <div className="col text-end mt-4">
+                    {student.applicationstatus === "idle" ? (
+                      <Button
+                        icon={faCheck}
+                        text={"ACCEPT"}
+                        onClick={() => setShowModal(true)}
+                      ></Button>
+                    ) : (
+                      <></>
+                    )}
                   </div>
-                </li>
-                {/* Add other form fields based on your object properties */}
-              </ul>
+                </div>
+              </div>
+              {/* Add other form fields based on your object properties */}
             </form>
           );
         })}

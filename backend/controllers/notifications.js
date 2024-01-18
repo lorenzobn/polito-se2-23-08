@@ -68,15 +68,15 @@ const createNotification = async (
 };
 
 const getNotificationsByUserId = async (req, res) => {
-  const userId = req.session.user.id;
-  const userType = req.session.user.role;
+  const userId = req?.session?.user?.id;
+  const userType = req?.session?.user?.role;
   const columnName =
     userType === userTypes.teacher ? "teacher_id" : "student_id";
   const query = {
     text: `SELECT * FROM Notification
         WHERE ${columnName} = $1 AND seen = false AND created_at < $2;
       `,
-    values: [userId, req.session.clock.time],
+    values: [userId, req.session?.clock?.time],
   };
 
   try {

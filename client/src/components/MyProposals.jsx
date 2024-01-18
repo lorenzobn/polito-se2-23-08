@@ -34,6 +34,7 @@ export default function MyProposals() {
   const [proposals, setProposals] = useState([]);
   const [applications, setApplications] = useState([]);
   const [archivedProposals, setArchivedProposals] = useState([]);
+  const[isArchived, setArchived] = useState(false);
   const [proposalData, setProposalData] = useState([]);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [proposalIdToDelete, setProposalIdToDelete] = useState(null);
@@ -93,7 +94,7 @@ export default function MyProposals() {
       }
     };
     handleEffect();
-  }, [store.user.type]);
+  }, [store.user.type, isArchived]);
 
   return (
     <>
@@ -182,6 +183,7 @@ export default function MyProposals() {
                               onClick={() => {
                                 setShowCopyModal(true);
                                 setProposalIdToCopy(e.id);
+                                setProposalData(e);
                               }}
                             >
                               <MdContentCopy
@@ -200,10 +202,10 @@ export default function MyProposals() {
                               </Modal.Header>
                               <Modal.Body>
                                 Are you sure you want to Copy the proposal{" "}
-                                <strong>{e.title}</strong> ? After doing this
+                                <strong>{e.title} </strong> ? After doing this
                                 action the students will see a duplicated
                                 proposal. You can always archive or delete it
-                                later. {e.id}
+                                later. 
                               </Modal.Body>
                               <Modal.Footer className="modal-footer d-flex justify-content-end">
                                 <Button
@@ -221,8 +223,11 @@ export default function MyProposals() {
                                   variant="primary"
                                   className="mx-2"
                                   onClick={async () => {
+                                  
                                     const res = await store.copyProposal(
-                                      proposalIdToCopy
+                                      proposalIdToCopy,
+                                     
+
                                     );
 
 
@@ -356,6 +361,7 @@ export default function MyProposals() {
                                           position: toast.POSITION.TOP_CENTER,
                                         }
                                       );
+                                      setArchived(true);
                                     } else {
                                       toast.error(
                                         `${res.msg}`,
@@ -464,8 +470,8 @@ export default function MyProposals() {
                                 <Modal.Title>Confirm Delete</Modal.Title>
                               </Modal.Header>
                               <Modal.Body>
-                               You can not delete an archived proposal{" "}
-                                <strong>{e.title}</strong> because some students involved on this thesis.
+                               You cannot delete this archived proposal{" "}
+                                <strong>{e.title}</strong> because some students are involved on this thesis.
                               </Modal.Body>
                               <Modal.Footer className="modal-footer d-flex justify-content-end">
                                 <Button
