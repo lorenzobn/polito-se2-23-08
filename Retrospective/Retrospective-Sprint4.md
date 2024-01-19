@@ -69,7 +69,7 @@ We are reporting data for all stories as if we completed them
   - Total hours spent: 16h
   - Nr of automated unit test cases: 128
   - Nr of passed unit tests: 128
-  - Nr of total test suite: 9
+  - Nr of total test suite: 8
   - Nr of total test suite - passed: 8
   - Coverage (if available): The coverage of all the files is 85%.
   
