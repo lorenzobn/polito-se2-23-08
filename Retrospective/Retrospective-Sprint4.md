@@ -106,8 +106,8 @@ We are reporting data for all stories as if we completed them
 - Not applicable.
 
 **Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)**
-- There are no improvement goals but we hope to achieve the same velocity as this sprint.
+- Even if this is the last sprint, we would love to spend a bit of time with our client to ensure that our product is strongly fitted to their usages and needs
 
 
 **One thing you are proud of as a Team!!**
-- As a team, we achieved similar results in terms of the test coverage significantly. We also improved the visuals in the way student apply for an application, we are very proud of it. 
+- As a team, we are proud for the product quality we reached. We worked very hard for ensuring that all the features we implemented were working well.
