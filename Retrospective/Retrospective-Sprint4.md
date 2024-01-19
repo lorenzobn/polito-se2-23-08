@@ -98,14 +98,16 @@ We are reporting data for all stories as if we completed them
 
 **What caused your errors in estimation (if any)?**
 - There were no errors in our estimation. We completed all the dedicated tasks as per the definition of done.  
+- We prevented ourselves from making the mistake of overestimating based on the fact that, apparently, we had more time (because of christmas holidays), but in fact we just had 16 hours as per every sprint.
   
 **What lessons did you learn (both positive and negative) in this sprint?**
 
 **Negative lesson** (the biggest one):  
-- There are no negative lessons.
+- We should prepare the presentation better: be more coherent and neat in our presentation, test the software on more than one  laptop
 
 **Positive lesson**:  
 - We achieved the same velocity as last sprint without compromising on the quality of our stories according to the definition of done. 
+
 
 
 **Which improvement goals set in the previous retrospective were you able to achieve?**
@@ -118,6 +120,11 @@ We are reporting data for all stories as if we completed them
 **Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)**
 - Even if this is the last sprint, we would love to spend a bit of time with our client to ensure that our product is strongly fitted to their usages and needs
 
+- If there was another sprint, we would improve the presentation skill and our preparation to it.
+
+- As far as development goes, we would improve the user experience across all devices (tablets, phone) other that laptop.
+
 
 **One thing you are proud of as a Team!!**
 - As a team, we are proud for the product quality we reached. We worked very hard for ensuring that all the features we implemented were working well.
+- We managed to keep a good, healthy relatioship among us, even in the midst of big issues.
