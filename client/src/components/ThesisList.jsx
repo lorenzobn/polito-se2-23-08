@@ -40,8 +40,8 @@ function ThesisList(props) {
 
   useEffect(() => {
     const handleEffect = async () => {
+      let now = await store.getVirtualClockValue();
       const proposalsRes = await store.getProposals();
-      console.log(proposalsRes);
       setProposals(
         proposalsRes.filter(
           (e) =>

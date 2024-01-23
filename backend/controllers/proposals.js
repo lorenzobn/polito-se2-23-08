@@ -695,7 +695,7 @@ const searchProposal = async (req, res) => {
       description: Joi.string(),
       required_knowledge: Joi.string(),
       notes: Joi.string(),
-      level: Joi.string().valid("BSc", "MSc"),
+      level: Joi.string(),
       programme: Joi.string(),
     });
 
