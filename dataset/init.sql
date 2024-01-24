@@ -380,6 +380,7 @@ INSERT INTO THESIS_APPLICATION(
     cv_uri
   )
 VALUES ('s123', 1, 'idle', '');
+
 INSERT INTO THESIS_APPLICATION(
     student_id,
     thesis_id,
@@ -387,6 +388,7 @@ INSERT INTO THESIS_APPLICATION(
     cv_uri
   )
 VALUES ('s124', 2, 'idle', '');
+
 INSERT INTO THESIS_APPLICATION(
     student_id,
     thesis_id,
@@ -394,6 +396,7 @@ INSERT INTO THESIS_APPLICATION(
     cv_uri
   )
 VALUES ('s124', 3, 'idle', '');
+
 INSERT INTO THESIS_APPLICATION(
     student_id,
     thesis_id,
@@ -401,6 +404,7 @@ INSERT INTO THESIS_APPLICATION(
     cv_uri
   )
 VALUES ('s125', 3, 'idle', '');
+
 INSERT INTO CAREER (
     student_id,
     COD_COURSE,
@@ -837,7 +841,6 @@ INSERT INTO THESIS_APPLICATION(
     cv_uri
   )
 VALUES ('s126', 3, 'idle', '');
-
 INSERT INTO THESIS_APPLICATION(
     student_id,
     thesis_id,
