@@ -1053,24 +1053,6 @@ INSERT INTO CAREER (
     ddate
   )
 VALUES (
-    's124',
-    '03TRV',
-    'Computer Networks',
-    '6',
-    '21',
-    '2023-01-18'
-  );
-
-
-INSERT INTO CAREER (
-    student_id,
-    COD_COURSE,
-    TITLE_COURSE,
-    CFU,
-    GRADE,
-    ddate
-  )
-VALUES (
     's125',
     '02CDRU',
     'Cloud Computing',
