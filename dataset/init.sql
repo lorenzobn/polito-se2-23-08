@@ -844,7 +844,15 @@ INSERT INTO THESIS_APPLICATION(
     status,
     cv_uri
   )
-VALUES ('s126', 6, 'idle', '');
+VALUES ('s126', 6, 'accepted', '');
+
+INSERT INTO THESIS_APPLICATION(
+    student_id,
+    thesis_id,
+    status,
+    cv_uri
+  )
+VALUES ('s126', 3, 'rejected', '');
 
 INSERT INTO CAREER (
     student_id,
@@ -940,10 +948,216 @@ INSERT INTO CAREER (
     ddate
   )
 VALUES (
-    's126',
+    's124',
     '03TRV',
     'Computer Networks',
     '6',
     '21',
+    '2023-01-18'
+  );
+
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's124',
+    '02CDRU',
+    'Cloud Computing',
+    '6',
+    '30',
+    '2023-07-15'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's124',
+    '01BGTR',
+    'Big Data',
+    '6',
+    '26',
+    '2023-07-15'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's124',
+    '01SDPR',
+    'Systems Device and Programming',
+    '10',
+    '22',
+    '2023-07-14'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's124',
+    '02TWYSM',
+    'Database and Data science',
+    '8',
+    '27',
+    '2023-01-22'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's124',
+    '02GUP',
+    'Web Application II',
+    '6',
+    '21',
+    '2023-07-11'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's124',
+    '03TRV',
+    'Computer Networks',
+    '6',
+    '21',
+    '2023-01-18'
+  );
+
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's125',
+    '02CDRU',
+    'Cloud Computing',
+    '6',
+    '21',
+    '2023-07-15'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's125',
+    '01BGTR',
+    'Big Data',
+    '6',
+    '23',
+    '2023-07-15'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's125',
+    '01SDPR',
+    'Systems Device and Programming',
+    '10',
+    '24',
+    '2023-07-14'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's125',
+    '02TWYSM',
+    'Database and Data science',
+    '8',
+    '25',
+    '2023-01-22'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's125',
+    '02GUP',
+    'Web Application II',
+    '6',
+    '26',
+    '2023-07-11'
+  );
+
+INSERT INTO CAREER (
+    student_id,
+    COD_COURSE,
+    TITLE_COURSE,
+    CFU,
+    GRADE,
+    ddate
+  )
+VALUES (
+    's125',
+    '03TRV',
+    'Computer Networks',
+    '6',
+    '27',
     '2023-01-18'
   );
