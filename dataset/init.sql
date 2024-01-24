@@ -836,7 +836,7 @@ INSERT INTO THESIS_APPLICATION(
     status,
     cv_uri
   )
-VALUES ('s126', 3, 'accepted', '');
+VALUES ('s126', 3, 'idle', '');
 
 INSERT INTO THESIS_APPLICATION(
     student_id,
