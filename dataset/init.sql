@@ -836,7 +836,7 @@ INSERT INTO THESIS_APPLICATION(
     status,
     cv_uri
   )
-VALUES ('s126', 3, 'idle', '');
+VALUES ('s126', 3, 'accepted', '');
 
 INSERT INTO THESIS_APPLICATION(
     student_id,
@@ -844,7 +844,7 @@ INSERT INTO THESIS_APPLICATION(
     status,
     cv_uri
   )
-VALUES ('s126', 6, 'accepted', '');
+VALUES ('s126', 6, 'idle', '');
 
 INSERT INTO THESIS_APPLICATION(
     student_id,
@@ -852,7 +852,7 @@ INSERT INTO THESIS_APPLICATION(
     status,
     cv_uri
   )
-VALUES ('s126', 3, 'rejected', '');
+VALUES ('s126', 2, 'idle', '');
 
 INSERT INTO CAREER (
     student_id,
@@ -955,7 +955,6 @@ VALUES (
     '21',
     '2023-01-18'
   );
-
 
 INSERT INTO CAREER (
     student_id,
