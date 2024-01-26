@@ -711,22 +711,7 @@ VALUES (
     '22',
     '2023-07-14'
   );
-INSERT INTO CAREER (
-    student_id,
-    COD_COURSE,
-    TITLE_COURSE,
-    CFU,
-    GRADE,
-    ddate
-  )
-VALUES (
-    's123',
-    '02CDRU',
-    'Cloud Computing',
-    '6',
-    '26',
-    '2023-07-15'
-  );
+
 INSERT INTO CAREER (
     student_id,
     COD_COURSE,
@@ -743,102 +728,12 @@ VALUES (
     '27',
     '2023-07-15'
   );
-INSERT INTO CAREER (
-    student_id,
-    COD_COURSE,
-    TITLE_COURSE,
-    CFU,
-    GRADE,
-    ddate
-  )
-VALUES (
-    's123',
-    '01TYM',
-    'Information Security System',
-    '6',
-    '27',
-    '2023-01-16'
-  );
-INSERT INTO CAREER (
-    student_id,
-    COD_COURSE,
-    TITLE_COURSE,
-    CFU,
-    GRADE,
-    ddate
-  )
-VALUES (
-    's123',
-    '02TWYSM',
-    'Database and Data science',
-    '8',
-    '29',
-    '2023-01-22'
-  );
-INSERT INTO CAREER (
-    student_id,
-    COD_COURSE,
-    TITLE_COURSE,
-    CFU,
-    GRADE,
-    ddate
-  )
-VALUES (
-    's123',
-    '03TRV',
-    'Computer Networks',
-    '6',
-    '25',
-    '2023-01-18'
-  );
-INSERT INTO CAREER (
-    student_id,
-    COD_COURSE,
-    TITLE_COURSE,
-    CFU,
-    GRADE,
-    ddate
-  )
-VALUES (
-    's123',
-    '01GUV',
-    'Web Application I',
-    '6',
-    '28',
-    '2023-06-19'
-  );
-INSERT INTO CAREER (
-    student_id,
-    COD_COURSE,
-    TITLE_COURSE,
-    CFU,
-    GRADE,
-    ddate
-  )
-VALUES (
-    's123',
-    '02GUP',
-    'Web Application II',
-    '6',
-    '30',
-    '2023-07-11'
-  );
-INSERT INTO CAREER (
-    student_id,
-    COD_COURSE,
-    TITLE_COURSE,
-    CFU,
-    GRADE,
-    ddate
-  )
-VALUES (
-    's123',
-    '01SDPR',
-    'Systems Device and Programming',
-    '10',
-    '22',
-    '2023-07-14'
-  );
+
+
+
+
+
+
 INSERT INTO CAREER (
     student_id,
     COD_COURSE,
@@ -855,22 +750,7 @@ VALUES (
     '26',
     '2023-07-15'
   );
-INSERT INTO CAREER (
-    student_id,
-    COD_COURSE,
-    TITLE_COURSE,
-    CFU,
-    GRADE,
-    ddate
-  )
-VALUES (
-    's123',
-    '01BGTR',
-    'Big Data',
-    '6',
-    '27',
-    '2023-07-15'
-  );
+
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
     INTERNAL_CO_SUPERVISOR_id,
