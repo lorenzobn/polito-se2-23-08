@@ -9,7 +9,7 @@ const { userTypes } = require("./users.js");
 const uploadPath = "uploads/";
 
 //TO AVOID SENDING A LOT OF EMAILS DURING DEBUGGING
-const DEBUG_SEND_EMAIL = false;
+const DEBUG_SEND_EMAIL = true;
 
 const createApplication = async (req, res) => {
   try {
