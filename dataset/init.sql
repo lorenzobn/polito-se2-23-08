@@ -1342,3 +1342,103 @@ VALUES (
     '27',
     '2023-01-18'
   );
+
+/*adding two new thesis proposals*/
+
+INSERT INTO THESIS_PROPOSAL(
+    title,
+    SUPERVISOR_ID,
+    type,
+    COD_GROUP,
+    description,
+    required_knowledge,
+    notes,
+    level,
+    programme,
+    deadline,
+    status
+  )
+VALUES (
+    'Power Systems Cybersecurity',
+    't140',
+    'In-practice work',
+    'EEE1',
+    'The development of a trustworthy smart grid requires a deeper understanding of potential impacts resulting from successful cyber attacks.',
+    'None',
+    '',
+    'MSc',
+    'LM-32',
+    '2023-12-31',
+    'active'
+  );
+
+INSERT INTO KEYWORDS
+VALUES(9, 'Cybersecutity');
+INSERT INTO KEYWORDS
+VALUES(9, 'Power Electronics');
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES (9, 't123', NULL, FALSE);
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES (9, 't141', NULL, FALSE);
+
+
+INSERT INTO THESIS_PROPOSAL(
+    title,
+    SUPERVISOR_ID,
+    type,
+    COD_GROUP,
+    description,
+    required_knowledge,
+    notes,
+    level,
+    programme,
+    deadline,
+    status
+  )
+VALUES (
+    '5G and Beyond Mobile Wireless Technology',
+    't140',
+    'In-practice work',
+    'EEE1',
+    'Increased computing power, more efficient hardware and powerful software, and the explosion of sensor data from the Internet of Things (IoT) Growth - is driving machine learning and moving actionable data and intelligence to edge devices.',
+    'None',
+    '',
+    'MSc',
+    'LM-32',
+    '2023-12-31',
+    'active'
+  );
+
+INSERT INTO KEYWORDS
+VALUES(10, 'Telecommunication');
+INSERT INTO KEYWORDS
+VALUES(10, 'Wireless Technologies');
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES (10, 't125', NULL, FALSE);
+
+
+INSERT INTO THESIS_CO_SUPERVISION (
+    THESIS_PROPOSAL_id,
+    INTERNAL_CO_SUPERVISOR_id,
+    external_co_supervisor_id,
+    is_external
+  )
+VALUES (10, 't124', NULL, FALSE);
