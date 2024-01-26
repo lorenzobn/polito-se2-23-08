@@ -1369,7 +1369,7 @@ VALUES (
     'None',
     '',
     'MSc',
-    'LM-28',
+    'LM-32',
     '2024-03-01',
     'active'
   );
@@ -1418,7 +1418,7 @@ VALUES (
     'None',
     '',
     'MSc',
-    'LM-28',
+    'LM-32',
     '2024-03-01',
     'active'
   );
@@ -1426,7 +1426,7 @@ VALUES (
 INSERT INTO KEYWORDS
 VALUES(10, 'Telecommunication');
 INSERT INTO KEYWORDS
-VALUES(10, 'Wireless Technologies');
+VALUES(10, 'Software Networks');
 
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
