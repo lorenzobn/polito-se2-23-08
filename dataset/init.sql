@@ -121,6 +121,8 @@ values ('LM-32', 'Computer Engineering');
 INSERT INTO DEGREE (COD_DEGREE, TITLE_DEGREE)
 values ('LM-19', 'Chemical Engineering');
 INSERT INTO DEGREE (COD_DEGREE, TITLE_DEGREE)
+values ('LM-28', 'Electrical Engineering');
+INSERT INTO DEGREE (COD_DEGREE, TITLE_DEGREE)
 values ('LM-21', 'Biomedical Engineering');
 INSERT INTO DEPARTMENT (cod_department, NAME)
 VALUES(
@@ -1367,7 +1369,7 @@ VALUES (
     'None',
     '',
     'MSc',
-    'LM-32',
+    'LM-28',
     '2023-12-31',
     'active'
   );
@@ -1416,7 +1418,7 @@ VALUES (
     'None',
     '',
     'MSc',
-    'LM-32',
+    'LM-28',
     '2023-12-31',
     'active'
   );
