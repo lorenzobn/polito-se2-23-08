@@ -232,7 +232,7 @@ values (
     'Elmo',
     'M',
     'usa',
-    'moss.elmo@email.com',
+    'moss.elmo99@gmail.com',
     'LM-32',
     2018
   );
@@ -252,7 +252,7 @@ values (
     'Bryan',
     'M',
     'usa',
-    'woods.bryan@email.com',
+    'woods.bryan2000@gmail.com',
     'LM-32',
     2018
   );
@@ -300,7 +300,7 @@ values (
     't140',
     'Pauli',
     'Juan Stefano',
-    'pauli.suanstefano@polito.it',
+    'pauli.suanstefano@gmail.com',
     'EEE1',
     'DET'
   );
