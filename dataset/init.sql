@@ -1419,7 +1419,7 @@ VALUES (
     '',
     'MSc',
     'LM-28',
-    '2024-03-01,
+    '2024-03-01',
     'active'
   );
 
@@ -1435,7 +1435,6 @@ INSERT INTO THESIS_CO_SUPERVISION (
     is_external
   )
 VALUES (10, 't125', NULL, FALSE);
-
 
 INSERT INTO THESIS_CO_SUPERVISION (
     THESIS_PROPOSAL_id,
